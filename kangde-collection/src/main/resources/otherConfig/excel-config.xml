@@ -1,0 +1,1602 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<excels>
+	<!-- excel标签参看:ExcelDefinition,Field标签参看:FieldValue -->
+
+<!-- 车贷案件字段配置 -->
+	<excel id="caseCar" class="com.kangde.collection.dto.CaseExcelDto">
+	<field name="id" title="ID" />
+	<field name="surplusPrincipal" title="剩余本金"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+	<field name="caseLastMoney" title="最新欠款" isNull="true" />
+	<field name="caseLastDate" title="欠款更新日期" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+	<field name="caseBackdate" title="预计退案日" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+	<!-- 案件地址 -->
+	<field name="provinceName" title="案件区域-省份"
+		   resolveFieldValueConverterName="com.kangde.collection.excel.CaseRegionConverter" />
+	<field name="cityName" title="案件区域-城市" 
+		   resolveFieldValueConverterName="com.kangde.collection.excel.CaseRegionConverter" />
+	<!-- 案件地址END -->
+	<field name="areaName" title="风控区域" isNull="false"
+			resolveFieldValueConverterName="com.kangde.collection.excel.AreaConverter" />
+	<field name="caseName" title="姓名" isNull="false" />
+	<field name="loanContract" title="贷款合同号" />
+	<field name="caseSex" title="性别" />
+	<field name="caseIsMarriage" title="婚否" />
+	<field name="caseBirthday" title="生日" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+	<field name="caseNum" title="证件号" isNull="false" />
+	<field name="caseMoney" title="委案金额" isNull="false" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="entrustRate" title="委托费率" isNull="false" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+	<field name="agentRate" title="业绩率" isNull="false" 
+		regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+	<field name="overdueDays" title="逾期天数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+	<field name="overdueMoney" title="逾期金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="monthRepayment" title="每月还款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="overduePeriods" title="逾期期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+	<field name="repaymentPeriods" title="已还期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+	<field name="overduePrincipal" title="逾期本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="mobile1" title="本人手机1" />
+	<field name="mobile2" title="本人手机2" />
+	<field name="familyPhone" title="家庭号码" />
+	<field name="companyName" title="单位名称" />
+	<field name="companyPhone" title="单位号码" />
+	<field name="loanStartdate" title="贷款日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+	<field name="loanEnddate" title="贷款截止日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+	<field name="repayDate" title="还款日" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+	<field name="caseFileNo" title="档案号"/>
+	<field name="caseAppNo" title="申请单号" />
+	<field name="socialSecurityNo" title="社保电脑号" />
+	<field name="socialCardNo" title="社保卡号" />
+	<field name="policyExpire" title="保单到期日" />
+	<field name="loanMoney" title="贷款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="creditId" title="信贷分类" />
+	<field name="loanRate" title="贷款利率" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="casePosition" title="案人职位" />
+	<field name="bankAccount" title="开户行" />
+	<field name="caseDepartment" title="案人部门" />
+	<field name="accountNo" title="账号" />
+	<field name="caseCar.dealer" title="经销商" />
+	<field name="caseCar.price" title="车价" />
+	<field name="caseCar.number" title="车型" />
+	<field name="caseCar.liceNo" title="牌照号" />
+	<field name="caseCar.brand" title="品牌" />
+	<field name="caseCar.vinNo" title="车架号" />
+	<field name="caseCar.engineNo" title="发动机号" />
+	<field name="collecRemark" title="催收小结" />
+	<field name="email" title="邮箱" />
+	<field name="currency" title="币种" />
+	<field name="oldCollecRecord" title="原催收记录" />
+	<field name="overdueAge" title="逾期账龄" />
+	<field name="overdueDate" title="逾期开始日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+	<field name="repaymentTerm" title="还款期限" />
+	<field name="overdueInterest" title="逾期利息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="lateFee" title="滞纳金" />
+	<field name="companyAddress" title="单位地址" />
+	<field name="familyAddress" title="家庭地址" />
+	<field name="domicile" title="户籍地址" />
+	<field name="domicileZipcode" title="户籍地邮编" />
+	<field name="billAddress" title="对账单地址" />
+	<field name="billZipcode" title="对账单邮编" />
+	<field name="cusIntroduc" title="客户简介" />
+	<field name="remark1" title="备注1" />
+	<field name="remark2" title="备注2" />
+	<field name="collecType" title="催收分类" />
+	<field name="collecType" title="催收分类" />
+	
+	<!-- 联系人信息 -->
+	<field name="linkman1.name" title="联系人1姓名" />
+	<field name="linkman1.cardNo" title="联系人1证件" />
+	<field name="linkman1.relation" title="联系人1关系" />
+	<field name="linkman1.mobile" title="联系人1手机" />
+	<field name="linkman1.familyPhone" title="联系人1家庭电话" />
+	<field name="linkman1.unitPhone" title="联系人1单位电话" />
+	<field name="linkman2.name" title="联系人2姓名" />
+	<field name="linkman2.cardNo" title="联系人2证件" />
+	<field name="linkman2.relation" title="联系人2关系" />
+	<field name="linkman2.mobile" title="联系人2手机" />
+	<field name="linkman2.familyPhone" title="联系人2家庭电话" />
+	<field name="linkman2.unitPhone" title="联系人2单位电话" />
+	<field name="linkman3.name" title="联系人3姓名" />
+	<field name="linkman3.cardNo" title="联系人3证件" />
+	<field name="linkman3.relation" title="联系人3关系" />
+	<field name="linkman3.mobile" title="联系人3手机" />
+	<field name="linkman3.familyPhone" title="联系人3家庭电话" />
+	<field name="linkman3.unitPhone" title="联系人3单位电话" />
+	<field name="linkman4.name" title="联系人4姓名" />
+	<field name="linkman4.cardNo" title="联系人4证件" />
+	<field name="linkman4.relation" title="联系人4关系" />
+	<field name="linkman4.mobile" title="联系人4手机" />
+	<field name="linkman4.familyPhone" title="联系人4家庭电话" />
+	<field name="linkman4.unitPhone" title="联系人4单位电话" />
+	<field name="linkman5.name" title="联系人5姓名" />
+	<field name="linkman5.cardNo" title="联系人5证件" />
+	<field name="linkman5.relation" title="联系人5关系" />
+	<field name="linkman5.mobile" title="联系人5手机" />
+	<field name="linkman5.familyPhone" title="联系人5家庭电话" />
+	<field name="linkman5.unitPhone" title="联系人5单位电话" />
+	<field name="linkman6.name" title="联系人6姓名" />
+	<field name="linkman6.cardNo" title="联系人6证件" />
+	<field name="linkman6.relation" title="联系人6关系" />
+	<field name="linkman6.mobile" title="联系人6手机" />
+	<field name="linkman6.familyPhone" title="联系人6家庭电话" />
+	<field name="linkman6.unitPhone" title="联系人6单位电话" />
+	<field name="linkman7.name" title="联系人7姓名" />
+	<field name="linkman7.cardNo" title="联系人7证件" />
+	<field name="linkman7.relation" title="联系人7关系" />
+	<field name="linkman7.mobile" title="联系人7手机" />
+	<field name="linkman7.familyPhone" title="联系人7家庭电话" />
+	<field name="linkman7.unitPhone" title="联系人7单位电话" />
+	<field name="linkman8.name" title="联系人8姓名" />
+	<field name="linkman8.cardNo" title="联系人8证件" />
+	<field name="linkman8.relation" title="联系人8关系" />
+	<field name="linkman8.mobile" title="联系人8手机" />
+	<field name="linkman8.familyPhone" title="联系人8家庭电话" />
+	<field name="linkman8.unitPhone" title="联系人8单位电话" />
+	<field name="linkman9.name" title="联系人9姓名" />
+	<field name="linkman9.cardNo" title="联系人9证件" />
+	<field name="linkman9.relation" title="联系人9关系" />
+	<field name="linkman9.mobile" title="联系人9手机" />
+	<field name="linkman9.familyPhone" title="联系人9家庭电话" />
+	<field name="linkman9.unitPhone" title="联系人9单位电话" />
+	<field name="linkman10.name" title="联系人10姓名" />
+	<field name="linkman10.cardNo" title="联系人10证件" />
+	<field name="linkman10.relation" title="联系人10关系" />
+	<field name="linkman10.mobile" title="联系人10手机" />
+	<field name="linkman10.familyPhone" title="联系人10家庭电话" />
+	<field name="linkman10.unitPhone" title="联系人10单位电话" />
+	<!-- 联系人信息 End -->
+	<!-- 联系人地址信息 -->
+	<field name="linkman1.addressJtzz" title="联系人1家庭住址" />
+	<field name="linkman1.addressHjzz" title="联系人1户籍住址" />
+	<field name="linkman1.addressDwmc" title="联系人1单位名称" />
+	<field name="linkman1.addressDwdz" title="联系人1单位地址" />
+	         
+	<field name="linkman2.addressJtzz" title="联系人2家庭住址" />
+	<field name="linkman2.addressHjzz" title="联系人2户籍住址" />
+	<field name="linkman2.addressDwmc" title="联系人2单位名称" />
+	<field name="linkman2.addressDwdz" title="联系人2单位地址" />
+	           
+	<field name="linkman3.addressJtzz" title="联系人3家庭住址" />
+	<field name="linkman3.addressHjzz" title="联系人3户籍住址" />
+	<field name="linkman3.addressDwmc" title="联系人3单位名称" />
+	<field name="linkman3.addressDwdz" title="联系人3单位地址" />
+	           
+	<field name="linkman4.addressJtzz" title="联系人4家庭住址" />
+	<field name="linkman4.addressHjzz" title="联系人4户籍住址" />
+	<field name="linkman4.addressDwmc" title="联系人4单位名称" />
+	<field name="linkman4.addressDwdz" title="联系人4单位地址" />
+	              
+	<field name="linkman5.addressJtzz" title="联系人5家庭住址" />
+	<field name="linkman5.addressHjzz" title="联系人5户籍住址" />
+	<field name="linkman5.addressDwmc" title="联系人5单位名称" />
+	<field name="linkman5.addressDwdz" title="联系人5单位地址" />
+	                
+	<field name="linkman6.addressJtzz" title="联系人6家庭住址" />
+	<field name="linkman6.addressHjzz" title="联系人6户籍住址" />
+	<field name="linkman6.addressDwmc" title="联系人6单位名称" />
+	<field name="linkman6.addressDwdz" title="联系人6单位地址" />
+	             
+	<field name="linkman7.addressJtzz" title="联系人7家庭住址" />
+	<field name="linkman7.addressHjzz" title="联系人7户籍住址" />
+	<field name="linkman7.addressDwmc" title="联系人7单位名称" />
+	<field name="linkman7.addressDwdz" title="联系人7单位地址" />
+	             
+	<field name="linkman8.addressJtzz" title="联系人8家庭住址" />
+	<field name="linkman8.addressHjzz" title="联系人8户籍住址" />
+	<field name="linkman8.addressDwmc" title="联系人8单位名称" />
+	<field name="linkman8.addressDwdz" title="联系人8单位地址" />
+	             
+	<field name="linkman9.addressJtzz" title="联系人9家庭住址" />
+	<field name="linkman9.addressHjzz" title="联系人9户籍住址" />
+	<field name="linkman9.addressDwmc" title="联系人9单位名称" />
+	<field name="linkman9.addressDwdz" title="联系人9单位地址" />
+	           
+	<field name="linkman10.addressJtzz" title="联系人10家庭住址" />
+	<field name="linkman10.addressHjzz" title="联系人10户籍住址" />
+	<field name="linkman10.addressDwmc" title="联系人10单位名称" />
+	<field name="linkman10.addressDwdz" title="联系人10单位地址" />
+	<!-- 联系人地址信息 END-->
+		</excel>
+	
+	
+	<!-- 银行案件字段配置 -->
+	<excel id="caseBank" class="com.kangde.collection.dto.CaseExcelDto"
+		sheetname="案件信息">
+		<field name="id" title="ID" />
+		<field name="surplusPrincipal" title="剩余本金"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="caseLastMoney" title="最新欠款" isNull="true" />
+		<field name="caseLastDate" title="欠款更新日期" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+		<field name="caseBackdate" title="预计退案日" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+		<field name="caseName" title="姓名" isNull="false" />
+		<field name="caseIsMarriage" title="婚否" />
+		<field name="caseCode" title="案件序列号" isNull="true" />
+		<field name="principal" title="本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="debitAccount" title="扣款账号" />
+		<field name="loanStartdate" title="贷款日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="loanEnddate" title="贷款截止日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="bill" title="账单日" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="loanRate" title="贷款利率" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueDate" title="逾期开始日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="repaymentPeriods" title="已还期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="overduePeriods" title="逾期期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="onceOverduePeriods" title="曾逾期次数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="caseMoney" title="委案金额" isNull="false" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueInterest" title="逾期利息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="caseNum" title="证件号" isNull="false" />
+		<field name="domicile" title="户籍地址" />
+		<field name="familyAddress" title="家庭地址" />
+		<field name="creditId" title="信贷分类" />
+		<field name="overdueMoney" title="逾期金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueDays" title="逾期天数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="overduePeriods" title="曾逾期次数" />
+		<field name="mobile1" title="本人手机1" />
+		<field name="mobile2" title="本人手机2" />
+		<field name="companyName" title="单位名称" />
+		<field name="casePositionLevel" title="职位级别" />
+		<field name="casePosition" title="案人职位" />
+		<field name="companyPhone" title="单位号码" />
+		
+		
+		<field name="startCardDate" title="开卡日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="stopCardDate" title="停卡日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="creditLimit" title="信用额度" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="familyPhone" title="家庭号码" />
+		<field name="companyAddress" title="单位地址" />
+		
+		<!-- 联系人信息 -->
+		<field name="linkman1.name" title="联系人1姓名" />
+		<field name="linkman1.cardNo" title="联系人1证件" />
+		<field name="linkman1.relation" title="联系人1关系" />
+		<field name="linkman1.mobile" title="联系人1手机" />
+		<field name="linkman1.familyPhone" title="联系人1家庭电话" />
+		<field name="linkman1.unitPhone" title="联系人1单位电话" />
+		<field name="linkman2.name" title="联系人2姓名" />
+		<field name="linkman2.cardNo" title="联系人2证件" />
+		<field name="linkman2.relation" title="联系人2关系" />
+		<field name="linkman2.mobile" title="联系人2手机" />
+		<field name="linkman2.familyPhone" title="联系人2家庭电话" />
+		<field name="linkman2.unitPhone" title="联系人2单位电话" />
+		<field name="linkman3.name" title="联系人3姓名" />
+		<field name="linkman3.cardNo" title="联系人3证件" />
+		<field name="linkman3.relation" title="联系人3关系" />
+		<field name="linkman3.mobile" title="联系人3手机" />
+		<field name="linkman3.familyPhone" title="联系人3家庭电话" />
+		<field name="linkman3.unitPhone" title="联系人3单位电话" />
+		<field name="linkman4.name" title="联系人4姓名" />
+		<field name="linkman4.cardNo" title="联系人4证件" />
+		<field name="linkman4.relation" title="联系人4关系" />
+		<field name="linkman4.mobile" title="联系人4手机" />
+		<field name="linkman4.familyPhone" title="联系人4家庭电话" />
+		<field name="linkman4.unitPhone" title="联系人4单位电话" />
+		<field name="linkman5.name" title="联系人5姓名" />
+		<field name="linkman5.cardNo" title="联系人5证件" />
+		<field name="linkman5.relation" title="联系人5关系" />
+		<field name="linkman5.mobile" title="联系人5手机" />
+		<field name="linkman5.familyPhone" title="联系人5家庭电话" />
+		<field name="linkman5.unitPhone" title="联系人5单位电话" />
+		<field name="linkman6.name" title="联系人6姓名" />
+		<field name="linkman6.cardNo" title="联系人6证件" />
+		<field name="linkman6.relation" title="联系人6关系" />
+		<field name="linkman6.mobile" title="联系人6手机" />
+		<field name="linkman6.familyPhone" title="联系人6家庭电话" />
+		<field name="linkman6.unitPhone" title="联系人6单位电话" />
+		<field name="linkman7.name" title="联系人7姓名" />
+		<field name="linkman7.cardNo" title="联系人7证件" />
+		<field name="linkman7.relation" title="联系人7关系" />
+		<field name="linkman7.mobile" title="联系人7手机" />
+		<field name="linkman7.familyPhone" title="联系人7家庭电话" />
+		<field name="linkman7.unitPhone" title="联系人7单位电话" />
+		<field name="linkman8.name" title="联系人8姓名" />
+		<field name="linkman8.cardNo" title="联系人8证件" />
+		<field name="linkman8.relation" title="联系人8关系" />
+		<field name="linkman8.mobile" title="联系人8手机" />
+		<field name="linkman8.familyPhone" title="联系人8家庭电话" />
+		<field name="linkman8.unitPhone" title="联系人8单位电话" />
+		<field name="linkman9.name" title="联系人9姓名" />
+		<field name="linkman9.cardNo" title="联系人9证件" />
+		<field name="linkman9.relation" title="联系人9关系" />
+		<field name="linkman9.mobile" title="联系人9手机" />
+		<field name="linkman9.familyPhone" title="联系人9家庭电话" />
+		<field name="linkman9.unitPhone" title="联系人9单位电话" />
+		<field name="linkman10.name" title="联系人10姓名" />
+		<field name="linkman10.cardNo" title="联系人10证件" />
+		<field name="linkman10.relation" title="联系人10关系" />
+		<field name="linkman10.mobile" title="联系人10手机" />
+		<field name="linkman10.familyPhone" title="联系人10家庭电话" />
+		<field name="linkman10.unitPhone" title="联系人10单位电话" />
+		<!-- 联系人信息 End -->
+		<!-- 联系人地址信息 -->
+		<field name="linkman1.addressJtzz" title="联系人1家庭住址" />
+		<field name="linkman1.addressHjzz" title="联系人1户籍住址" />
+		<field name="linkman1.addressDwmc" title="联系人1单位名称" />
+		<field name="linkman1.addressDwdz" title="联系人1单位地址" />
+		         
+		<field name="linkman2.addressJtzz" title="联系人2家庭住址" />
+		<field name="linkman2.addressHjzz" title="联系人2户籍住址" />
+		<field name="linkman2.addressDwmc" title="联系人2单位名称" />
+		<field name="linkman2.addressDwdz" title="联系人2单位地址" />
+		           
+		<field name="linkman3.addressJtzz" title="联系人3家庭住址" />
+		<field name="linkman3.addressHjzz" title="联系人3户籍住址" />
+		<field name="linkman3.addressDwmc" title="联系人3单位名称" />
+		<field name="linkman3.addressDwdz" title="联系人3单位地址" />
+		           
+		<field name="linkman4.addressJtzz" title="联系人4家庭住址" />
+		<field name="linkman4.addressHjzz" title="联系人4户籍住址" />
+		<field name="linkman4.addressDwmc" title="联系人4单位名称" />
+		<field name="linkman4.addressDwdz" title="联系人4单位地址" />
+		              
+		<field name="linkman5.addressJtzz" title="联系人5家庭住址" />
+		<field name="linkman5.addressHjzz" title="联系人5户籍住址" />
+		<field name="linkman5.addressDwmc" title="联系人5单位名称" />
+		<field name="linkman5.addressDwdz" title="联系人5单位地址" />
+		                
+		<field name="linkman6.addressJtzz" title="联系人6家庭住址" />
+		<field name="linkman6.addressHjzz" title="联系人6户籍住址" />
+		<field name="linkman6.addressDwmc" title="联系人6单位名称" />
+		<field name="linkman6.addressDwdz" title="联系人6单位地址" />
+		             
+		<field name="linkman7.addressJtzz" title="联系人7家庭住址" />
+		<field name="linkman7.addressHjzz" title="联系人7户籍住址" />
+		<field name="linkman7.addressDwmc" title="联系人7单位名称" />
+		<field name="linkman7.addressDwdz" title="联系人7单位地址" />
+		             
+		<field name="linkman8.addressJtzz" title="联系人8家庭住址" />
+		<field name="linkman8.addressHjzz" title="联系人8户籍住址" />
+		<field name="linkman8.addressDwmc" title="联系人8单位名称" />
+		<field name="linkman8.addressDwdz" title="联系人8单位地址" />
+		             
+		<field name="linkman9.addressJtzz" title="联系人9家庭住址" />
+		<field name="linkman9.addressHjzz" title="联系人9户籍住址" />
+		<field name="linkman9.addressDwmc" title="联系人9单位名称" />
+		<field name="linkman9.addressDwdz" title="联系人9单位地址" />
+		           
+		<field name="linkman10.addressJtzz" title="联系人10家庭住址" />
+		<field name="linkman10.addressHjzz" title="联系人10户籍住址" />
+		<field name="linkman10.addressDwmc" title="联系人10单位名称" />
+		<field name="linkman10.addressDwdz" title="联系人10单位地址" />
+		<!-- 联系人地址信息 END-->
+		                                 
+		<field name="monthRepayment" title="每月还款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="lastRepayment" title="最后还款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="bankAccount" title="开户行" />
+		<field name="caseHouseId" title="案人房产类型" />
+		<field name="caseCard" title="卡号" isNull="false" />
+		<field name="overdueAge" title="逾期账龄" />
+		<field name="areaName" title="风控区域" isNull="false"
+			resolveFieldValueConverterName="com.kangde.collection.excel.AreaConverter" />
+		<field name="markId" title="标ID" />
+		<field name="userId" title="用户ID" />
+		<field name="userName" title="用户名" />
+		<field name="loanArea" title="贷款所属地" />
+		<field name="overduePrincipal" title="逾期本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueLoan" title="逾期借款" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="penaltyReference" title="罚息金额" />
+		<field name="overdueExpense" title="逾期管理费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="stayPeriods" title="待还期数" />
+		<field name="stayPrincipal" title="待还本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+		<field name="stayInterest" title="待还利息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="stayExpense" title="待还管理费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="accountMoney" title="账户余额" />
+		<field name="repayDate" title="还款日" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="oldCollecRecord" title="原风控记录" />
+		<field name="regione" title="大区名称" />
+		<field name="subCenter" title="分中心名称" />
+		<field name="salesDep" title="营业部名称" />
+		<field name="quotaManager1" title="客户经理" />
+		<field name="managerPhone" title="客户经理电话" />
+		<field name="contractMoney" title="签约金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="consultFee" title="咨询费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="auditFee" title="审核费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="serviceFee" title="服务费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="adviserFee" title="顾问费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="feeTotal" title="费用总和" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="actualLoanMoney" title="放款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="initialRepay" title="最后还款日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="duePeriods" title="应还期数" />
+		<field name="breach" title="违约金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="penaltyDays" title="日罚息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="remainHistory" title="历史余留" />
+		<field name="debitBankCode" title="扣款账号银行代码" />
+		<field name="debitBankName" title="扣款账号银行名称" />
+		<field name="reliefPolicy" title="减免政策" />
+		<field name="remark1" title="备注" />
+		<!-- 8.4添加 -->
+		<field name="surplusPrincipal" title="剩余本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="entrustRate" title="委托费率" isNull="false" 
+		regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+		<field name="agentRate" title="业绩率" isNull="false" 
+		regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+		<field name="loanMoney" title="贷款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="caseNumId" title="证件类型" />
+		<field name="caseSex" title="性别" />
+		<field name="caseAge" title="年龄" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		
+		<!-- 案件地址 -->
+		<field name="provinceName" title="案件区域-省份"
+			resolveFieldValueConverterName="com.kangde.collection.excel.CaseRegionConverter" />
+		<field name="cityName" title="案件区域-城市" 
+			resolveFieldValueConverterName="com.kangde.collection.excel.CaseRegionConverter" />
+		
+	</excel>
+	<!-- P2P案件字段配置 -->
+	<excel id="caseP2p" class="com.kangde.collection.dto.CaseExcelDto">
+		<field name="id" title="ID" />
+		<field name="surplusPrincipal" title="剩余本金"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="caseBackdate" title="预计退案日" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+		<field name="caseLastDate" title="欠款更新日期" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+		<field name="caseLastMoney" title="最新欠款" isNull="true" />
+		<field name="caseCode" title="案件序列号" isNull="true" />
+		<field name="caseAppNo" title="申请单号" />
+		<field name="socialSecurityNo" title="社保电脑号" />
+		<field name="monthRepayment" title="每月还款金额" uniformStyle="true" />
+		<field name="caseNumId" title="证件类型" />
+		<field name="caseNum" title="证件号" isNull="false" />
+		<field name="userId" title="客户号" />
+		<field name="cusNo" title="客户编号" />
+		<field name="caseFileNo" title="档案号"/>
+		<field name="caseName" title="姓名" isNull="false" />
+		<field name="creditId" title="信贷分类" />
+		<field name="overdueAge" title="逾期账龄" />
+		<field name="overdueDate" title="逾期开始日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="overdueDays" title="逾期天数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="overduePeriods" title="逾期期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="overdueMoney" title="逾期金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="caseMoney" title="委案金额" isNull="false" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="principal" title="本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="loanStartdate" title="贷款日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="loanEnddate" title="贷款截止日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="commodity" title="商品" />
+		<field name="bankAccount" title="开户行" />
+		<field name="caseCard" title="卡号" isNull="false" />
+		<field name="caseSex" title="性别" />
+		<field name="caseAge" title="年龄" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="caseIsMarriage" title="婚否" />
+		<field name="caseBirthday" title="生日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="companyName" title="单位名称" />
+		<field name="companyPhone" title="单位号码" />
+		<field name="companyAddress" title="单位地址" />
+		<field name="companyZipcode" title="单位邮编" />
+		<field name="familyPhone" title="家庭号码" />
+		<field name="mobile1" title="本人手机1" />
+		<field name="mobile2" title="本人手机2" />
+		<field name="familyAddress" title="家庭地址" />
+		<field name="familyZipcode" title="家庭邮编" />
+		<field name="domicile" title="户籍地址" />
+		<!-- 联系人信息 -->
+		<field name="linkman1.name" title="联系人1姓名" />
+		<field name="linkman1.cardNo" title="联系人1证件" />
+		<field name="linkman1.relation" title="联系人1关系" />
+		<field name="linkman1.mobile" title="联系人1手机" />
+		<field name="linkman1.familyPhone" title="联系人1家庭电话" />
+		<field name="linkman1.unitPhone" title="联系人1单位电话" />
+		<field name="linkman2.name" title="联系人2姓名" />
+		<field name="linkman2.cardNo" title="联系人2证件" />
+		<field name="linkman2.relation" title="联系人2关系" />
+		<field name="linkman2.mobile" title="联系人2手机" />
+		<field name="linkman2.familyPhone" title="联系人2家庭电话" />
+		<field name="linkman2.unitPhone" title="联系人2单位电话" />
+		<field name="linkman3.name" title="联系人3姓名" />
+		<field name="linkman3.cardNo" title="联系人3证件" />
+		<field name="linkman3.relation" title="联系人3关系" />
+		<field name="linkman3.mobile" title="联系人3手机" />
+		<field name="linkman3.familyPhone" title="联系人3家庭电话" />
+		<field name="linkman3.unitPhone" title="联系人3单位电话" />
+		<field name="linkman4.name" title="联系人4姓名" />
+		<field name="linkman4.cardNo" title="联系人4证件" />
+		<field name="linkman4.relation" title="联系人4关系" />
+		<field name="linkman4.mobile" title="联系人4手机" />
+		<field name="linkman4.familyPhone" title="联系人4家庭电话" />
+		<field name="linkman4.unitPhone" title="联系人4单位电话" />
+		<field name="linkman5.name" title="联系人5姓名" />
+		<field name="linkman5.cardNo" title="联系人5证件" />
+		<field name="linkman5.relation" title="联系人5关系" />
+		<field name="linkman5.mobile" title="联系人5手机" />
+		<field name="linkman5.familyPhone" title="联系人5家庭电话" />
+		<field name="linkman5.unitPhone" title="联系人5单位电话" />
+		<field name="linkman6.name" title="联系人6姓名" />
+		<field name="linkman6.cardNo" title="联系人6证件" />
+		<field name="linkman6.relation" title="联系人6关系" />
+		<field name="linkman6.mobile" title="联系人6手机" />
+		<field name="linkman6.familyPhone" title="联系人6家庭电话" />
+		<field name="linkman6.unitPhone" title="联系人6单位电话" />
+		<field name="linkman7.name" title="联系人7姓名" />
+		<field name="linkman7.cardNo" title="联系人7证件" />
+		<field name="linkman7.relation" title="联系人7关系" />
+		<field name="linkman7.mobile" title="联系人7手机" />
+		<field name="linkman7.familyPhone" title="联系人7家庭电话" />
+		<field name="linkman7.unitPhone" title="联系人7单位电话" />
+		<field name="linkman8.name" title="联系人8姓名" />
+		<field name="linkman8.cardNo" title="联系人8证件" />
+		<field name="linkman8.relation" title="联系人8关系" />
+		<field name="linkman8.mobile" title="联系人8手机" />
+		<field name="linkman8.familyPhone" title="联系人8家庭电话" />
+		<field name="linkman8.unitPhone" title="联系人8单位电话" />
+		<field name="linkman9.name" title="联系人9姓名" />
+		<field name="linkman9.cardNo" title="联系人9证件" />
+		<field name="linkman9.relation" title="联系人9关系" />
+		<field name="linkman9.mobile" title="联系人9手机" />
+		<field name="linkman9.familyPhone" title="联系人9家庭电话" />
+		<field name="linkman9.unitPhone" title="联系人9单位电话" />
+		<field name="linkman10.name" title="联系人10姓名" />
+		<field name="linkman10.cardNo" title="联系人10证件" />
+		<field name="linkman10.relation" title="联系人10关系" />
+		<field name="linkman10.mobile" title="联系人10手机" />
+		<field name="linkman10.familyPhone" title="联系人10家庭电话" />
+		<field name="linkman10.unitPhone" title="联系人10单位电话" />
+		<!-- 联系人信息 End -->
+		
+		<!-- 联系人地址信息 -->
+		<field name="linkman1.addressJtzz" title="联系人1家庭住址" />
+		<field name="linkman1.addressHjzz" title="联系人1户籍住址" />
+		<field name="linkman1.addressDwmc" title="联系人1单位名称" />
+		<field name="linkman1.addressDwdz" title="联系人1单位地址" />
+		         
+		<field name="linkman2.addressJtzz" title="联系人2家庭住址" />
+		<field name="linkman2.addressHjzz" title="联系人2户籍住址" />
+		<field name="linkman2.addressDwmc" title="联系人2单位名称" />
+		<field name="linkman2.addressDwdz" title="联系人2单位地址" />
+		           
+		<field name="linkman3.addressJtzz" title="联系人3家庭住址" />
+		<field name="linkman3.addressHjzz" title="联系人3户籍住址" />
+		<field name="linkman3.addressDwmc" title="联系人3单位名称" />
+		<field name="linkman3.addressDwdz" title="联系人3单位地址" />
+		           
+		<field name="linkman4.addressJtzz" title="联系人4家庭住址" />
+		<field name="linkman4.addressHjzz" title="联系人4户籍住址" />
+		<field name="linkman4.addressDwmc" title="联系人4单位名称" />
+		<field name="linkman4.addressDwdz" title="联系人4单位地址" />
+		              
+		<field name="linkman5.addressJtzz" title="联系人5家庭住址" />
+		<field name="linkman5.addressHjzz" title="联系人5户籍住址" />
+		<field name="linkman5.addressDwmc" title="联系人5单位名称" />
+		<field name="linkman5.addressDwdz" title="联系人5单位地址" />
+		                
+		<field name="linkman6.addressJtzz" title="联系人6家庭住址" />
+		<field name="linkman6.addressHjzz" title="联系人6户籍住址" />
+		<field name="linkman6.addressDwmc" title="联系人6单位名称" />
+		<field name="linkman6.addressDwdz" title="联系人6单位地址" />
+		             
+		<field name="linkman7.addressJtzz" title="联系人7家庭住址" />
+		<field name="linkman7.addressHjzz" title="联系人7户籍住址" />
+		<field name="linkman7.addressDwmc" title="联系人7单位名称" />
+		<field name="linkman7.addressDwdz" title="联系人7单位地址" />
+		             
+		<field name="linkman8.addressJtzz" title="联系人8家庭住址" />
+		<field name="linkman8.addressHjzz" title="联系人8户籍住址" />
+		<field name="linkman8.addressDwmc" title="联系人8单位名称" />
+		<field name="linkman8.addressDwdz" title="联系人8单位地址" />
+		             
+		<field name="linkman9.addressJtzz" title="联系人9家庭住址" />
+		<field name="linkman9.addressHjzz" title="联系人9户籍住址" />
+		<field name="linkman9.addressDwmc" title="联系人9单位名称" />
+		<field name="linkman9.addressDwdz" title="联系人9单位地址" />
+		           
+		<field name="linkman10.addressJtzz" title="联系人10家庭住址" />
+		<field name="linkman10.addressHjzz" title="联系人10户籍住址" />
+		<field name="linkman10.addressDwmc" title="联系人10单位名称" />
+		<field name="linkman10.addressDwdz" title="联系人10单位地址" />
+		<!-- 联系人地址信息 END-->
+		
+		
+		<field name="accountNo" title="账号" />
+		<field name="loanContract" title="贷款合同号" />
+		<field name="isVerify" title="是否核销" format="1:是,0:否" />
+		<field name="verifyDate" title="核销日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="repaymentType" title="还款方式" />
+		<field name="protocolNo" title="协议编号" />
+		<field name="loanArea" title="放款所属地" />
+		<field name="areaName" title="风控区域" isNull="false"
+			resolveFieldValueConverterName="com.kangde.collection.excel.AreaConverter" />
+		<field name="oldCollecRecord" title="原风控记录" />
+		<field name="overduePrincipal" title="逾期本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overduePrincipalBalance" title="逾期本金余额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueInterest" title="逾期利息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overduePenalty" title="逾期罚息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueCompound" title="逾期复利" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="interestMoney" title="欠息余额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="penaltyReference" title="罚息参照" />
+		<field name="compoundInterestReference" title="复息参照" />
+		<field name="quotaNo" title="根额度编号" />
+		<field name="quotaManager1" title="(根额度)主办客户经理" />
+		<field name="managerPhone" title="客户经理电话" />
+		<field name="quotaManager2" title="(根额度)协办客户经理" />
+		<field name="collateralNo" title="押品编号" />
+		<field name="collateralId" title="押品类型" />
+		<field name="collateralName" title="押品名称" />
+		<field name="collateralAddress" title="押品地址" />
+		<field name="collateralEvalua" title="押品评估值" />
+		<field name="totalConstruc" title="建筑面积合计" />
+		<field name="repayDate" title="还款日" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="remark1" title="备注1" />
+		<!-- 8.4添加 -->
+		<field name="surplusPrincipal" title="剩余本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="entrustRate" title="委托费率" isNull="false" 
+		regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="agentRate" title="业绩率" isNull="false"  
+		regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+		<field name="loanMoney" title="贷款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<!-- 案件地址 -->
+		<field name="provinceName" title="案件区域-省份"
+			resolveFieldValueConverterName="com.kangde.collection.excel.CaseRegionConverter" />
+		<field name="cityName" title="案件区域-城市"
+			resolveFieldValueConverterName="com.kangde.collection.excel.CaseRegionConverter" />
+			
+			<field name="bill" title="账单日"  regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+			<field name="startCardDate" title="开卡日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+			<field name="stopCardDate" title="停卡日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+			<field name="initialRepay" title="最后还款日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+			<field name="lastRepayment" title="最后还款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+			<field name="creditLimit" title="信用额度" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	</excel>
+
+	<!-- 案件字段配置 -->
+	<excel id="phoneRecord" class="com.kangde.collection.model.PhoneRecordModel"
+		sheetname="案件信息">
+		<field name="name" title="姓名" uniformStyle="true" />
+		<field name="createTime" title="创建时间" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="prCat" title="措施" uniformStyle="true" resolveFieldValueConverterName="com.kangde.collection.excel.DictionaryConverter" otherConfig="OPER_TYPE"/>
+		<field name="contact" title="电话" uniformStyle="true" />
+		<field name="relation" title="关系" uniformStyle="true" />
+		<field name="collecStateId" title="风控状态" uniformStyle="true" resolveFieldValueConverterName="com.kangde.collection.excel.DictionaryConverter" otherConfig="COLLECTION_STATE"/>
+		<field name="content" title="记录" uniformStyle="true" />
+		<field name="employeeInfo.userName" title="风控员" uniformStyle="true" />
+	</excel>
+
+	<!-- 案件字段配置 -->
+	<excel id="caseInFoView" class="com.kangde.collection.model.CaseModel"
+		sheetname="案件信息">
+		<field name="caseCode" title="案件序列号" uniformStyle="true" />
+		<field name="overdueAge" title="逾期账龄" uniformStyle="true" />
+		<field name="overduePeriods" title="逾期期数" uniformStyle="true" />
+		<field name="repaymentPeriods" title="已还期数" uniformStyle="true" />
+		<field name="interestMoney" title="欠息余额" uniformStyle="true" />
+		<field name="caseName" title="姓名" uniformStyle="true" />
+		<field name="caseNum" title="证件号" uniformStyle="true" />
+		<field name="overdueMoney" title="逾期金额" uniformStyle="true" />
+		<field name="overdueDays" title="逾期天数" uniformStyle="true" />
+		<field name="stayPeriods" title="待还期数" uniformStyle="true" />
+		<field name="penaltyReference" title="罚息参照" uniformStyle="true" />
+		<field name="compoundInterestReference" title="复息参照" uniformStyle="true" />
+		<field name="overdueLoan" title="逾期借款" uniformStyle="true" />
+		<field name="stayInterest" title="待还利息" uniformStyle="true" />
+		<field name="lastRepayment" title="最后还款金额" uniformStyle="true" />
+		<field name="areaName" title="风控区域" uniformStyle="true" />
+		<field name="caseMoney" title="委案金额" uniformStyle="true" />
+		<field name="caseBackdate" title="预计退案日" uniformStyle="true" pattern="yyyy/MM/dd" />
+	</excel>
+
+	<!-- 案件查询视图 -->
+	<excel id="caseViewDto" class="com.kangde.collection.dto.CaseViewDto"
+		sheetname="案件信息列表" defaultColumnWidth="5000" enableStyle="true"
+		defaultAlign="left">
+		<field name="cpTime" title="CP日期" uniformStyle="true" pattern="yyyy/MM/dd" />
+		<field name="lastPhone" title="最后通电时间" uniformStyle="true" pattern="yyyy/MM/dd" />
+		<field name="lateFee" title="滞纳金" uniformStyle="true" />
+		
+		<field name="surplusPrincipal" title="剩余本金" uniformStyle="true" />
+		<field name="domicile" title="户籍地址" uniformStyle="true" />
+		
+		<field name="number" title="型号" uniformStyle="true" />
+		<field name="vinNo" title="车架号" uniformStyle="true" />
+		<field name="liceNo" title="车牌号" uniformStyle="true" />
+		<field name="brand" title="品牌" uniformStyle="true" />
+		
+		<field name="familyAddress" title="家庭地址" uniformStyle="true" />
+		<field name="familyPhone" title="家庭电话" uniformStyle="true" />
+		<field name="companyAddress" title="单位地址" uniformStyle="true" />
+		<field name="companyPhone" title="单位电话" uniformStyle="true" />
+		
+		
+		<field name="id" title="ID" uniformStyle="true" />
+		<field name="batchCode" title="批次号" uniformStyle="true" />
+		<field name="caseAssignedName" title="风控人姓名" uniformStyle="true" />
+		<field name="surplusMoney" title="剩余还款" uniformStyle="true" />
+		<field name="ptpMoney" title="PTP承诺还款金额" uniformStyle="true" />
+		<field name="cpMoney" title="CP待确认还款金额" uniformStyle="true" />
+		<field name="paidNum" title="已还款" uniformStyle="true" />
+		<field name="entrustName" title="委托方名称" uniformStyle="true" />
+		<field name="caseCode" title="案件序列号" uniformStyle="true" />
+		<field name="collecStateId" title="风控状态" uniformStyle="true" format="25:暂停催收,26:要求退案 ,27:中本人,28:中家人,29:中第三人,30:失联（其他）,31:承诺,32:疑似欺诈,33:失联（停机、空号、关机、嘟嘟）,34:涉案,87:失联（长期无人接听）,88:谈判,0:新案" />
+		<field name="batchId" title="批次ID" uniformStyle="true" />
+		<field name="caseDate" title="委案日期" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="caseBackdate" title="预计退案日" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="cusNo" title="客户编号" uniformStyle="true" />
+		<field name="userId" title="用户ID" uniformStyle="true" />
+		<field name="accountNo" title="账号" uniformStyle="true" />
+		<field name="caseAppNo" title="申请单号" uniformStyle="true" />
+		<field name="caseFileNo" title="档案号" uniformStyle="true" />
+		<field name="caseName" title="姓名" uniformStyle="true" />
+		<field name="caseSex" title="性别" uniformStyle="true" />
+		<field name="caseIsMarriage" title="婚否" uniformStyle="true" />
+		<field name="caseBirthday" title="生日" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="caseAge" title="年龄" uniformStyle="true" />
+		<field name="areaId" title="风控区域ID" uniformStyle="true" />
+		<field name="areaName" title="风控区域名称" uniformStyle="true" />
+		<field name="bankAccount" title="开户行" uniformStyle="true" />
+		<field name="caseHouseId" title="案人房产类型" uniformStyle="true" />
+		<field name="caseCard" title="卡号" uniformStyle="true" />
+		<field name="caseNum" title="证件号" uniformStyle="true" />
+		<field name="caseNumId" title="证件类型" uniformStyle="true" />
+		<field name="casePosition" title="职位" uniformStyle="true" />
+		<field name="casePositionLevel" title="职位级别" uniformStyle="true" />
+		<field name="accountName" title="账号名" uniformStyle="true" />
+		<field name="lendInstitution" title="放款机构" uniformStyle="true" />
+		<field name="oldCollecRecord" title="原风控记录" uniformStyle="true" />
+		<field name="principal" title="本金" uniformStyle="true" />
+		<field name="surplusPrincipal" title="剩余本金" uniformStyle="true" />
+		<field name="caseMoney" title="委案金额" uniformStyle="true" />
+		<field name="loanContract" title="贷款合同号" uniformStyle="true" />
+		<field name="loanMoney" title="贷款金额" uniformStyle="true" />
+		<field name="loanRate" title="贷款利率" uniformStyle="true" />
+		<field name="loanStartdate" title="贷款日期" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="loanEnddate" title="贷款截止日期" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="contractMoney" title="签约金额" uniformStyle="true" />
+		<field name="overdueMoney" title="逾期金额" uniformStyle="true" />
+		<field name="overduePrincipal" title="逾期本金" uniformStyle="true" />
+		<field name="breach" title="违约金" uniformStyle="true" />
+		<field name="overdueExpense" title="逾期管理费" uniformStyle="true" />
+		<field name="overdueAge" title="逾期账龄" uniformStyle="true" />
+		<field name="overduePenalty" title="逾期罚息" uniformStyle="true" />
+		<field name="overdueInterest" title="逾期利息" uniformStyle="true" />
+		<field name="overdueDays" title="逾期天数" uniformStyle="true" />
+		<field name="overdueDate" title="逾期开始日期" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="overduePeriods" title="逾期期数" uniformStyle="true" />
+		<field name="onceOverduePeriods" title="曾逾期期数" uniformStyle="true" />
+		<field name="overdueLoan" title="逾期借款" uniformStyle="true" />
+		<field name="overduePrincipalBalance" title="逾期本金余额"
+			uniformStyle="true" />
+		<field name="overdueCompound" title="逾期复利" uniformStyle="true" />
+		<field name="socialSecurityNo" title="社保电脑号" uniformStyle="true" />
+		<field name="agentRate" title="业绩率" uniformStyle="true" />
+		<field name="entrustRate" title="委托费率" uniformStyle="true" />
+		<field name="creditId" title="信贷分类" uniformStyle="true" />
+		<field name="stayPeriods" title="贷还期数" uniformStyle="true" />
+		<field name="monthRepayment" title="每月还款金额" uniformStyle="true" />
+		<field name="lastRepayment" title="最后还款金额" uniformStyle="true" />
+		<field name="stayPrincipal" title="待还本金" uniformStyle="true" />
+		<field name="stayExpense" title="待还管理费" uniformStyle="true" />
+		<field name="stayInterest" title="待还利息" uniformStyle="true" />
+		<field name="bill" title="账单日" uniformStyle="true" />
+		<field name="repaymentPeriods" title="已还期数" uniformStyle="true" />
+		<field name="commodity" title="商品" uniformStyle="true" />
+		<field name="companyName" title="单位名称" uniformStyle="true" />
+		<field name="companyPhone" title="单位号码" uniformStyle="true" />
+		<field name="companyAddress" title="单位地址" uniformStyle="true" />
+		<field name="companyZipcode" title="单位邮编" uniformStyle="true" />
+		<field name="mobile1" title="本人手机1" uniformStyle="true" />
+		<field name="mobile2" title="本人手机2" uniformStyle="true" />
+		<field name="familyPhone" title="家庭号码" uniformStyle="true" />
+		<field name="familyAddress" title="家庭地址" uniformStyle="true" />
+		<field name="familyZipcode" title="家庭邮编" uniformStyle="true" />
+		<field name="domicile" title="户籍地址" uniformStyle="true" />
+		<field name="markId" title="标ID" uniformStyle="true" />
+		<field name="userName" title="用户名" uniformStyle="true" />
+		<field name="isVerify" title="是否核销" uniformStyle="true" format="0:未核销,1:已核销" />
+		<field name="verifyDate" title="核销日期" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="repaymentType" title="还款方式" uniformStyle="true" />
+		<field name="protocolNo" title="协议编号" uniformStyle="true" />
+		<field name="loanArea" title="放款所属地" uniformStyle="true" />
+		<field name="actualLoanMoney" title="实际-放款金额" uniformStyle="true" />
+		<field name="interestMoney" title="欠息余额" uniformStyle="true" />
+		<field name="penaltyReference" title="罚息参照" uniformStyle="true" />
+		<field name="compoundInterestReference" title="复息参照"
+			uniformStyle="true" />
+		<field name="quotaNo" title="根额度编号" uniformStyle="true" />
+		<field name="quotaManager1" title="根额度主办人客户经理" uniformStyle="true" />
+		<field name="quotaManager2" title="根额度协办人客户经理" uniformStyle="true" />
+		<field name="managerPhone" title="客户经理电话" uniformStyle="true" />
+		<field name="collateralNo" title="押品编号" uniformStyle="true" />
+		<field name="collateralId" title="押品类型ID" uniformStyle="true" />
+		<field name="collateralName" title="押品名称" uniformStyle="true" />
+		<field name="collateralAddress" title="押品地址" uniformStyle="true" />
+		<field name="collateralEvalua" title="押品评估值" uniformStyle="true" />
+		<field name="repayDate" title="还款日" uniformStyle="true" />
+		<field name="totalConstruc" title="建筑面积合计" uniformStyle="true" />
+		<field name="regione" title="大区名称" uniformStyle="true" />
+		<field name="subCenter" title="分中心名称" uniformStyle="true" />
+		<field name="salesDep" title="营业部名称" uniformStyle="true" />
+		<field name="consultFee" title="咨询费" uniformStyle="true" />
+		<field name="auditFee" title="审核费" uniformStyle="true" />
+		<field name="serviceFee" title="服务费" uniformStyle="true" />
+		<field name="adviserFee" title="顾问费" uniformStyle="true" />
+		<field name="feeTotal" title="费用总和" uniformStyle="true" />
+		<field name="initialRepay" title="起始还款日" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="duePeriods" title="应还期数" uniformStyle="true" />
+		<field name="penaltyDays" title="日罚息" uniformStyle="true" />
+		<field name="remainHistory" title="历史遗留" uniformStyle="true" />
+		<field name="debitBankCode" title="扣款银行代码" uniformStyle="true" />
+		<field name="debitBankName" title="扣款银行名称" uniformStyle="true" />
+		<field name="reliefPolicy" title="减免政策" uniformStyle="true" />
+		<field name="remark1" title="备注1" uniformStyle="true" />
+		<field name="remark2" title="备注2" uniformStyle="true" />
+		<field name="caseAssignedId" title="被分配人ID" uniformStyle="true" />
+		<field name="caseAssignId" title="分配人ID" uniformStyle="true" />
+		<field name="caseAssignName" title="分配人名称" uniformStyle="true" />
+		<field name="caseAssignTime" title="分配时间" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="accountMoney" title="账户余额" uniformStyle="true" />
+		<field name="debitAccount" title="扣款账号" uniformStyle="true" />
+		<field name="orgId" title="风控方id" uniformStyle="true" />
+		<field name="orgName" title="风控方名称" uniformStyle="true" />
+		<field name="nextFollowTime" title="下次跟进时间" uniformStyle="true"
+			pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="nextFollowState" title="下次跟进状态" uniformStyle="true"
+			format="1:电话风控,2:外访风控" />
+		<field name="isUpdate" title="是否更新" uniformStyle="true" format="1:是,0:否" />
+		<field name="remainMoney" title="剩余金额" uniformStyle="true" />
+		<!-- <field name="modifyEmpId" title="modifyEmpId" uniformStyle="true"/> 
+			<field name="createEmpId" title="createEmpId" uniformStyle="true"/> -->
+		<field name="state" title="案件状态" uniformStyle="true" format="0:正常,1:暂停,3:退案,4:结清,5:撤回" />
+		<!-- <field name="createTime" title="createTime" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/> 
+			<field name="modifyTime" title="modifyTime" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/> -->
+		<field name="achieve" title="业绩率" uniformStyle="true"/>
+	</excel>
+
+	<excel id="helpmedto" class="com.kangde.collection.dto.HelpMeDto">
+		<field name="id" title="协催ID" uniformStyle="true" />
+		<field name="applyType" title="协催类型"   align="left" format="4:HJ,6:SHB,12:YYS,15:KD"/>
+		<field name="caseModel.caseCode" title="案件序列号" uniformStyle="true" />
+		<field name="caseModel.caseName" title="姓名"  uniformStyle="true" />
+		<field name="caseModel.caseNum" title="证件号"  uniformStyle="true" />
+		<field name="caseCarLoanModel.liceNo" title="车牌号"  uniformStyle="true" />
+		<field name="applyContent" title="申请内容"  uniformStyle="true" />
+		<field name="caseModel.caseDate" title="委案日期"  uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="caseModel.caseMoney" title="委案金额"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="surplusMoney" title="已还款"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="employeeInfoModel.userName" title="风控员"  uniformStyle="true" />
+		<field name="entrustModel.name" title="委托方"  uniformStyle="true" />
+		<field name="appTime" title="申请日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="caseModel.collecStateId" title="风控状态"  uniformStyle="true" format="25:暂停催收,26:要求退案 ,27:中本人,28:中家人,29:中第三人,30:失联（其他）,31:承诺,32:疑似欺诈,33:失联（停机、空号、关机、嘟嘟）,34:涉案,87:失联（长期无人接听）,88:谈判,0:新案" />
+		
+		<field name="isNull" title="户籍地址"  uniformStyle="true" />
+		<field name="isNull" title="住址"  uniformStyle="true" />
+		<field name="isNull" title="婚姻状态"  uniformStyle="true" />
+		<field name="isNull" title="配偶姓名"  uniformStyle="true" />
+		<field name="isNull" title="文化程度 "  uniformStyle="true" />
+		<field name="isNull" title="职业 "  uniformStyle="true" />
+		<field name="isNull" title="家庭电话 "  uniformStyle="true" />
+		<field name="isNull" title="手机号 "  uniformStyle="true" />
+		<field name="isNull" title="同户人员1 "  uniformStyle="true" />
+		<field name="isNull" title="关系1"  uniformStyle="true" />
+		<field name="isNull" title="证件号1 "  uniformStyle="true" />
+		<field name="isNull" title="同户人员2 "  uniformStyle="true" />
+		<field name="isNull" title="关系2 "  uniformStyle="true" />
+		<field name="isNull" title="证件号2 "  uniformStyle="true" />
+		<field name="isNull" title="备注 "  uniformStyle="true" />
+	</excel>
+	
+	<excel id="helpmedtoSheBao" class="com.kangde.collection.dto.HelpMeDto">
+		<field name="id" title="协催ID" uniformStyle="true" />
+		<field name="applyType" title="协催类型"   align="left" format="4:HJ,6:SHB,12:YYS,15:KD"/>
+		<field name="caseModel.caseCode" title="案件序列号" uniformStyle="true" />
+		<field name="caseModel.caseName" title="姓名"  uniformStyle="true" />
+		<field name="caseModel.caseNum" title="证件号"  uniformStyle="true" />
+		<field name="applyContent" title="申请内容"  uniformStyle="true" />
+		<field name="caseCarLoanModel.liceNo" title="车牌号"  uniformStyle="true" />
+			<field name="caseModel.caseDate" title="委案日期"  uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="caseModel.caseMoney" title="委案金额"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="surplusMoney" title="已还款"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="employeeInfoModel.userName" title="风控员"  uniformStyle="true" />
+		<field name="entrustModel.name" title="委托方"  uniformStyle="true" />
+		<field name="appTime" title="申请日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="caseModel.collecStateId" title="风控状态"  uniformStyle="true" format="25:暂停催收,26:要求退案 ,27:中本人,28:中家人,29:中第三人,30:失联（其他）,31:承诺,32:疑似欺诈,33:失联（停机、空号、关机、嘟嘟）,34:涉案,87:失联（长期无人接听）,88:谈判,0:新案" />
+		
+		<field name="isNull" title="单位名称"  uniformStyle="true" />
+		<field name="isNull" title="单位地址"  uniformStyle="true" />
+		<field name="isNull" title="单位电话1"  uniformStyle="true" />
+		<field name="isNull" title="单位电话2"  uniformStyle="true" />
+		<field name="isNull" title="联系人 "  uniformStyle="true" />
+		<field name="isNull" title="电话 "  uniformStyle="true" />
+		<field name="isNull" title="最后续费日期 "  uniformStyle="true" />
+		<field name="isNull" title="备注 "  uniformStyle="true" />
+	</excel>
+	
+		<excel id="helpmedtoDianXin" class="com.kangde.collection.dto.HelpMeDto">
+		<field name="id" title="协催ID" uniformStyle="true" />
+		<field name="applyType" title="协催类型"   align="left" format="4:HJ,6:SHB,12:YYS,15:KD"/>
+		<field name="caseModel.caseCode" title="案件序列号" uniformStyle="true" />
+		<field name="caseModel.caseName" title="姓名"  uniformStyle="true" />
+		<field name="caseModel.caseNum" title="证件号"  uniformStyle="true" />
+		<field name="applyContent" title="申请内容"  uniformStyle="true" />
+		<field name="caseCarLoanModel.liceNo" title="车牌号"  uniformStyle="true" />
+		<field name="caseModel.caseDate" title="委案日期"  uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="caseModel.caseMoney" title="委案金额"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="surplusMoney" title="已还款"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="employeeInfoModel.userName" title="风控员"  uniformStyle="true" />
+		<field name="entrustModel.name" title="委托方"  uniformStyle="true" />
+		<field name="appTime" title="申请日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="caseModel.collecStateId" title="风控状态"  uniformStyle="true" format="25:暂停催收,26:要求退案 ,27:中本人,28:中家人,29:中第三人,30:失联（其他）,31:承诺,32:疑似欺诈,33:失联（停机、空号、关机、嘟嘟）,34:涉案,87:失联（长期无人接听）,88:谈判,0:新案" />
+		
+		<field name="isNull" title="手机号"  uniformStyle="true" />
+		<field name="isNull" title="运营商"  uniformStyle="true" />
+		<field name="isNull" title="状态"  uniformStyle="true" />
+		<field name="isNull" title="宽带号"  uniformStyle="true" />
+		<field name="isNull" title="网络提供商 "  uniformStyle="true" />
+		<field name="isNull" title="状态 "  uniformStyle="true" />
+		<field name="isNull" title="户籍地址 "  uniformStyle="true" />
+		<field name="isNull" title="住址 "  uniformStyle="true" />
+		<field name="isNull" title="联系人1"  uniformStyle="true" />
+		<field name="isNull" title="关系1"  uniformStyle="true" />
+		<field name="isNull" title="证件号1"  uniformStyle="true" />
+		<field name="isNull" title="联系人2"  uniformStyle="true" />
+		<field name="isNull" title="关系2"  uniformStyle="true" />
+		<field name="isNull" title="证件号2"  uniformStyle="true" />
+		<field name="isNull" title="备注 "  uniformStyle="true" />
+	</excel>
+	
+	<excel id="helpmedtoKuaiDi" class="com.kangde.collection.dto.HelpMeDto">
+		<field name="id" title="协催ID" uniformStyle="true" />
+		<field name="applyType" title="协催类型"   align="left" format="4:HJ,6:SHB,12:YYS,15:KD"/>
+		<field name="caseModel.caseCode" title="案件序列号" uniformStyle="true" />
+		<field name="caseModel.caseName" title="姓名"  uniformStyle="true" />
+		<field name="caseModel.caseNum" title="证件号"  uniformStyle="true" />
+		<field name="applyContent" title="申请内容"  uniformStyle="true" />
+		<field name="caseCarLoanModel.liceNo" title="车牌号"  uniformStyle="true" />
+		<field name="caseModel.caseDate" title="委案日期"  uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="caseModel.caseMoney" title="委案金额"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="surplusMoney" title="已还款"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="employeeInfoModel.userName" title="风控员"  uniformStyle="true" />
+		<field name="entrustModel.name" title="委托方"  uniformStyle="true" />
+		
+		<field name="isNull" title="历史用户名"  uniformStyle="true" />
+		<field name="isNull" title="手机"  uniformStyle="true" />
+		<field name="isNull" title="家庭电话"  uniformStyle="true" />
+		<field name="isNull" title="家庭地址"  uniformStyle="true" />
+		<field name="isNull" title="邮箱"  uniformStyle="true" />
+		<field name="isNull" title="qq"  uniformStyle="true" />
+		<field name="isNull" title="qq群"  uniformStyle="true" />
+		<field name="isNull" title="微信"  uniformStyle="true" />
+		<field name="isNull" title="微博"  uniformStyle="true" />
+		<field name="isNull" title="收货人姓名"  uniformStyle="true" />
+		<field name="isNull" title="收货人电话"  uniformStyle="true" />
+		<field name="isNull" title="收货人地址"  uniformStyle="true" />
+		<field name="isNull" title="单位名称"  uniformStyle="true" />
+		<field name="isNull" title="单位地址"  uniformStyle="true" />
+		<field name="isNull" title="单位电话"  uniformStyle="true" />
+		<field name="isNull" title="重要联系人名称"  uniformStyle="true" />
+		<field name="isNull" title="重要联系人电话"  uniformStyle="true" />
+		<field name="isNull" title="重要联系人地址"  uniformStyle="true" />
+		<field name="isNull" title="重要联系人身份证号"  uniformStyle="true" />
+		<field name="isNull" title="联系人名称"  uniformStyle="true" />
+		<field name="isNull" title="联系人电话"  uniformStyle="true" />
+		<field name="isNull" title="联系人身份证"  uniformStyle="true" />
+		<field name="isNull" title="联系人地址"  uniformStyle="true" />
+		<field name="isNull" title="联系人工作单位"  uniformStyle="true" />
+		<field name="isNull" title="获取时间"  uniformStyle="true" />
+		<field name="isNull" title="备注"  uniformStyle="true" />
+	</excel>
+	
+	<excel id="controllerMessageDto" class="com.kangde.collection.dto.ControllerMessageDto" sheetname="催记表">
+		<field name="casemodel.surplusPrincipal" title="剩余本金" align="left"  decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="casemodel.remark1" title="备注1" align="left"  />
+		<field name="casemodel.remark2" title="备注2" align="left"  />
+		<field name="casemodel.accountNo" title="账号" align="left" uniformStyle="true" />
+		<field name="casemodel.cusNo" title="客户编号" align="left" uniformStyle="true" />
+		<field name="casemodel.caseFileNo" title="档案号" align="left" uniformStyle="true" />
+		<field name="casemodel.caseCard" title="卡号" align="left" uniformStyle="true" />
+		<field name="casemodel.userName" title="用户名" align="left" uniformStyle="true" />
+		<field name="casemodel.state" title="案件状态" align="left" uniformStyle="true"  format="0:正常,1:暂停,2:关闭,3:退案,4:结清,5:撤回" />
+		
+		<field name="prCat" title="风控方式" align="left" uniformStyle="true" format="0:电话催收,1:外访,2:信函,3:辅助渠道" />
+		
+		<field name="casemodel.caseCode" title="案件序列号" align="left" uniformStyle="true" />
+		<field name="casemodel.caseName" title="姓名" align="left" uniformStyle="true" />
+		<field name="createTime" title="时间" align="left" uniformStyle="true" pattern="yyyy/MM/dd/hh:mm:ss" />
+		<field name="name" title="对象姓名" align="left" uniformStyle="true" />
+		<field name="relation" title="关系" align="left" uniformStyle="true" />
+		<field name="contact" title="电话/地址" align="left" uniformStyle="true" />
+		<field name="typeId" title="风控结果" align="left" uniformStyle="true" format="36:可联本人,37:可联第三人,35:无效电话,38:可联家人,39:可联村委,40:网搜无效,41:114查询无效,69:电话不通,70:空号,71:暂时无法接听,72:进入语音邮箱提醒,73:通话中,74:不在服务区,75:暂停服务,76:占线,77:挂断,78:关机,79:查找,80:其他" />
+		<field name="content" title="风控记录" align="left" uniformStyle="true" />
+		<field name="collecStateId" title="风控状态" align="left" uniformStyle="true" format="25:暂停风控,26:要求退案,27:中本人,28:中家人,29:中第三人,30:失联（其他）,31:承诺,32:疑似欺诈,33:失联（停机、空号、关机、嘟嘟）,34:涉案,87:失联（长期无人接听）,88:谈判,0:新案"/>
+		<field name="ptpTime" title="PTP日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="ptpMoney" title="PTP金额" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="employeeInfoModel.userName" title="风控员" align="left" uniformStyle="true" />
+		
+		<field name="casemodel.caseNum" title="证件号" align="left" uniformStyle="true" />
+		<field name="casemodel.loanContract" title="贷款合同号" align="left" uniformStyle="true" />
+		<field name="casemodel.caseFileNo" title="档案号" align="left" uniformStyle="true" />
+		<field name="casemodel.overdueDays" title="逾期天数" align="left" uniformStyle="true" />
+		<field name="casemodel.markId" title="标ID" align="left" uniformStyle="true" />
+		
+		<field name="casemodel.caseDate" title="委案日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="casemodel.caseBackdate" title="退案日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="casemodel.overdueMoney" title="逾期金额" align="left" uniformStyle="true" />
+		
+		
+		<!-- <field name="casePaidModel.cpMoney" title="CP金额" align="left" uniformStyle="true"  decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="casePaidModel.cpTime" title="CP日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd" /> -->
+		<field name="casemodel.overdueAge" title="账龄" align="left" uniformStyle="true" />
+		<field name="casemodel.caseMoney" title="委案金额" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="batchmodel.batchCode" title="批次号" align="left" uniformStyle="true" />
+		<field name="casemodel.caseAppNo" title="申请单号" align="left" uniformStyle="true" />
+		<field name="casemodel.commodity" title="商品" align="left" uniformStyle="true" />
+		<field name="contact" title="电话/地址" align="left" uniformStyle="true" />
+		
+	</excel>
+	
+	<!-- 待处理协催导入户籍 -->
+	<excel id="caseApplyDto" class="com.kangde.collection.dto.CaseApplyDto" sheetname="协催表" defaultColumnWidth="5000" enableStyle="true">
+		<!-- 协催表 -->
+		<field name="id"        title="协催ID"   align="left" uniformStyle="true" isNull="false" />
+		<field name="applyType" title="协催类型"   align="left" uniformStyle="true"  format="4:HJ,6:SHB,12:YYS,15:KD"/>
+		<!-- 案件表 -->
+		<field name="caseCode"  title="案件序列号"  align="left" uniformStyle="true"/>
+		<field name="caseName"  title="姓名"      align="left" uniformStyle="true"/>
+		<field name="caseNum"	  title="证件号"     align="left" uniformStyle="true"/>
+		
+		<!-- 户籍 -->
+		<field name="caseApplyId" title="协催申请ID" align="left" uniformStyle="true"/>
+		<field name="crAddress"   title="户籍地址"   align="left" uniformStyle="true"/>
+		<field name="address" 	  title="住址"      align="left" uniformStyle="true"/>
+		<field name="married" 	  title="婚姻状态"   align="left" uniformStyle="true" format="0:已婚,1:未婚"/>
+		<field name="mate" 		  title="配偶姓名"   align="left" uniformStyle="true"/>
+		<field name="culture" 	  title="文化程度"   align="left" uniformStyle="true"/>
+		<field name="career" 	  title="职业"      align="left" uniformStyle="true"/>
+		<field name="familyPhone" title="家庭电话"   align="left" uniformStyle="true"/>
+		<field name="mobile" 	  title="手机号"     align="left" uniformStyle="true"/>
+		<field name="relation1"   title="关系1"     align="left" uniformStyle="true"/>
+		<field name="personnel1"  title="同户人员1"  align="left" uniformStyle="true"/>
+		<field name="caseNum1" 	  title="证件号1"    align="left" uniformStyle="true"/>
+		<field name="relation2"   title="关系2"     align="left" uniformStyle="true"/>
+		<field name="personnel2"  title="同户人员2"  align="left" uniformStyle="true"/>
+		<field name="caseNum2" 	  title="证件号2"    align="left" uniformStyle="true"/>
+		<field name="remark" 	  title="备注"      align="left" uniformStyle="true"/>
+		
+		<!-- 电信 -->
+		<field name="mobile" 		title="手机" 		align="left" uniformStyle="true"/>
+		<field name="operator" 		title="运营商" 	align="left" uniformStyle="true"/>
+		<field name="mobileStatus" 	title="手机状态" 	align="left" uniformStyle="true"/>
+		<field name="wideBand"		title="宽带号" 	align="left" uniformStyle="true"/>
+		<field name="networkProvide" title="网络提供商" align="left" uniformStyle="true"/>
+		<field name="wideStatus" 	title="宽带状态" 	align="left" uniformStyle="true"/>
+		<field name="linkman1" 		title="联系人1" 	align="left" uniformStyle="true"/>
+		<field name="linkman2" 		title="联系人2" 	align="left" uniformStyle="true"/>
+		
+		<!-- 社保 -->
+		<field name="unitName" 		title="单位名称" 	align="left" uniformStyle="true"/>
+		<field name="unitPhone1" 	title="单位电话1" 	align="left" uniformStyle="true"/>
+		<field name="unitAddress" 	title="单位地址" 	align="left" uniformStyle="true"/>
+		<field name="unitPhone2" 	title="单位电话2"	align="left" uniformStyle="true"/>
+		<field name="linkman" 		title="联系人" 	align="left" uniformStyle="true"/>
+		<field name="phone" 		title="电话" 			align="left" uniformStyle="true"/>
+		<field name="lastRenewDate" title="最后续费日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		
+		<!-- 快递 -->
+		<field name="hisUserName" 		title="历史用户名" 	align="left" uniformStyle="true"/>
+		<!-- <field name="familyPhone" 		title="家庭电话" 	align="left" uniformStyle="true"/> -->
+		<field name="familyAddress" 		title="家庭地址" 	align="left" uniformStyle="true"/>
+		<field name="email" 		title="邮箱" 	align="left" uniformStyle="true"/>
+		<field name="qq" 		title="qq" 	align="left" uniformStyle="true"/>
+		<field name="qqGroup" 		title="qq群" 	align="left" uniformStyle="true"/>
+		<field name="wechat" 		title="微信" 	align="left" uniformStyle="true"/>
+		<field name="blog" 		title="微博" 	align="left" uniformStyle="true"/>
+		<field name="consigneeName" 		title="收货人姓名" 	align="left" uniformStyle="true"/>
+		<field name="consigneePhone" 		title="收货人电话" 	align="left" uniformStyle="true"/>
+		<field name="consigneeAddress" 		title="收货人地址" 	align="left" uniformStyle="true"/>
+		<!-- <field name="unitName" 		title="单位名称" 	align="left" uniformStyle="true"/> -->
+		<!-- <field name="unitAddress" 		title="单位地址" 	align="left" uniformStyle="true"/> -->
+		<field name="unitPhone" 		title="单位电话" 	align="left" uniformStyle="true"/>
+		<field name="importantLinkmanName" 		title="重要联系人名称" 	align="left" uniformStyle="true"/>
+		<field name="importantLinkmanPhone" 		title="重要联系人电话" 	align="left" uniformStyle="true"/>
+		<field name="importantLinkmanAddress" 		title="重要联系人地址" 	align="left" uniformStyle="true"/>
+		<field name="importantLinkmanCardNum" 		title="重要联系人身份证号" 	align="left" uniformStyle="true"/>
+		<field name="linkmanName" 		title="联系人名称" 	align="left" uniformStyle="true"/>
+		<field name="linkmanPhone" 		title="联系人电话" 	align="left" uniformStyle="true"/>
+		<field name="linkmanCardNum" 		title="联系人身份证" 	align="left" uniformStyle="true"/>
+		<field name="linkmanAddress" 		title="联系人地址" 	align="left" uniformStyle="true"/>
+		<field name="linkmanUnitName" 		title="联系人工作单位" 	align="left" uniformStyle="true"/>
+		<field name="obtainTime" 		title="获取时间" 	align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="remark" 		title="备注" 	align="left" uniformStyle="true"/>
+	</excel>
+	
+	
+	<!-- 待处理协催导入电信
+	<excel id="telecomDto" class="com.kangde.collection.dto.CaseApplyDto" sheetname="电信表" defaultColumnWidth="5000" enableStyle="true">
+		<field name="caseApply.applyType" title="协催状态"   align="left" uniformStyle="true"/>
+		<field name="caseApply.id"    title="协催ID"   align="left" uniformStyle="true"/>
+		<field name="caseModel.caseCode"  title="案件序列号"  align="left" uniformStyle="true"/>
+		<field name="caseModel.caseName"  title="姓名"      align="left" uniformStyle="true"/>
+		<field name="caseModel.caseNum"	  title="证件号"     align="left" uniformStyle="true"/>
+		<field name="caseApplyId" title="协催申请id" align="left" uniformStyle="true"/>
+		<field name="mobile" title="手机" align="left" uniformStyle="true"/>
+		<field name="operator" title="运营商" align="left" uniformStyle="true"/>
+		<field name="mobileStatus" title="手机状态" align="left" uniformStyle="true"/>
+		<field name="wideBand" title="宽带号" align="left" uniformStyle="true"/>
+		<field name="networkProvide" title="网络提供商" align="left" uniformStyle="true"/>
+		<field name="wideStatus" title="宽带状态" align="left" uniformStyle="true"/>
+		<field name="crAddress" title="户籍地址" align="left" uniformStyle="true"/>
+		<field name="address" title="住址" align="left" uniformStyle="true"/>
+		<field name="relation1" title="关系1" align="left" uniformStyle="true"/>
+		<field name="linkman1" title="联系人1" align="left" uniformStyle="true"/>
+		<field name="caseNum1" title="证件号1" align="left" uniformStyle="true"/>
+		<field name="relation2" title="关系2" align="left" uniformStyle="true"/>
+		<field name="linkman2" title="联系人2" align="left" uniformStyle="true"/>
+		<field name="caseNum2" title="证件号2" align="left" uniformStyle="true"/>
+		<field name="remark" title="备注" align="left" uniformStyle="true"/>
+	</excel>
+	待处理协催导入社保
+	<excel id="socialSecurityDto" class="com.kangde.collection.dto.CaseApplyDto" sheetname="社保表" defaultColumnWidth="5000" enableStyle="true">
+		<field name="caseApply.applyType" title="协催状态"   align="left" uniformStyle="true"/>
+		<field name="caseApply.id"    title="协催ID"   align="left" uniformStyle="true"/>
+		<field name="caseModel.caseCode"  title="案件序列号"  align="left" uniformStyle="true"/>
+		<field name="caseModel.caseName"  title="姓名"      align="left" uniformStyle="true"/>
+		<field name="caseModel.caseNum"	  title="证件号"     align="left" uniformStyle="true"/>
+		<field name="caseApplyId" title="协催申请id" align="left" uniformStyle="true"/>
+		<field name="unitName" title="单位名称" align="left" uniformStyle="true"/>
+		<field name="unitPhone1" title="单位电话1" align="left" uniformStyle="true"/>
+		<field name="unitAddress" title="单位地址" align="left" uniformStyle="true"/>
+		<field name="unitPhone2" title="单位电话2" align="left" uniformStyle="true"/>
+		<field name="linkman" title="联系人" align="left" uniformStyle="true"/>
+		<field name="phone" title="电话" align="left" uniformStyle="true"/>
+		<field name="lastRenewDate" title="最后续费日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="remark" title="备注" align="left" uniformStyle="true"/>
+	</excel> -->
+			<excel id="casepaidshow" class="com.kangde.collection.dto.CasePaidDto" sheetname="还款表" defaultColumnWidth="5000" enableStyle="true">
+		<field name="state" title="还款状态" align="left" uniformStyle="true" format="1:CP正常,2:已确认,3:作废PTP,4:作废CP"/>
+		<field name="caseModel.caseCode" title="案件序列号" align="left" uniformStyle="true" />
+		<field name="batchModel.batchCode" title="批次号" align="left" uniformStyle="true" />
+		<field name="batchModel.entrustName" title="委托方" align="left" uniformStyle="true" />
+		<field name="caseModel.caseName" title="姓名" align="left" uniformStyle="true" />
+		<field name="caseModel.caseNum" title="证件号" align="left" uniformStyle="true" />
+		<field name="caseModel.caseCard" title="卡号" align="left" uniformStyle="true" />
+		<field name="caseModel.mobile1" title="手机号" align="left" uniformStyle="true" />
+		<field name="backPaidRate" title="业绩率" align="left" uniformStyle="true" />
+		<field name="entrustPaidRate" title="委托费率" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="caseModel.caseMoney" title="委案金额" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="outDerateNew" title="外部减免" align="left" uniformStyle="true" />
+		<field name="inDerateNew" title="内部减免" align="left" uniformStyle="true" />
+		<field name="paidNum" title="已还金额" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="cpMoney" title="CP金额" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="cpTime" title="CP日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="paidTime" title="还款日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="organization.soName" title="回款风控方" align="left" uniformStyle="true" />
+		<field name="cpName" title="回款风控员" align="left" uniformStyle="true" />
+		<field name="compBorker" title="佣金" align="left" uniformStyle="true" />
+		<field name="commission" title="业绩" align="left" uniformStyle="true" />
+		<field name="caseModel.caseFileNo" title="档案号" align="left" uniformStyle="true" />
+		
+		<field name="caseModel.accountNo" title="账号" align="left" uniformStyle="true" />
+		<field name="caseModel.loanContract" title="贷款合同号" align="left" uniformStyle="true" />
+		<field name="caseModel.cusNo" title="客户号" align="left" uniformStyle="true" />
+		<field name="caseModel.currency" title="币种" align="left" uniformStyle="true" />
+		<field name="caseModel.overdueDays" title="逾期天数" align="left" uniformStyle="true" />
+		<field name="caseModel.overdueAge" title="逾期账龄" align="left" uniformStyle="true" />
+		<field name="caseModel.caseBackdate" title="退案日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="surRemark" title="备注" align="left" uniformStyle="true" />
+		<field name="caseModel.salesDep" title="营业部名称 " align="left" uniformStyle="true" />
+		
+		<field name="caseModel.caseDate" title="委案日期 " align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="caseModel.caseAppNo" title="申请单号 " align="left" uniformStyle="true" />
+		<field name="actual_visit_time" title="最后外访日期  " align="left" uniformStyle="true" />
+		<field name="visit_user" title="最后外访员" align="left" uniformStyle="true"/>
+		
+	</excel>
+	
+	<excel id="visitRecordView" class="com.kangde.collection.dto.VisitRecordDto" sheetname="外访" defaultColumnWidth="5000" enableStyle="true">
+		<field name="caseModel.collecStateId" title="风控状态" align="left" uniformStyle="true" format="25:暂停催收,26:要求退案,27:中本人,28:中家人,29:中第三人,30:失联（其他）,31:承诺,32:疑似欺诈,33:失联（停机、空号、关机、嘟嘟）,34:涉案,87:失联（长期无人接听）,88:谈判,0:新案"/>
+		<field name="caseModel.caseCode" title="案件序列号" align="left" uniformStyle="true" />
+		<field name="name" title="外访姓名" align="left" uniformStyle="true" />
+		<field name="addressModel.relation" title="关系" align="left" uniformStyle="true" />
+		<field name="caseModel.caseMoney" title="委案金额" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="paidNum" title="已还款" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="visitAddress" title="外访地址" align="left" uniformStyle="true" />
+		<field name="require" title="外访要求" align="left" uniformStyle="true" />
+		<field name="employeeInfo.userName" title="风控员" align="left" uniformStyle="true" />
+		<field name="visitUser" title="外访员" align="left" uniformStyle="true" />
+		<field name="actualVisitTime" title="实际外访日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="isEffective" title="地址是否有效" align="left" uniformStyle="true" format="0:是,1:否"/>
+		<field name="visitReport" title="外访报告" align="left" uniformStyle="true" />
+		<field name="visitState" title="外访结果" align="left" uniformStyle="true" format="0:中家人,1:中债,2:无址,3:拆迁,4:不中人,5:中同事/朋友"/>
+		<field name="entrustModel.ename" title="委托方" align="left" uniformStyle="true" />
+	</excel>
+	
+	<excel id="statisticsEntrust" class="com.kangde.collection.dto.StatisticsEntrustDto" sheetname="委托方" defaultColumnWidth="5000" enableStyle="true">
+		<field name="name" title="委托方" align="left" uniformStyle="true" />
+		<field name="case_count" title="案件数量" align="left" uniformStyle="true" />
+		<field name="total_case_money" title="委案金额" align="left" uniformStyle="true" />
+		<field name="la_count" title="来案数量" align="left" uniformStyle="true" />
+		<field name="la_case_money" title="来案金额" align="left" uniformStyle="true" />
+		<field name="cp_money" title="未确认还款" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="paid_num" title="已确认还款" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="average_count" title="平均案件金额" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="paid_rate" title="确认还款率" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+	</excel>
+	
+	<excel id="statisticsBatch" class="com.kangde.collection.dto.StatisticsBatchDto" sheetname="批次" defaultColumnWidth="5000" enableStyle="true">
+		<field name="batch_code" title="批次号" align="left" uniformStyle="true" />
+		<field name="begin_date" title="委案日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd"/>
+		<field name="end_date" title="退案日期" align="left" uniformStyle="true" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="case_count" title="案件数量" align="left" uniformStyle="true" />
+		<field name="total_case_money" title="委案金额" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00" />
+		<field name="ptp_money" title="PTP" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="cp_money" title="CP" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="paid_num" title="以确定还款" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="achieve" title="业绩" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="target" title="回款率%" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="new_case_count" title="新案数量" align="left" uniformStyle="true" />
+		<field name="lose_case_count" title="失联数量" align="left" uniformStyle="true" />
+		<field name="involve_case_count" title="涉案数量" align="left" uniformStyle="true" />
+		<field name="negotiation_case_count" title="谈判数量" align="left" uniformStyle="true" />
+		<field name="family_case_count" title="中家人数量" align="left" uniformStyle="true" />
+		<field name="someone_case_count" title="中第三人数量" align="left" uniformStyle="true" />
+		<field name="oneself_case_count" title="中本人数量" align="left" uniformStyle="true" />
+	</excel>
+	
+	<excel id="statisticsVisit" class="com.kangde.collection.dto.StatisticsVisitDto" sheetname="外访" defaultColumnWidth="5000" enableStyle="true">
+		<field name="actual_visit_time" title="日期" align="left" uniformStyle="true" />
+		<field name="visit_count" title="外访总次数" align="left" uniformStyle="true" />
+		<field name="visit_people_count" title="外访人员投入" align="left" uniformStyle="true" />
+		<field name="average_visit_count" title="人均访问次数" align="left" uniformStyle="true"/>
+		<field name="average_case_visit_count" title="平均每案件外访次数" align="left" uniformStyle="true"/>
+		<field name="family_visit_count" title="中家人次数" align="left" uniformStyle="true" />
+		<field name="oneself_visit_count" title="中本人次数" align="left" uniformStyle="true" />
+		<field name="noaddress_visit_count" title="无址次数" align="left" uniformStyle="true" />
+		<field name="remove_visit_count" title="拆迁次数" align="left" uniformStyle="true" />
+		<field name="noone_visit_count" title="不中人次数" align="left" uniformStyle="true" />
+	</excel>
+	
+	<excel id="statisticsApply" class="com.kangde.collection.dto.StatisticsApplyDto" sheetname="协催" defaultColumnWidth="5000" enableStyle="true">
+		<field name="sur_time" title="日期" align="left" uniformStyle="true" />
+		<field name="apply_count" title="协催总次数" align="left" uniformStyle="true" />
+		<field name="customer_count" title="客服咨询次数" align="left" uniformStyle="true" />
+		<field name="police_count" title="公安协助次数" align="left" uniformStyle="true" />
+		<field name="court_count" title="法院协助次数" align="left" uniformStyle="true" />
+		<field name="charge_count" title="主管协催次数" align="left" uniformStyle="true" />
+		<field name="average_case_apply_count" title="平均每案件协催次数" align="left" uniformStyle="true" />
+	</excel>
+	
+	<excel id="statisticsAssist" class="com.kangde.collection.dto.StatisticsAssistDto" sheetname="查资" defaultColumnWidth="5000" enableStyle="true">
+		<field name="sur_time" title="日期" align="left" uniformStyle="true" />
+		<field name="apply_count" title="查资总次数" align="left" uniformStyle="true" />
+		<field name="hj" title="HJ" align="left" uniformStyle="true" />
+		<field name="dx" title="DX" align="left" uniformStyle="true" />
+		<field name="shb" title="SHB" align="left" uniformStyle="true" />
+		<field name="average_case_apply_count" title="平均每案件协催次数" align="left" uniformStyle="true" />
+	</excel>
+	
+	<excel id="statisticsOrganization" class="com.kangde.collection.dto.StatisticsOrganizationDto" sheetname="分公司" defaultColumnWidth="5000" enableStyle="true">
+		<field name="name" title="风控方" align="left" uniformStyle="true"/>
+		<field name="case_count" title="案件数量" align="left" uniformStyle="true"/>
+		<field name="total_case_money" title="委案金额" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="ptp_money" title="PTP" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="cp_money" title="CP" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="paid_num" title="已确认还款" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="achieve" title="业绩" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="target" title="回款率%" align="left" uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="new_case_count" title="新案数量" align="left" uniformStyle="true" />
+		<field name="lose_case_count" title="失联数量" align="left" uniformStyle="true" />
+		<field name="involve_case_count" title="涉案数量" align="left" uniformStyle="true" />
+		<field name="negotiation_case_count" title="谈判数量" align="left" uniformStyle="true" />
+		<field name="family_case_count" title="中家人数量" align="left" uniformStyle="true" />
+		<field name="someone_case_count" title="中第三人数量" align="left" uniformStyle="true" />
+		<field name="oneself_case_count" title="中本人数量" align="left" uniformStyle="true" />
+	</excel>
+	
+	
+	
+	
+<!-- 车贷案件字段配置 -->
+	<excel id="caseCae1" class="com.kangde.collection.dto.CaseCarDto">
+	<field name="id" title="ID" />
+		<field name="caseLastDate" title="欠款更新日期" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+		<field name="caseLastMoney" title="最新欠款" isNull="true" />
+	<field name="surplusPrincipal" title="剩余本金"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+	<field name="areaName" title="风控区域" />
+	<field name="agentRate" title="业绩率" />
+	<field name="caseName" title="姓名" isNull="false" />
+	<field name="caseCode" title="案件序列号" isNull="true" />
+	<field name="loanContract" title="贷款合同号" />
+	<field name="caseSex" title="性别" />
+	<field name="caseIsMarriage" title="婚否" />
+	<field name="caseBirthday" title="生日" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+	<field name="caseNum" title="证件号" isNull="false" />
+	<field name="caseMoney" title="委案金额" isNull="false" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="entrustRate" title="委托费率" isNull="false" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+	<field name="overdueDays" title="逾期天数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+	<field name="overdueMoney" title="逾期金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="monthRepayment" title="每月还款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="overduePeriods" title="逾期期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+	<field name="repaymentPeriods" title="已还期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+	<field name="overduePrincipal" title="逾期本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="mobile1" title="本人手机1" />
+	<field name="mobile2" title="本人手机2" />
+	<field name="familyPhone" title="家庭号码" />
+	<field name="companyName" title="单位名称" />
+	<field name="companyPhone" title="单位号码" />
+	<field name="loanStartdate" title="贷款日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+	<field name="loanEnddate" title="贷款截止日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+	<field name="repayDate" title="还款日" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+	<field name="caseFileNo" title="档案号"/>
+	<field name="caseAppNo" title="申请单号" />
+	<field name="socialSecurityNo" title="社保电脑号" />
+	<field name="socialCardNo" title="社保卡号" />
+	<field name="policyExpire" title="保单到期日" />
+	<field name="loanMoney" title="贷款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="creditId" title="信贷分类" />
+	<field name="loanRate" title="贷款利率" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="casePosition" title="案人职位" />
+	<field name="bankAccount" title="开户行" />
+	<field name="caseDepartment" title="案人部门" />
+	<field name="accountNo" title="账号" />
+	<field name="dealer" title="经销商" />
+	<field name="price" title="车价" />
+	<field name="number" title="车型" />
+	<field name="liceNo" title="牌照号" />
+	<field name="brand" title="品牌" />
+	<field name="vinNo" title="车架号" />
+	<field name="engineNo" title="发动机号" />
+	<field name="collecRemark" title="催收小结" />
+	<field name="email" title="邮箱" />
+	<field name="currency" title="币种" />
+	<field name="oldCollecRecord" title="原催收记录" />
+	<field name="overdueAge" title="逾期账龄" />
+	<field name="overdueDate" title="逾期开始日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+	<field name="repaymentTerm" title="还款期限" />
+	<field name="overdueInterest" title="逾期利息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	<field name="lateFee" title="滞纳金" />
+	<field name="companyAddress" title="单位地址" />
+	<field name="familyAddress" title="家庭地址" />
+	<field name="domicile" title="户籍地址" />
+	<field name="domicileZipcode" title="户籍地邮编" />
+	<field name="billAddress" title="对账单地址" />
+	<field name="billZipcode" title="对账单邮编" />
+	<field name="cusIntroduc" title="客户简介" />
+	<field name="remark1" title="备注1" />
+	<field name="remark2" title="备注2" />
+	<field name="collecType" title="催收分类" />
+	<field name="collecType" title="催收分类" />
+		</excel>
+		
+		
+		
+		<!-- P2P案件字段配置 -->
+	<excel id="caseP2p1" class="com.kangde.collection.dto.CaseExcelDto">
+		<field name="id" title="ID" />
+			<field name="caseLastDate" title="欠款更新日期" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+		<field name="caseLastMoney" title="最新欠款" isNull="true" />
+		<field name="surplusPrincipal" title="剩余本金"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="monthRepayment" title="每月还款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="caseBackdate" title="预计退案日" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+		<field name="caseCode" title="案件序列号" isNull="true" />
+		<field name="caseAppNo" title="申请单号" />
+		<field name="socialSecurityNo" title="社保电脑号" />
+		<field name="caseNumId" title="证件类型" />
+		<field name="caseNum" title="证件号" isNull="false" />
+		<field name="userId" title="客户号" />
+		<field name="cusNo" title="客户编号" />
+		<field name="caseFileNo" title="档案号"/>
+		<field name="caseName" title="姓名" isNull="false" />
+		<field name="creditId" title="信贷分类" />
+		<field name="overdueDate" title="逾期开始日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="overdueDays" title="逾期天数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="overduePeriods" title="逾期期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="overdueMoney" title="逾期金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="caseMoney" title="委案金额" isNull="false" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="principal" title="本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="loanStartdate" title="贷款日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="loanEnddate" title="贷款截止日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="commodity" title="商品" />
+		<field name="bankAccount" title="开户行" />
+		<field name="caseCard" title="卡号" isNull="false" />
+		<field name="caseSex" title="性别" />
+		<field name="caseAge" title="年龄" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="caseIsMarriage" title="婚否" />
+		<field name="caseBirthday" title="生日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="companyName" title="单位名称" />
+		<field name="companyPhone" title="单位号码" />
+		<field name="companyAddress" title="单位地址" />
+		<field name="companyZipcode" title="单位邮编" />
+		<field name="familyPhone" title="家庭号码" />
+		<field name="mobile1" title="本人手机1" />
+		<field name="mobile2" title="本人手机2" />
+		<field name="familyAddress" title="家庭地址" />
+		<field name="familyZipcode" title="家庭邮编" />
+		<field name="domicile" title="户籍地址" />
+	
+		<field name="accountNo" title="账号" />
+		<field name="loanContract" title="贷款合同号" />
+		<field name="isVerify" title="是否核销" format="1:是,0:否" />
+		<field name="verifyDate" title="核销日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="repaymentType" title="还款方式" />
+		<field name="protocolNo" title="协议编号" />
+		<field name="loanArea" title="放款所属地" />
+		<field name="areaName" title="风控区域"  />
+		<field name="oldCollecRecord" title="原风控记录" />
+		<field name="overduePrincipal" title="逾期本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overduePrincipalBalance" title="逾期本金余额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueInterest" title="逾期利息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overduePenalty" title="逾期罚息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueCompound" title="逾期复利" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="interestMoney" title="欠息余额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="penaltyReference" title="罚息参照" />
+		<field name="compoundInterestReference" title="复息参照" />
+		<field name="quotaNo" title="根额度编号" />
+		<field name="quotaManager1" title="(根额度)主办客户经理" />
+		<field name="managerPhone" title="客户经理电话" />
+		<field name="quotaManager2" title="(根额度)协办客户经理" />
+		<field name="collateralNo" title="押品编号" />
+		<field name="collateralId" title="押品类型" />
+		<field name="collateralName" title="押品名称" />
+		<field name="collateralAddress" title="押品地址" />
+		<field name="collateralEvalua" title="押品评估值" />
+		<field name="totalConstruc" title="建筑面积合计" />
+		<field name="repayDate" title="还款日" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="remark1" title="备注1" />
+		<!-- 8.4添加 -->
+		<field name="surplusPrincipal" title="剩余本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="entrustRate" title="委托费率" isNull="false" 
+		regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="agentRate" title="业绩率" 
+		regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+		<field name="loanMoney" title="贷款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<!-- 案件地址 -->
+		<field name="provinceName" title="案件区域-省份"
+			resolveFieldValueConverterName="com.kangde.collection.excel.CaseRegionConverter" />
+		<field name="cityName" title="案件区域-城市"
+			resolveFieldValueConverterName="com.kangde.collection.excel.CaseRegionConverter" />
+			
+			<field name="bill" title="账单日"  regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+			<field name="startCardDate" title="开卡日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+			<field name="stopCardDate" title="停卡日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+			<field name="initialRepay" title="最后还款日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+			<field name="lastRepayment" title="最后还款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+			<field name="creditLimit" title="信用额度" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+	</excel>
+		
+		
+		
+		
+		<!-- 银行案件字段配置 -->
+	<excel id="caseBank1" class="com.kangde.collection.dto.CaseExcelDto"
+		sheetname="案件信息">
+		<field name="id" title="ID" />
+			<field name="caseLastDate" title="欠款更新日期" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+		<field name="caseLastMoney" title="最新欠款" isNull="true" />
+		<field name="surplusPrincipal" title="剩余本金"  uniformStyle="true" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="caseBackdate" title="预计退案日" pattern="yyyy-MM-dd,yyyy/MM/dd" />
+		<field name="caseName" title="姓名" isNull="false" />
+		<field name="caseIsMarriage" title="婚否" />
+		<field name="caseCode" title="案件序列号" isNull="true" />
+		<field name="principal" title="本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="debitAccount" title="扣款账号" />
+		<field name="loanStartdate" title="贷款日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="loanEnddate" title="贷款截止日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="bill" title="账单日" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="loanRate" title="贷款利率" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueDate" title="逾期开始日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="repaymentPeriods" title="已还期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="overduePeriods" title="逾期期数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="caseMoney" title="委案金额" isNull="false" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueInterest" title="逾期利息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="caseNum" title="证件号" isNull="false" />
+		<field name="domicile" title="户籍地址" />
+		<field name="familyAddress" title="家庭地址" />
+		<field name="creditId" title="信贷分类" />
+		<field name="overdueMoney" title="逾期金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueDays" title="逾期天数" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="onceOverduePeriods" title="曾逾期次数" />
+		<field name="mobile1" title="本人手机1" />
+		<field name="mobile2" title="本人手机2" />
+		<field name="companyName" title="单位名称" />
+		<field name="casePositionLevel" title="职位级别" />
+		<field name="casePosition" title="案人职位" />
+		<field name="companyPhone" title="单位号码" />
+		
+		
+		<field name="startCardDate" title="开卡日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="stopCardDate" title="停卡日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="creditLimit" title="信用额度" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="familyPhone" title="家庭号码" />
+		<field name="companyAddress" title="单位地址" />
+		                                 
+		<field name="monthRepayment" title="每月还款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="lastRepayment" title="最后还款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="bankAccount" title="开户行" />
+		<field name="caseHouseId" title="案人房产类型" />
+		<field name="caseCard" title="卡号" isNull="false" />
+		<field name="overdueAge" title="逾期账龄" />
+		<field name="areaName" title="风控区域"/>
+		<field name="markId" title="标ID" />
+		<field name="userId" title="用户ID" />
+		<field name="userName" title="用户名" />
+		<field name="loanArea" title="贷款所属地" />
+		<field name="overduePrincipal" title="逾期本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="overdueLoan" title="逾期借款" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="penaltyReference" title="罚息金额" />
+		<field name="overdueExpense" title="逾期管理费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="stayPeriods" title="待还期数" />
+		<field name="stayPrincipal" title="待还本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+		<field name="stayInterest" title="待还利息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="stayExpense" title="待还管理费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="accountMoney" title="账户余额" />
+		<field name="repayDate" title="还款日" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		<field name="oldCollecRecord" title="原风控记录" />
+		<field name="regione" title="大区名称" />
+		<field name="subCenter" title="分中心名称" />
+		<field name="salesDep" title="营业部名称" />
+		<field name="quotaManager1" title="客户经理" />
+		<field name="managerPhone" title="客户经理电话" />
+		<field name="contractMoney" title="签约金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="consultFee" title="咨询费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="auditFee" title="审核费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="serviceFee" title="服务费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="adviserFee" title="顾问费" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="feeTotal" title="费用总和" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="actualLoanMoney" title="放款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="initialRepay" title="最后还款日" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="duePeriods" title="应还期数" />
+		<field name="breach" title="违约金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="penaltyDays" title="日罚息" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="remainHistory" title="历史余留" />
+		<field name="debitBankCode" title="扣款账号银行代码" />
+		<field name="debitBankName" title="扣款账号银行名称" />
+		<field name="reliefPolicy" title="减免政策" />
+		<field name="remark1" title="备注" />
+		<!-- 8.4添加 -->
+		<field name="surplusPrincipal" title="剩余本金" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="entrustRate" title="委托费率" isNull="false" 
+		regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+		<field name="agentRate" title="业绩率" 
+		regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数" />
+		<field name="loanMoney" title="贷款金额" regex="^\d+(\.\d+)?$" regexErrMsg="必须是整数或小数"/>
+		<field name="caseNumId" title="证件类型" />
+		<field name="caseSex" title="性别" />
+		<field name="caseAge" title="年龄" regex="^[0-9]\d*$" regexErrMsg="必须是整数"/>
+		
+	</excel>
+	
+	
+	
+	<excel id="xiecui" class="com.kangde.collection.model.CaseApply" sheetname="待处理协催">
+		<field name="id" title="协催id" />
+		<field name="caseModel.caseCode" title="案件序列号" />
+		<field name="caseModel.orgName" title="风控方" />
+		<field name="caseModel.caseName" title="姓名" />
+		<field name="caseModel.caseMoney" title="委案金额" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="entrustModel.name" title="委托方" />
+		<field name="applyType" title="协催类型" format="11:客服咨询,7:公安协助,5:法院协助,10:主管协催"/>
+		<field name="applyContent" title="申请内容" />
+		<field name="appTime" title="申请日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="applyUserName" title="申请人" />
+		<field name="caseModel.caseNum" title="身份证号" />
+		<field name="caseModel.caseCard" title="卡号" />
+		<field name="caseModel.accountNo" title="账号" />
+		<field name="caseModel.cusNo" title="客户号" />
+		<field name="caseModel.loanContract" title="贷款合同号" />
+		<field name="caseModel.caseFileNo" title="档案号" />
+		<field name="caseModel.overdueDays" title="逾期天数" />
+		<field name="caseModel.mobile1" title="手机号1" />
+		<field name="caseModel.mobile2" title="手机号2" />
+		<field name="caseModel.salesDep" title="营业部名称" />
+		<field name="caseModel.bankAccount" title="开户银行" />
+		<field name="caseModel.caseDate" title="委案日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="caseModel.overdueAge" title="账龄" />
+		<field name="isNull" title="回复"  uniformStyle="true" />
+	</excel>
+	
+	
+	
+	<excel id="caseapprovalleave" class="com.kangde.collection.dto.ApproveDto" sheetname="留案">
+		<field name="caseModel.caseCode" title="案件序列号" />
+		<field name="caseModel.caseCard" title="卡号" />
+		<field name="caseModel.caseName" title="姓名" />
+		<field name="caseModel.caseNum" title="证件号" />
+		<field name="caseModel.overdueDays" title="逾期天数" />
+		<field name="caseModel.caseDate" title="委案日期" pattern="yyyy/MM/dd,yyyy-MM-dd" />
+		<field name="caseModel.caseMoney" title="委案金额" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+		<field name="casepaidmodel.sumMoney" title="已还款" decimalFormatPattern="###,##0.00" defaultValue="0.00"/>
+	</excel>
+	
+	
+	<excel id="huifu" class="com.kangde.collection.model.CaseApply" sheetname="回复协催" defaultColumnWidth="5000" enableStyle="true">
+		<field name="id" title="协催id" />
+		<field name="hurryContent" title="回复" />
+	</excel>
+</excels>

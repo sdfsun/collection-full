@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.SocialSecurityMapper">
+	<resultMap id="model"
+		type="com.kangde.collection.model.SocialSecurityModel">
+	</resultMap>
+
+	<insert id="save">
+		insert into social_security (id, case_apply_id, unit_name,
+		unit_phone1, unit_address, unit_phone2,
+		linkman, phone, last_renew_date,
+		create_time, create_emp_id, status,
+		remark)
+		values (#{id,jdbcType=VARCHAR}, #{caseApplyId,jdbcType=VARCHAR},
+		#{unitName,jdbcType=VARCHAR},
+		#{unitPhone1,jdbcType=VARCHAR}, #{unitAddress,jdbcType=VARCHAR}, #{unitPhone2,jdbcType=VARCHAR},
+		#{linkman,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+		#{lastRenewDate,jdbcType=TIMESTAMP},
+		#{createTime,jdbcType=TIMESTAMP}, #{createEmpId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+		#{remark,jdbcType=LONGVARCHAR})
+	</insert>
+	<select id="findByCaseApplyId" resultMap="model" parameterType="java.lang.String">
+		select * from social_security where case_apply_id =
+		#{caseApplyId,jdbcType=VARCHAR}
+	</select>
+</mapper>

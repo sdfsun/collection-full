@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.VisitRecordToApproveMapper">
+	<resultMap type="com.kangde.collection.dto.VisitDto" id="model">
+		<id column="id" property="id" />
+		<result column="case_id" property="caseId" />
+		<result column="approve_opinion" property="approveOpinion" />
+		<result column="name" property="name" />
+		<result column="apply_reason" property="applyReason" />
+		<result column="apply_emp_id" property="applyEmpId" />
+		<result column="vrState" property="vrState" />
+		<result column="area_id1" property="areaId1" />
+		<result column="area_id2" property="areaId2" />
+		<result column="area_id3" property="areaId3" />
+		<result column="visit_user" property="visitUser" />
+		<result column="approve_state" property="approveState" />
+		<result column="create_time" property="createTime" />
+		<result column="state" property="state" />
+		<result column="visit_address" property="visitAddress" />
+		<result column="surplusMoney" property="surplusMoney" />
+		<result column="paidNum" property="paidNum" />
+
+		<association property="caseModel"
+			javaType="com.kangde.collection.model.CaseModel">
+			<result column="org_id" property="orgId" />
+			<result column="case_code" property="caseCode" />
+			<result column="case_date" property="caseDate" />
+			<result column="case_name" property="caseName" />
+			<result column="case_num" property="caseNum" />
+			<result column="case_card" property="caseCard" />
+			<result column="mobile1" property="mobile1" />
+			<result column="case_money" property="caseMoney" />
+			<result column="surplus_principal" property="surplusPrincipal" />
+			<result column="company_Address" property="companyAddress" />
+			<result column="collec_state_id" property="collecStateId" />
+			<result column="case_assigned_id" property="caseAssignedId" />
+			<result column="out_derate" property="outDerate" />
+		</association>
+		<association property="batchmodel"
+			javaType="com.kangde.collection.model.CaseBatchModel">
+			<id column="batchId" property="id" />
+			<result column="batch_code" property="batchCode" />
+			<result column="entrust_id" property="entrustId" />
+			<result column="achieve" property="achieve" />
+		</association>
+		<association property="employeeInfo"
+			javaType="com.kangde.sys.model.EmployeeInfoModel">
+			<result column="user_name" property="userName" />
+			<result column="login_name" property="loginName" />
+			<result column="einame" property="einame" />
+		</association>
+	</resultMap>
+	<resultMap type="com.kangde.collection.model.VisitRecordModel"
+		id="visitModel">
+		<result column="address_id" property="addressId" />
+	</resultMap>
+
+	
+
+	<!-- 更新外访表 更新审批意见和状态 -->
+	<update id="updatefoVi">
+		update
+		visit_record
+		set
+		approve_opinion=#{visitRecord.approveOpinion},
+		state=#{visitRecord.state}
+		where
+		id in
+		<foreach collection="list" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</update>
+
+	<select id="findIds" resultMap="visitModel">
+		select case_id,address_id from visit_record
+		where
+		id in
+		<foreach collection="list" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</select>
+</mapper>

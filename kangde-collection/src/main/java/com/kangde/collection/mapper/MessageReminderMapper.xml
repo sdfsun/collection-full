@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.MessageReminderMapper" >
+  <resultMap id="BaseResultMap" type="com.kangde.collection.model.MessageReminderModel" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="remind_type" property="remindType" jdbcType="VARCHAR" />
+    <result column="is_read" property="isRead" jdbcType="INTEGER" />
+    <result column="remind_target" property="remindTarget" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_emp_id" property="createEmpId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, remind_type, is_read,remind_target, content, url, title, create_emp_id, create_time, modify_time
+  </sql>
+
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from message_reminder
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="query" resultMap="BaseResultMap">
+		 select 
+	    <include refid="Base_Column_List" />
+	    from message_reminder where remind_target=#{params.remindTarget,jdbcType=VARCHAR}
+			order by create_time desc
+	</select>
+  
+  <insert id="save" parameterType="com.kangde.collection.model.MessageReminderModel" >
+    insert into message_reminder (id, remind_type, is_read, 
+      create_emp_id, create_time, 
+      modify_time, remind_target, content, url, title)
+    values (#{id,jdbcType=VARCHAR}, #{remindType,jdbcType=VARCHAR}, #{isRead,jdbcType=INTEGER}, 
+      #{createEmpId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyTime,jdbcType=TIMESTAMP},#{remindTarget,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR},#{url,jdbcType=LONGVARCHAR},#{title,jdbcType=LONGVARCHAR})
+  </insert>
+  
+  <update id="updateMessageReminder">
+    update message_reminder set 
+    is_read =1,
+    modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="deleteReminderMapper">
+    delete from message_reminder where create_time &lt; #{dateStr}
+  </update>
+
+</mapper>

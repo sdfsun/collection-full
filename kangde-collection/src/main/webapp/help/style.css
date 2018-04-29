@@ -1,0 +1,8 @@
+*{padding:0;}
+body{font-family:"微软雅黑";}
+#content{width:1000px;margin:0 auto;}
+#content span{text-align:center;}
+.imgs{width:1000px;}
+.imgs img{width:100%;}
+/*.imgs .img02{width:600px;height:230px;}*/
+.imgs .img01,.imgs .img02{width:50%;}

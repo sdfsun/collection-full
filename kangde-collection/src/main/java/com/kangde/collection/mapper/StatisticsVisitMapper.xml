@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.StatisticsVisitMapper">
+	<!-- 返回值类型 -->
+	<!-- 解析字段 dto 里的表字段 -->
+
+	<resultMap id="modelVisit" type="com.kangde.collection.dto.StatisticsVisitDto">
+		<result column="actual_visit_time" property="actual_visit_time" />
+		<result column="visit_count" property="visit_count" />
+		<result column="visit_people_count" property="visit_people_count" />
+		<result column="average_visit_count" property="average_visit_count" />
+		<result column="average_case_visit_count" property="average_case_visit_count" />
+		<result column="family_visit_count" property="family_visit_count" />
+		<result column="oneself_visit_count" property="oneself_visit_count" />
+		<result column="noaddress_visit_count" property="noaddress_visit_count" />
+		<result column="remove_visit_count" property="remove_visit_count" />
+		<result column="noone_visit_count" property="noone_visit_count" />
+		<result column="case_count" property="case_count" />
+	</resultMap>
+	
+<!-- 外访统计 -->
+	<select id="queryVisit" resultMap="modelVisit">
+		<![CDATA[
+	SELECT
+	tj.visit_state,
+	tj.actual_visit_time,
+	tj.visit_count,
+	tj.case_count,
+	tj.visit_people_count,
+	tj.average_visit_count,
+	tj.average_case_visit_count,
+	tj.family_visit_count,
+	tj.oneself_visit_count,
+	tj.noaddress_visit_count,
+	tj.remove_visit_count,
+	tj.noone_visit_count
+FROM
+	(
+
+SELECT 
+		vr.actual_visit_time,vr.`state`,vr.`visit_state`,
+		COUNT( vr.id) AS visit_count,
+		COUNT(DISTINCT vr.case_id) AS case_count,
+		SUM(func_get_splitStringTotal(vr.visit_user,',') ) AS visit_people_count,
+		CONVERT(IFNULL(SUM(func_get_splitStringTotal(vr.visit_user,',') ), 0)/(IFNULL(COUNT( vr.id), 0)),DECIMAL(18,2)) AS average_visit_count,
+		CONVERT((IFNULL(COUNT( vr.id), 0) / IFNULL(COUNT(DISTINCT vr.case_id), 0)),DECIMAL(18,2)) AS average_case_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '0' THEN 1 ELSE 0 END) AS family_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '1' THEN 1 ELSE 0 END) AS oneself_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '2' THEN 1 ELSE 0 END) AS noaddress_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '3' THEN 1 ELSE 0 END) AS remove_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '4' THEN 1 ELSE 0 END) AS noone_visit_count]]>
+
+		FROM `visit_record` vr
+		LEFT JOIN case_info ci ON vr.case_id=ci.id
+		LEFT JOIN case_batch cb ON cb.id = ci.`batch_id`
+		WHERE vr.`state`='4'
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.actual_visit_time1)">
+		and actual_visit_time BETWEEN '${params.actual_visit_time}' AND'${params.actual_visit_time1}'
+		</if>
+		GROUP BY vr.actual_visit_time
+		ORDER BY ci.create_time DESC
+) AS tj WHERE tj.state='4'
+		
+		<!--  -->
+		
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by actual_visit_time desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 外访统计 -->
+	<select id="queryExport" resultMap="modelVisit">
+		<![CDATA[
+		SELECT
+	tj.actual_visit_time,
+	tj.visit_count,
+	tj.visit_people_count,
+	tj.average_visit_count,
+	tj.average_case_visit_count,
+	tj.family_visit_count,
+	tj.oneself_visit_count,
+	tj.noaddress_visit_count,
+	tj.remove_visit_count,
+	tj.noone_visit_count
+FROM
+	(
+
+SELECT 
+		vr.actual_visit_time,vr.`state`,vr.`visit_state`,
+		COUNT( vr.id) AS visit_count,
+		COUNT( vr.visit_user_id) AS visit_people_count,
+		CONVERT((IFNULL(COUNT( vr.id), 0) / IFNULL(COUNT( vr.visit_user_id), 0)),DECIMAL(18,2)) AS average_visit_count,
+		CONVERT((IFNULL(COUNT( vr.id), 0) / IFNULL(COUNT(DISTINCT vr.case_id), 0)),DECIMAL(18,0)) AS average_case_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '0' THEN 1 ELSE 0 END) AS family_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '1' THEN 1 ELSE 0 END) AS oneself_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '2' THEN 1 ELSE 0 END) AS noaddress_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '3' THEN 1 ELSE 0 END) AS remove_visit_count,
+		SUM(CASE WHEN vr.`visit_state` = '4' THEN 1 ELSE 0 END) AS noone_visit_count
+
+		FROM `visit_record` vr
+		LEFT JOIN case_info ci ON vr.case_id=ci.id
+		LEFT JOIN case_batch cb ON cb.id = ci.`batch_id`
+
+		GROUP BY vr.actual_visit_time
+		ORDER BY ci.create_time DESC
+) AS tj WHERE tj.state='4'
+		]]>
+
+		AND tj.visit_count IN
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+			order by actual_visit_time desc
+	</select>
+	
+</mapper>

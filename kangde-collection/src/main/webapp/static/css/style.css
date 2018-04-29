@@ -1,0 +1,24 @@
+body{font-family:"Microsoft YaHei";font-size:12px;}
+*{margin:0px;padding:0px;}
+.contents{background:#ffffff;width:1177px;height:100%;/*border:1px solid red;*/margin-top:22px;}
+ul{list-style: none;}
+.headerImg ul li{font-size:16px;position:relative;float:left;width:204px;border:1px solid #dedede;background:#f6f6f6;margin:0px 15px 0px 0px;height:76px;border-radius:6px;}
+.headerImg ul li:hover{background:#ffffff;cursor: pointer;}
+.headerImg ul li.fristChild{margin-left:30px;}
+.clear{clear:both;}
+.headerImg ul li img{vertical-align: middle;position:absolute;top:17px;left:12px;}
+.headerImg ul li p{margin-left:68px;}
+.headerImg ul li .p1{margin-top:20px;}
+.headerImg ul li .p2{color:#37b9f4;}
+.conTab{margin-left:30px;margin-top:22px;}
+.conTab ul{float:left;width:524px;/*border: 1px solid red;*/}
+.conTab .leftTab{margin-right:43px;}
+.conTab .leftTab p{color:#37b9f4;cursor: pointer;}
+.conTab .rightTab p{color:#f16100;cursor: pointer;}
+.conTab .leftTab li .date{float:right;margin-right:6px;}
+.conTab .rightTab li .date{float:right;margin-right:6px;}
+.conTab ul p{border:1px solid #c5dde4;background:#eff7fa;line-height:30px;height:30px;padding-left:6px;margin-bottom:10px;}
+.conTab ul li{border:1px solid #dedede;line-height:30px;height:30px;padding-left:6px;border-bottom:none;}
+.conTab ul li:last-of-type{border-bottom:1px solid #dedede;} 
+.conTab .leftTab li:hover{color:#37b9f4;cursor: pointer;}
+.conTab .rightTab li:hover{color:#f16100;cursor: pointer;}

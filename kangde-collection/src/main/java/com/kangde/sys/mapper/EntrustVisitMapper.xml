@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.EntrustVisitMapper" >
+  <resultMap id="model" type="com.kangde.sys.dto.EntrustVisitDto">
+  
+   			<result column="id" property="id" />
+		  	<result column="name" property="name" />
+		  	<result column="phone" property="phone" />
+		  	<result column="email" property="email" />
+		  	<result column="qq" property="qq" />
+		  	<result column="WeChat" property="wechat" />
+		  	<result column="create_time" property="createTime" />
+		  	<result column="modify_time" property="modifyTime" />
+  			<result column="entrust_name" property="entrustName" />
+  			<result column="case_source_name" property="caseSourceName" />
+  			<result column="case_type_name" property="caseTypeName" />
+  			<result column="handle_name" property="handleName" />
+  			<result column="entrust_id" property="entrustId" />
+  			<result column="negotiation_schedule" property="negotiationSchedule" />
+  			<result column="negotiation_target" property="negotiationTarget" />
+  </resultMap>
+  
+   <resultMap id="visitmodel" type="com.kangde.sys.model.EntrustVisit"/>
+   
+  <sql id="list" >
+    id, entrust_product_id, contact_name, contact_time, communicate_mode, next_follow_time, 
+    create_emp_id, create_time,negotiation_target, negotiation_schedule
+  </sql>
+  
+  <select id="query" resultMap="model">
+SELECT  
+ecpr.entrust_name,ecpr.case_source_name,ecpr.case_type_name,ecpr.handle_name,el.contact_name,el.contact_time,
+el.communicate_mode,el.next_follow_time,el.id,el.negotiation_schedule,el.negotiation_target
+
+FROM `entrust_visit` AS el
+LEFT JOIN `entrust_case_product_releation` ecpr ON el.entrust_product_id=ecpr.product_id
+where 1=1
+  <!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustProductId1)">
+			and ecpr.product_id like CONCAT('%','${params.entrustProductId1}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustName1)">
+			and ecpr.entrust_id like CONCAT('%','${params.entrustName1}','%' )
+		</if>
+		<!-- 创建时间 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.createTime)
+			  and @org.apache.commons.lang.StringUtils@isNotBlank(params.createTime1)">
+			and (DATE_FORMAT(el.contact_time,'%Y-%m-%d') between #{params.createTime} and #{params.createTime1})
+		</if>
+			<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by el.create_time
+			</otherwise>
+		</choose>
+  
+  </select>
+  
+  
+  <select id="findById" resultMap="model">
+    select 
+    <include refid="list" />
+    from entrust_visit
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="findByProductId" resultMap="visitmodel">
+    select 
+    *
+    from entrust_visit
+    where entrust_product_id = #{productId,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="save">
+    insert into entrust_visit (id, entrust_product_id, contact_name, 
+      contact_time, communicate_mode, next_follow_time, 
+      create_emp_id, create_time, negotiation_target, 
+      negotiation_schedule)
+    values (#{id,jdbcType=VARCHAR}, #{entrustProductId,jdbcType=VARCHAR}, #{contactName,jdbcType=VARCHAR}, 
+      #{contactTime,jdbcType=TIMESTAMP}, #{communicateMode,jdbcType=VARCHAR}, #{nextFollowTime,jdbcType=TIMESTAMP}, 
+      #{createEmpId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{negotiationTarget,jdbcType=LONGVARCHAR}, 
+      #{negotiationSchedule,jdbcType=LONGVARCHAR})
+  </insert>
+ 
+  <update id="update">
+    update entrust_visit
+    <set >
+      <if test="entrustProductId != null" >
+        entrust_product_id = #{entrustProductId,jdbcType=VARCHAR},
+      </if>
+      <if test="contactName != null" >
+        contact_name = #{contactName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactTime != null" >
+        contact_time = #{contactTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="communicateMode != null" >
+        communicate_mode = #{communicateMode,jdbcType=VARCHAR},
+      </if>
+      <if test="nextFollowTime != null" >
+        next_follow_time = #{nextFollowTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createEmpId != null" >
+        create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="negotiationTarget != null" >
+        negotiation_target = #{negotiationTarget,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="negotiationSchedule != null" >
+        negotiation_schedule = #{negotiationSchedule,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

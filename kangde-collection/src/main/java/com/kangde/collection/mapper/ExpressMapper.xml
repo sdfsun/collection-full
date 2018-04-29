@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.ExpressMapper">
+	<resultMap id="model" type="com.kangde.collection.model.ExpressModel">
+	 <id column="id" property="id" />
+    <result column="case_apply_id" property="caseApplyId"  />
+    <result column="name" property="name"  />
+    <result column="card_type" property="cardType"  />
+    <result column="card_num" property="cardNum"  />
+    <result column="his_user_name" property="hisUserName"  />
+    <result column="mobile" property="mobile" />
+    <result column="family_phone" property="familyPhone"  />
+    <result column="family_address" property="familyAddress"  />
+    <result column="email" property="email"  />
+    <result column="qq" property="qq"  />
+    <result column="qq_group" property="qqGroup"  />
+    <result column="wechat" property="wechat"  />
+    <result column="blog" property="blog"  />
+    <result column="consignee_name" property="consigneeName" />
+    <result column="consignee_phone" property="consigneePhone"  />
+    <result column="consignee_address" property="consigneeAddress"  />
+    <result column="unit_name" property="unitName"  />
+    <result column="unit_phone" property="unitPhone"  />
+    <result column="unit_address" property="unitAddress"  />
+    <result column="important_linkman_name" property="importantLinkmanName"  />
+    <result column="important_linkman_cardNum" property="importantLinkmanCardNum"  />
+    <result column="important_linkman_phone" property="importantLinkmanPhone"  />
+    <result column="important_linkman_address" property="importantLinkmanAddress"  />
+    <result column="linkman_name" property="linkmanName"  />
+    <result column="linkman_cardNum" property="linkmanCardNum"  />
+    <result column="linkman_phone" property="linkmanPhone"  />
+    <result column="linkman_address" property="linkmanAddress"  />
+    <result column="linkman_unitName" property="linkmanUnitName"  />
+    <result column="obtain_time" property="obtainTime"  />
+    <result column="create_time" property="createTime"  />
+    <result column="create_emp_id" property="createEmpId"  />
+    <result column="status" property="status"  />
+	</resultMap>
+
+	<insert id="save">
+		insert into express (id, case_apply_id, name, 
+      card_type, card_num, his_user_name, 
+      mobile, family_phone, family_address, 
+      email, qq, qq_group, 
+      wechat, blog, consignee_name, 
+      consignee_phone, consignee_address, unit_name, 
+      unit_phone, unit_address, important_linkman_name, 
+      important_linkman_cardNum, important_linkman_phone, 
+      important_linkman_address, linkman_name, linkman_cardNum, 
+      linkman_phone, linkman_address, linkman_unitName, 
+      obtain_time, create_time, create_emp_id, 
+      status, remark)
+    values (#{id}, #{caseApplyId}, #{name}, 
+      #{cardType}, #{cardNum}, #{hisUserName}, 
+      #{mobile}, #{familyPhone}, #{familyAddress}, 
+      #{email}, #{qq}, #{qqGroup}, 
+      #{wechat}, #{blog}, #{consigneeName}, 
+      #{consigneePhone}, #{consigneeAddress}, #{unitName}, 
+      #{unitPhone}, #{unitAddress}, #{importantLinkmanName}, 
+      #{importantLinkmanCardNum}, #{importantLinkmanPhone}, 
+      #{importantLinkmanAddress}, #{linkmanName}, #{linkmanCardNum}, 
+      #{linkmanPhone}, #{linkmanAddress}, #{linkmanUnitName}, 
+      #{obtainTime}, #{createTime}, #{createEmpId}, 
+      #{status}, #{remark})
+	</insert>
+	
+	
+	 <select id="findByCaseApplyId" resultMap="model" parameterType="java.lang.String" >
+    select 
+    *
+    from express
+    where case_apply_id= #{caseApplyId,jdbcType=VARCHAR}
+  </select>
+</mapper>

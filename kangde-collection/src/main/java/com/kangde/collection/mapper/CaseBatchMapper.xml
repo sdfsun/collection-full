@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CaseBatchMapper">
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.collection.model.CaseBatchModel"
+		id="model" />
+	<resultMap type="com.kangde.collection.model.CaseModel" id="model1" />
+
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		case_batch.id,case_batch.create_time,case_batch.modify_time,case_batch.state,
+		case_batch.status,case_batch.version,case_batch.batch_code,
+		case_batch.entrust_id,case_batch.total_money,case_batch.total_number,
+		case_batch.type_id,case_batch.begin_date,case_batch.area_id,
+		case_batch.end_date,case_batch.actual_end_date,
+		case_batch.remark,case_batch.target,case_batch.collection_id,
+		case_batch.batch_xls, case_batch.batch_log, case_batch.bath_tips,
+		case_batch.modify_emp_id,case_batch.create_emp_id,case_batch.wdc_desc,
+		case_batch.is_upload,case_batch.entrust_product_id,case_batch.upload_time,case_batch.template_type,achieve,case_batch.handle
+	</sql>
+
+	<select id="findBatchCode" resultMap="model">
+	select id,batch_code from case_batch where status!=-1
+	</select>
+	
+	<!-- 显示全部批次管理 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />,
+		entrust.name AS entrustName,
+		er.`case_source_name` AS sourceName
+		FROM
+		case_batch
+		LEFT JOIN entrust ON case_batch.entrust_id = entrust.id
+		LEFT JOIN entrust_case_Product_releation er ON case_batch.entrust_product_id = er.product_id
+		WHERE 1=1 AND STATUS != -1
+		<!-- 名称检索 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.batchCode)">
+			and case_batch.id in ${params.batchCode}
+		</if>
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and case_batch.entrust_id = #{params.entrustId}
+		</if>
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.collectionId)">
+			and collection_id like CONCAT('%','${params.collectionId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.state)">
+			and case_batch.state like CONCAT('%','${params.state}','%'
+			)
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.typeId)">
+			and type_id = #{params.typeId}
+		</if>
+
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.beginDate1)">
+			and begin_date BETWEEN '${params.beginDate}'
+			AND'${params.beginDate1}'
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by create_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		from case_batch
+		<!-- entrust.id entrust.name left join entrust on case_batch.entrust_id 
+			= entrust.id -->
+		where id = #{id} and status!=-1
+	</select>
+	<select id="findByBatchCode" resultMap="model">
+		select
+		<include refid="fields" />
+		from case_batch
+		where batch_code = #{batchCode} and status!=-1
+	</select>
+
+	<select id="findCaseByBatchId" resultMap="model1">
+		SELECT case_info.* FROM
+		case_info
+		LEFT JOIN case_batch
+		ON case_batch.id = case_info.`batch_id`
+		WHERE case_batch.id = #{id} and case_batch.status!=-1 and case_info.status!=-1
+	</select>
+
+	<!-- 保存批次管理 -->
+	<insert id="save">
+		insert into
+		case_batch
+		(id,create_time,state,entrust_product_id,status,version,batch_code,entrust_id,total_money,total_number,
+		type_id,begin_date,area_id,end_date,actual_end_date,remark,target,collection_id,
+		batch_xls, batch_log, bath_tips,modify_emp_id,create_emp_id,
+		is_upload,upload_time,template_type,achieve,handle)
+		values
+		(#{id},#{createTime},#{state},#{entrustProductId},#{status},#{version},#{batchCode},#{entrustId},
+		#{totalMoney},
+		#{totalNumber},#{typeId},#{beginDate},#{areaId},#{endDate},
+		#{actualEndDate},#{remark},#{target},
+		#{collectionId},
+		#{batchXls},#{batchLog},#{bathTips},#{modifyEmpId},#{createEmpId},
+		#{isUpload},#{uploadTime},#{templateType},#{achieve},#{handle})
+	</insert>
+
+	<!-- 更新 -->
+	<update id="update">
+		update
+		case_batch
+		<set>
+		<if test="modifyTime != null">
+			modify_time=#{modifyTime},
+		</if>
+		<if test="entrustId != null">
+			entrust_id=#{entrustId},
+		</if>
+		<if test="typeId != null">
+			type_id=#{typeId},
+		</if>
+		<if test="beginDate != null">
+			begin_date=#{beginDate},
+		</if>
+		<if test="areaId != null">
+			area_id=#{areaId},
+		</if>
+		<if test="endDate != null">
+			end_date=#{endDate},
+		</if>
+		<if test="remark != null">
+			remark=#{remark},
+		</if>
+		<if test="target != null">
+			target=#{target},
+		</if>
+		<if test="handle != null">
+			handle=#{handle},
+		</if>
+		<if test="achieve != null">
+			achieve=#{achieve},
+		</if>
+		</set>
+		where id = #{id}
+	</update>
+	<!-- 撤案和恢复案件 -->
+	<update id="updateForStatus">
+		update
+		case_batch
+		set
+		modify_time=#{modifyTime},
+		state=#{state},
+		wdc_desc=#{wdcDesc}
+		where id =
+		#{id}
+	</update>
+
+	<!-- 软删除 -->
+	<update id="softDelete">
+		update
+		case_batch
+		set
+		status=#{status}
+		where id=#{id}
+	</update>
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from
+		case_batch
+		where id = #{id}
+	</delete>
+
+	<!-- 查找委案截止日期小于now的 -->
+	<select id="findIdWithEnddate" resultType="string">
+		<![CDATA[
+			select id,end_date,to_days(end_date) 
+				from case_batch 
+			where to_days(end_date) < to_days(#{now}) 
+			and state != 2 and status!=-1
+		]]>
+	</select>
+
+	<!-- 更新定时跑批委案到期 -->
+	<update id="updateForTimer">
+		update
+		case_batch
+		set
+		modify_time=#{modifyTime},
+		modify_emp_id=#{modifyEmpId},
+		wdc_desc =
+		#{wdcDesc},
+		state = #{state}
+		where id = #{id}
+	</update>
+
+</mapper>

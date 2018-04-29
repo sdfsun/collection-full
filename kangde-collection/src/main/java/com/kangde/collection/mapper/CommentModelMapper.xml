@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CommentModelMapper">
+	<resultMap id="BaseResultMap" type="com.kangde.collection.model.CommentModel">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="case_id" property="caseId" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="comment_time" property="commentTime" jdbcType="TIMESTAMP" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="create_emp_id" property="createEmpId" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, content, case_id, user_name, comment_time, status, create_emp_id,
+		create_time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from comment
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+
+
+	<select id="query" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from comment
+		where 1=1
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseId)">
+			and case_id='${params.caseId}'
+		</if>
+		order by create_time desc
+	</select>
+
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from comment
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="save" parameterType="com.kangde.collection.model.CommentModel">
+		insert into comment (id, content, case_id,
+		user_name, comment_time, status,
+		create_emp_id, create_time)
+		values (#{id,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+		#{caseId,jdbcType=VARCHAR},
+		#{userName,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER},
+		#{createEmpId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.kangde.collection.model.CommentModel">
+		insert into comment
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+			<if test="caseId != null">
+				case_id,
+			</if>
+			<if test="userName != null">
+				user_name,
+			</if>
+			<if test="commentTime != null">
+				comment_time,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="createEmpId != null">
+				create_emp_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=VARCHAR},
+			</if>
+			<if test="caseId != null">
+				#{caseId,jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="commentTime != null">
+				#{commentTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="createEmpId != null">
+				#{createEmpId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.kangde.collection.model.CommentModel">
+		update comment
+		<set>
+			<if test="content != null">
+				content = #{content,jdbcType=VARCHAR},
+			</if>
+			<if test="caseId != null">
+				case_id = #{caseId,jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				user_name = #{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="commentTime != null">
+				comment_time = #{commentTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="createEmpId != null">
+				create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.kangde.collection.model.CommentModel">
+		update comment
+		set content = #{content,jdbcType=VARCHAR},
+		case_id = #{caseId,jdbcType=VARCHAR},
+		user_name = #{userName,jdbcType=VARCHAR},
+		comment_time = #{commentTime,jdbcType=TIMESTAMP},
+		status = #{status,jdbcType=INTEGER},
+		create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.quartz.mapper.TimerTaskLogMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.quartz.model.TimerTaskLogModel"
+		id="model" />
+
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+	`id`, `task_name`, `state`, 
+	`time_consuming`, `server_host_name`, 
+	`server_host_addr`,`create_time`, 
+	`start_time`, `previous_fire_time`, `next_fire_time`
+	</sql>
+
+	<!-- 查询全部 -->
+	<select id="findAll" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		sys_timer_task_log
+	</select>
+
+	<!-- 查询 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		sys_timer_task_log
+		where 1=1
+		<!-- 状态检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.state)">
+			and state = #{params.state}
+		</if>
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.taskName)">
+			and task_name like CONCAT('%','${params.taskName}','%' )
+		</if>
+		<!-- 主机 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.serverHost)">
+			and
+			(server_host_name like CONCAT('%','${params.serverHost}','%' )
+			or server_host_addr
+			like CONCAT('%','${params.serverHost}','%' )
+			)
+		</if>
+		<!-- 调度时间 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.startTimeS) and @org.apache.commons.lang.StringUtils@isNotBlank(params.startTimeE)">
+			and start_time BETWEEN #{params.startTimeS} and #{params.startTimeE}
+		</if>
+		order by create_time desc
+	</select>
+
+	<!-- 保存 -->
+	<insert id="save">
+		INSERT INTO `sys_timer_task_log`
+		(`id`, `task_name`, `state`, `time_consuming`, `server_host_name`,
+		`server_host_addr`,
+		`exception_info`, `create_time`,
+		`start_time`,`previous_fire_time`,`next_fire_time`)
+		VALUES
+		(#{id},#{taskName}, #{state},#{timeConsuming}, #{serverHostName},#{serverHostAddr},
+		#{exceptionInfo}, #{createTime},
+		#{startTime},#{previousFireTime},#{nextFireTime})
+	</insert>
+
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from sys_timer_task_log where id = #{id}
+	</delete>
+
+	<!-- ID查询,只查异常信息字段 -->
+	<select id="findById" resultMap="model">
+		select
+		id,exception_info
+		from sys_timer_task_log
+		where id = #{id}
+	</select>
+
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		sys_timer_task_log
+		where ${fieldName} ${expression} #{fieldValue}
+	</select>
+
+</mapper>

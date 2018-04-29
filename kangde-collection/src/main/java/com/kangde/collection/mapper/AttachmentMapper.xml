@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.AttachmentMapper">
+	<resultMap id="BaseResultMap" type="com.kangde.collection.model.AttachmentModel">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="size" property="size" jdbcType="BIGINT" />
+		<result column="path" property="path" jdbcType="VARCHAR" />
+		<result column="isJunk" property="isjunk" jdbcType="CHAR" />
+		<result column="date" property="date" jdbcType="TIMESTAMP" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="fk_id" property="fkId" jdbcType="VARCHAR" />
+		<result column="file_type" property="fileType" jdbcType="VARCHAR" />
+		<result column="file_format" property="fileFormat" jdbcType="VARCHAR" />
+		<result column="create_emp_name" property="createEmpName"
+			jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modify_emp_name" property="modifyEmpName"
+			jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, size, path, isJunk, date, type, fk_id, file_type,
+		file_format,
+		create_emp_name,
+		create_time, modify_emp_name, modify_time
+	</sql>
+	<select id="findById" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from attachment
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<select id="findByCaseId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from attachment
+		where fk_id= #{caseId,jdbcType=VARCHAR} and isJunk='1'
+		order by date desc
+	</select>
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from
+		attachment
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+
+
+	<update id="updateById" parameterType="com.kangde.collection.model.AttachmentModel">
+		update attachment
+		set name = #{name,jdbcType=VARCHAR},
+		size = #{size,jdbcType=BIGINT},
+		path = #{path,jdbcType=VARCHAR},
+		isJunk = #{isjunk,jdbcType=CHAR},
+		date = #{date,jdbcType=TIMESTAMP},
+		type = #{type,jdbcType=VARCHAR},
+		fk_id = #{fkId,jdbcType=VARCHAR},
+		file_type = #{fileType,jdbcType=VARCHAR},
+		file_format = #{fileFormat,jdbcType=VARCHAR},
+		create_emp_name = #{createEmpName,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		modify_emp_name = #{modifyEmpName,jdbcType=VARCHAR},
+		modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+
+
+	<update id="mulUpdate">
+		update attachment set isJunk='0'
+		where id in
+		<foreach item="item" index="index" collection="array" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<insert id="insert" parameterType="com.kangde.collection.model.AttachmentModel">
+		insert into attachment (id, name, size,
+		path, isJunk, date,
+		type, fk_id, file_type,
+		file_format, create_emp_name, create_time,
+		modify_emp_name, modify_time)
+		values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+		#{size,jdbcType=BIGINT},
+		#{path,jdbcType=VARCHAR}, #{isjunk,jdbcType=CHAR}, #{date,jdbcType=TIMESTAMP},
+		#{type,jdbcType=VARCHAR}, #{fkId,jdbcType=VARCHAR},
+		#{fileType,jdbcType=VARCHAR},
+		#{fileFormat,jdbcType=VARCHAR}, #{createEmpName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+		#{modifyEmpName,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP})
+	</insert>
+
+
+	<select id="queryCount" resultType="java.lang.Integer">
+		SELECT	count(*) FROM attachment WHERE isJunk = '1'
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.businessId)">
+			and fk_id='${params.businessId}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.type)">
+			and type='${params.type}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.isJunk)">
+			and is_junk='${params.isJunk}'
+		</if>
+	</select>
+	
+</mapper>

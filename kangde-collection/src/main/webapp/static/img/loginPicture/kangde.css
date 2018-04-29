@@ -1,0 +1,94 @@
+
+body{
+	background: url(../beijingse_01.png);
+
+}
+.box_1{
+	position:fixed;
+	top:50%;
+	left:50%;
+	margin-top:-118px;
+	margin-left:-960px;
+	}
+.wrap{
+	width: 500px;
+	margin: 118px auto;
+	text-align: center;
+	position:fixed;
+	top:50%;
+	margin-top:-272px;
+	left:50%;
+	margin-left:-252px;
+	
+}
+.form{
+	width:480px;
+	height:336px;
+	background:#0080b4;
+	border:1px solid #0079a9;
+	border-radius:12px;
+	margin: 0 auto;
+	-webkit-box-shadow:0 0 20px #003b53;
+	-moz-box-shadow:0 0 20px #003b53;
+	box-shadow:2px 0 20px #003b53;
+}
+.logo{
+	padding:14px 0 20px 0;
+	}
+h2{
+	font-family:"微软雅黑";
+	font-size:30px;
+	color:#fff;
+	padding-top:14px;
+	}
+span{
+	font-family:"微软雅黑";
+	font-size:14px;
+	color:#fff;
+	}
+.one img{
+	padding-left:70px;
+	}
+.one input{
+		background:#c0e6ff;
+		width:258px;
+		height:40px;
+		padding-left:20px;
+		border-radius:0 2px 2px 0;
+	}	
+.one img,.one input{
+	float:left;
+	}	
+.two a{
+	display:block;
+	background:#62c3ea;
+	border:1px solid #46b7e5;
+	width:244px;
+	line-height:40px;
+	margin:0 auto;
+	border-radius:2px;
+	}
+.two a:hover{
+	background:#004d6c;
+	border:1px solid #004460;
+	}	
+.shuru .one{
+	padding:20px 0 46px 7px;;
+	}	
+.shuru .two{
+	padding-top:38px;
+	}	
+.shuru .button{
+	font-family:"微软雅黑";
+	font-size:24px;
+	color:#fff;
+	letter-spacing:60px;
+	padding:0 11px 0 69px;
+	text-decoration:none;
+	}	
+	
+	
+	
+	
+	
+	

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.sys.mapper.DictionaryMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.DictionaryModel" id="model" />
+
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		id, create_time, modify_time, version, status, name, dict_key, value,
+		remark, order_no,parent_id,path 
+	</sql>
+	<!-- where条件 -->
+	<sql id="where">
+		where 1=1
+	</sql>
+	<!-- 排序 -->
+	<sql id="sort">
+		order by order_no
+	</sql>
+	<!-- 表名称 -->
+	<sql id="table">
+		sys_dictionary
+	</sql>
+	<!-- 保存 -->
+	<insert id="save">
+		insert into
+		<include refid="table"/>
+		(id, create_time, modify_time,
+		version, status, name,
+		dict_key, value, remark,
+		order_no, parent_id,path)
+		values (#{id}, #{createTime}, #{modifyTime},
+		#{version}, #{status}, #{name},
+		#{dictKey}, #{value}, #{remark},
+		#{orderNo}, #{parentId},#{path})
+	</insert>
+	<!-- 更新 -->
+	<update id="update">
+		update
+		<include refid="table" />
+		set
+		modify_time = #{modifyTime},
+		version = version+1,
+		status = #{status},
+		name = #{name},
+		dict_key = #{dictKey},
+		path = #{path},
+		value = #{value},
+		remark = #{remark},
+		order_no = #{orderNo},
+		parent_id = #{parentId}
+		where id = #{id}
+		and
+		version = #{version}
+	</update>
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from
+		<include refid="table" />
+		where id = #{id}
+	</delete>
+	<!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select 
+		<include refid="fields" />
+		from 
+		<include refid="table" />
+		where id = #{id}
+	</select>
+
+	<!-- 查询 -->
+	<select id="query" resultMap="model">
+		select 
+		<include refid="fields" />
+		from 
+		<include refid="table" />
+		<include refid="where" />
+		<!-- 字典路径检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.dictPath)">
+			and path like CONCAT('${params.dictPath}','/%' )
+		</if>
+		<include refid="sort" />
+	</select>
+
+	<!-- 查找最大排序号 -->
+	<select id="findMaxSort" resultType="int">
+		select max(order_no) from
+		<include refid="table" />
+	</select>
+
+	<!-- 查询顶级节点 -->
+	<select id="findTops" resultMap="model">
+		select 
+		<include refid="fields" />
+		from 
+		<include refid="table" />
+		<include refid="where" />
+		and parent_id is null
+		<include refid="sort" />
+	</select>
+	
+	<!-- 通过父节点查询子节点 -->
+	<select id="findByParentId" resultMap="model">
+		select 
+		<include refid="fields" />
+		from 
+		<include refid="table" />
+		<include refid="where" />
+		and parent_id = #{id}
+		<include refid="sort" />
+	</select>
+	
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select 
+		<include refid="fields" />
+		from 
+		<include refid="table" />
+		where ${fieldName} ${expression} #{fieldValue} 
+		<include refid="sort" />
+	</select>
+
+</mapper>

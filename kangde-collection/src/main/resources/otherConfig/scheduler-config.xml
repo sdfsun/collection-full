@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+      http://www.springframework.org/schema/beans/spring-beans-4.2.xsd  
+      http://www.springframework.org/schema/context  
+      http://www.springframework.org/schema/context/spring-context.xsd  
+      http://www.springframework.org/schema/mvc  
+      http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+	
+	<!-- 定时任务调度器工厂 -->
+	<bean id="schedulerFactoryBean"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="configLocation" value="classpath:${quartz.configFile}" />
+	</bean>
+	
+	<!-- 定时调度管理器 -->
+	<bean id="timerTaskSchedulerManager" class="com.kangde.quartz.manager.TimerTaskSchedulerManager">
+		<property name="scheduler" ref="schedulerFactoryBean" />
+		<property name="timerTaskLoaders">
+			<list>
+				<!--初始化加载器类型 -->
+				<bean class="com.kangde.quartz.manager.InitTimerTaskLoader" />
+			</list>
+		</property>
+		<property name="jobListeners">
+			<list>
+				<!-- 日志监控类型 -->
+				<bean class="com.kangde.quartz.manager.TimerTaskLogListener" />
+			</list>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.TimelenOutStatisticsMapper" >
+  <resultMap id="model" type="com.kangde.collection.model.TimelenOutStatistics" >
+	<id column="id" property="id" jdbcType="VARCHAR" />
+	<result column="timeLen" property="timeLen" jdbcType="VARCHAR" />
+    <result column="cno" property="cno" jdbcType="VARCHAR" />
+    <result column="empId" property="empId" jdbcType="VARCHAR" />
+    <result column="empName" property="empName" jdbcType="VARCHAR" />
+    <result column="orgId" property="orgId" jdbcType="VARCHAR" />
+    <result column="callOutCount" property="callOutCount" jdbcType="INTEGER" />
+    <result column="callOutConnectCount" property="callOutConnectCount" jdbcType="INTEGER" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="query" resultMap="model" >
+  <![CDATA[
+SELECT tj.empName,tj.empId,tj.orgId,tj.cno, 
+GROUP_CONCAT(timeLen ORDER BY timeLen) AS timeLen,
+GROUP_CONCAT(callOutCount ORDER BY timeLen) callOutCount,
+GROUP_CONCAT(callOutConnectCount ORDER BY timeLen) AS callOutConnectCount
+FROM 
+(
+SELECT emp_name AS empName, emp_id AS empId, org_id AS orgId, `timeLen`, cno, 
+SUM(phoneCountTotal) AS callOutCount, #致电次数 
+SUM(connectCountTotal) AS callOutConnectCount#致电接通次数 
+FROM `timelen_out_statistics`
+WHERE 1=1 ]]>
+    <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+			and (DATE_FORMAT(createTime,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+	</if>
+	<![CDATA[
+GROUP BY `timeLen`, cno
+) AS tj
+    WHERE 1=1 ]]>
+    <!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+			and (DATE_FORMAT(createTime,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+	</if> -->
+	<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+	and orgId IN (
+			SELECT
+				id
+			FROM
+				sys_organization
+			WHERE
+				path LIKE CONCAT((
+					SELECT
+						path
+					FROM
+						sys_organization
+					WHERE
+						id = #{params.orgId}
+				), '%')
+		)
+	</if> 
+    GROUP BY tj.cno 
+    <!-- 排序 -->
+	<choose>
+		<when test="_parameter.hasOrder()">
+			order by ${sort}
+			${order}
+		</when>
+		<otherwise>
+			ORDER BY CONVERT(tj.empName USING gbk) DESC, timeLen ASC
+		</otherwise>
+	</choose>
+  </select>
+</mapper>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CaseDetailMapper">
+	<resultMap type="com.kangde.collection.dto.CaseDetailDto" id="model">
+	</resultMap>
+	<!-- 案件详细信息查询 -->
+	<select id="queryDetailByCaseId" resultMap="model">
+		SELECT
+		c.id,
+		c.case_last_money,
+		c.case_last_date,
+		c.his_remark,
+		c.case_code, c.state,
+		c.collec_state_id, c.batch_id, c.case_date,
+		c.case_backdate, c.cus_no, c.user_name,
+		c.userId, c.account_no,
+		c.case_app_no,
+		c.case_file_no, c.case_name, c.case_sex,
+		c.case_is_marriage, c.case_birthday, c.case_age,
+		c.area_id,
+		c.bank_account,
+		c.case_house_id, c.case_card, c.case_num,
+		c.case_num_id, c.case_position, c.case_position_level,
+		c.account_name,
+		c.lend_institution, ifnull(c.principal, 0) principal,
+		ifnull(c.surplus_principal,0) surplus_principal,
+		ifnull(c.breach, 0)
+		breach, ifnull(c.case_money,0) case_money,
+		c.province_name,
+		c.city_name,
+		ifnull(c.account_money,0) account_money, c.loan_contract,
+		ifnull(c.loan_money,0) loan_money,
+		c.loan_rate, c.loan_startdate,
+		c.loan_enddate,
+		ifnull(c.contract_money,0) contract_money,
+		ifnull(c.overdue_money,0) overdue_money, ifnull(c.overdue_principal,0)
+		overdue_principal,
+		c.overdue_expense, c.overdue_age,
+		ifnull(c.overdue_penalty,0) overdue_penalty,
+		ifnull(c.overdue_interest,0) overdue_interest,c.overdue_days,
+		c.overdue_date,
+		c.overdue_periods, c.once_overdue_periods,
+		ifnull(c.overdue_loan,0) overdue_loan,
+		ifnull(c.overdue_principal_balance,0) overdue_principal_balance,
+		ifnull(c.overdue_compound,0) overdue_compound,
+		c.social_security_no,
+		c.agent_rate, c.entrust_rate,
+		c.credit_id, c.stay_periods,
+		ifnull(c.month_repayment,0) month_repayment,
+		ifnull(c.last_repayment,0) last_repayment, ifnull(c.stay_principal,0)
+		stay_principal, ifnull(c.stay_expense,0) stay_expense,
+		ifnull(c.stay_interest,0) stay_interest, c.bill, c.repayment_periods,
+		c.commodity, c.company_name, c.company_phone,
+		c.company_address,
+		c.company_zipcode, c.mobile1,
+		c.mobile2, c.family_phone,
+		c.family_address,
+		c.family_zipcode, c.domicile, c.mark_id,
+		c.user_name,
+		c.is_verify, c.verify_date,
+		c.repayment_type, c.protocol_no,
+		c.loan_area,
+		ifnull(c.actual_loan_money, 0) actual_loan_money,
+		ifnull(c.interest_money,0) interest_money, c.penalty_reference,
+		c.compound_interest_reference, c.quota_no, c.quota_manager1,
+		c.quota_manager2, c.manager_phone, c.collateral_no,
+		c.collateral_id,
+		c.collateral_name, c.collateral_address,
+		c.collateral_evalua,
+		c.repay_date, c.total_construc,
+		c.regione, c.sub_center, c.sales_dep,
+		ifnull(c.consult_fee,0) consult_fee, ifnull(c.audit_fee,0) audit_fee,
+		ifnull(c.service_fee,0) service_fee,
+		ifnull(c.adviser_fee,0)
+		adviser_fee, ifnull(c.fee_total,0) fee_total, c.initial_repay,
+		c.due_periods, ifnull(c.penalty_days,0) penalty_days,
+		ifnull(c.remain_history,0) remain_history,
+		c.debit_bank_code,
+		c.debit_bank_name, c.debit_account,
+		c.relief_policy,
+		c.case_assigned_id, c.case_assign_id,
+		c.case_assign_name,
+		c.case_assign_time, c.create_emp_id,
+		c.old_collec_record, c.remark1,
+		c.remark2,c.org_id,c.org_name,
+		c.next_follow_time,
+		ifnull(h.case_money,
+		0) as historymoney ,
+		b.batch_code,b.entrust_id,
+		b.template_type,
+		b.`name` as entrustName,
+		l.`name` as linkManName,l.card_no as linkManCardNo,l.relation as
+		linkManRelation,l.mobile as linkManmobile,l.family_phone as
+		linkManFamilyPhone,l.unit_phone as linkManUnitPhone,
+		(SELECT max(create_time) from phone_record where case_id=#{id} and
+		pr_cat=0) as lastPhone,
+		(SELECT max(create_time) from
+		visit_record where case_id=#{id} and state=4) as lastVisit,
+		ifnull(xxx.paid_num,0) paid_num,
+		ifnull(xxx.cp_money,0) cp_money,
+		ifnull(xxx.ptp_money,0) ptp_money,
+		ifnull(c.in_derate, 0) in_derate,
+		ifnull(c.out_derate, 0) out_derate,
+		c.color,
+		c.remark1,
+		c.remark2,
+		c.cus_introduc,
+		c.start_card_date,
+		c.stop_card_date,
+		c.credit_limit,
+		case_car_loan.dealer,
+		case_car_loan.price,
+		case_car_loan.lice_no,
+		case_car_loan.brand,
+		case_car_loan.number,
+		case_car_loan.vin_no,
+		case_car_loan.engine_no,
+		
+		c.case_birthday,
+		c.social_card_no,
+		c.policy_expire,
+		c.repay_date,
+		c.case_department,
+		c.collec_remark,
+		c.email,
+		c.currency,
+		c.old_collec_record,
+		c.repayment_term,
+		c.collec_type,
+		c.late_fee
+		FROM
+		case_info c LEFT JOIN (SELECT case_batch.*, entrust.name from
+		case_batch LEFT JOIN entrust on case_batch.entrust_id=entrust.id) b
+		ON
+		c.batch_id=b.id
+		LEFT JOIN
+		(SELECT MIN(create_time),case_id,case_money
+		FROM case_history where case_id=#{id}) h
+		ON h.case_id = c.id
+		LEFT JOIN
+		(SELECT
+		MIN(create_time),case_id,`name`,card_no,relation,mobile,family_phone,unit_phone
+		FROM case_linkman where case_id=#{id}) l
+		ON l.case_id = c.id
+		LEFT JOIN (SELECT #{id} as case_id,
+		sum(if(state=2, IFNULL(paid_num,0), 0))
+		as paid_num, sum(if(state=1, IFNULL(cp_money,0), 0)) as cp_money,
+		sum(if(state=0, IFNULL(ptp_money,0), 0))
+		as ptp_money
+		from case_paid where case_id=#{id})xxx
+		on xxx.case_id=c.id
+		left join case_car_loan
+		on case_car_loan.case_id=c.id
+		WHERE c.id=#{id}
+	</select>
+</mapper>

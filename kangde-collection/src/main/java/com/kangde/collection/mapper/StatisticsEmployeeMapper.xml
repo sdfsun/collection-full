@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.StatisticsEmployeeMapper">
+	<!-- 返回值类型 -->
+	<!-- 解析字段 dto 里的表字段 -->
+	<resultMap id="modelEmployee" type="com.kangde.collection.dto.StatisticsEmployeeDto">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="entrustId" property="entrustId" />
+		<result column="emId" property="emId" />
+		<result column="orgId" property="orgId" />
+		<result column="case_count" property="case_count" />
+		<result column="total_case_money" property="total_case_money" />
+		<result column="ptp_money" property="ptp_money" />
+		<result column="cp_money" property="cp_money" />
+		<result column="target" property="target" />
+		<result column="achieve" property="achieve" />
+		<result column="new_case_count" property="new_case_count" />
+		<result column="lose_case_count" property="lose_case_count" />
+		<result column="involve_case_count" property="involve_case_count" />
+		<result column="negotiation_case_count" property="negotiation_case_count" />
+		<result column="family_case_count" property="family_case_count" />
+		<result column="someone_case_count" property="someone_case_count" />
+		<result column="oneself_case_count" property="oneself_case_count" />
+		<result column="paid_num" property="paid_num" />
+		<result column="batch_code" property="batch_code" />
+		<result column="begin_date" property="begin_date" />
+		<result column="end_date" property="end_date" />
+		<result column="paid_time" property="paid_time" />
+		<result column="normalDate" property="normalDate" />
+		<result column="normalDate1" property="normalDate1" />
+		
+		<!-- 基础还款 -->
+		<result column="average_count" property="average_count" />
+		<result column="la_count" property="la_count" />
+		<result column="la_case_money" property="la_case_money" />
+		<result column="cp_case_count" property="cp_case_count" />
+		<result column="paid_case_count" property="paid_case_count" />
+		<result column="paid_rate" property="paid_rate" />
+		<!-- 12.2新加 -->
+		<result column="ptp_money" property="ptp_money" />
+		<result column="ptp_case_count" property="ptp_case_count" />
+		<result column="zlz_paid_num" property="zlz_paid_num" />
+		<result column="zlz_paid_case_count" property="zlz_paid_case_count" />
+		<result column="paid_count_rate" property="paid_count_rate" />
+		<result column="paid_money_rate" property="paid_money_rate" />
+		<!-- 业绩 -->
+		<result column="back_paid" property="back_paid" />
+		<result column="cp_back_paid" property="cp_back_paid" />
+		<result column="average_rate" property="average_rate" />
+		<result column="hun_average_out" property="hun_average_out" />
+		<result column="part_average_out" property="part_average_out" />
+		<result column="rate" property="rate" />
+	
+		<!-- 风控投入 -->
+		<result column="phone_count" property="phone_count" />
+		<result column="visit_count" property="visit_count" />
+		<result column="apply_count" property="apply_count" />
+		<result column="assist_count" property="assist_count" />
+		
+		<result column="stop_case_count" property="stop_case_count" />
+		<result column="back_case_count" property="back_case_count" />
+		<result column="promise_case_count" property="promise_case_count" />
+		<result column="cheat_case_count" property="cheat_case_count" />
+	</resultMap>
+	
+<!-- 业绩统计 -->
+	<select id="queryEmployee" resultMap="modelEmployee">
+	<![CDATA[
+	SELECT
+	tj.name,
+	tj.emId,
+	tj.orgId,
+	tj.state,	
+	tj.case_count,
+	tj.total_case_money,
+	tj.cp_money,
+	tj.cp_back_paid,
+	tj.paid_num,
+	tj.back_paid,
+	tj.cp_case_count,
+	tj.paid_case_count,
+	tj.rate
+		FROM 
+
+(
+#确认还款率【已确认还款案件数量（已确认的还款）/CP确认案件还款数量（cp正常和已确认的还款）】
+ SELECT 
+		em.user_name AS NAME,em.id AS emId, em.`status` AS state,em.org_id as orgId,
+		ci.case_count,
+		CONVERT(IFNULL(ci.total_case_money, 0),DECIMAL(18,2)) AS total_case_money,
+		IFNULL(cp1.cp_money, 0) AS cp_money,
+		CONVERT(IFNULL(cp1.cp_back_paid, 0),DECIMAL(18,2)) AS cp_back_paid,
+		IFNULL(cp2.paid_num, 0) AS paid_num,
+		CONVERT(IFNULL(cp2.back_paid, 0),DECIMAL(18,2)) AS back_paid,
+		cp1.cp_case_count,
+		cp2.paid_case_count,
+		cp2.rate AS rate
+		
+			
+FROM `employee_info` em 
+#案件数量
+#案件金额（委案金额之和）委案日期<=D2且退案日期>=D1的案件
+LEFT JOIN 
+(
+		SELECT 
+		COUNT(DISTINCT case_info.id) AS case_count,
+		case_info.case_backdate,
+		case_info.`case_date`,
+		case_info.`case_assigned_id`,
+		SUM(case_info.case_money) AS total_case_money
+
+		FROM case_info  
+
+		WHERE 1=1 and case_info.status!=-1 
+			#AND case_info.org_id IS NOT NULL
+			#AND (begin_date <='2016-11-22' AND cb.end_date >= '2016-06-25')
+	 	]]>
+ 		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+  			and (case_date &lt;= '${params.normalDate1}' and case_info.case_backdate &gt;= '${params.normalDate}')
+ 		</if> 
+  		<![CDATA[	
+		GROUP BY case_assigned_id
+) AS ci  ON ci.case_assigned_id = em.id 
+#未确认还款（cp正常的cp金额之和） D1=<CP日期<=D2且还款状态为CP正常
+#未确认佣金
+LEFT JOIN 
+(
+		SELECT 
+		cp.cp_time,
+		cp.`se_no`,
+		SUM(cp.cp_money) AS cp_money,
+		SUM(IFNULL(cp.back_paid, 0)) AS cp_back_paid,
+		COUNT(DISTINCT cp.case_id) AS cp_case_count
+		
+		FROM case_paid cp 
+		LEFT JOIN case_info ON cp.case_id=case_info.id 
+		
+		WHERE 1=1 and case_info.status!=-1
+			#AND case_info.org_id IS NOT NULL 
+			AND cp.state = '1'
+			#AND ('2016-01-01' <= cp_time <= '2016-01-31')
+ 	 	]]>
+  		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+			and (DATE_FORMAT(cp_time,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+ 		</if> 
+  		<![CDATA[	
+		GROUP BY se_no
+) AS cp1  ON cp1.se_no = em.id 
+#已确认还款（已确认的已还款金额） D1=<还款日期<=D2
+#已确认佣金
+#平均费率=佣金/已确认还款
+LEFT JOIN 
+(
+		SELECT 
+		cp.paid_time,
+		cp.`se_no`,
+		SUM(cp.paid_num) AS paid_num,
+		SUM(IFNULL(cp.back_paid, 0)) AS back_paid,
+		CONVERT((IFNULL(SUM(cp.back_paid), 0)*100) / (IFNULL(SUM(cp.paid_num), 0)),DECIMAL(18,2)) AS rate,
+		COUNT(DISTINCT cp.case_id)AS paid_case_count
+		
+		FROM case_paid cp 
+		LEFT JOIN case_info ON cp.case_id=case_info.id 
+		
+		WHERE 1=1 and case_info.status!=-1
+			#AND case_info.org_id IS NOT NULL 
+			AND cp.state='2'
+			#AND ('2016-01-01' <= paid_time <= '2016-01-31')
+ 		]]>
+ 		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+ 			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+  			and (DATE_FORMAT(paid_time,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+  		</if> 
+  		<![CDATA[	
+		GROUP BY se_no
+) AS cp2  ON cp2.se_no = em.id 
+
+) AS tj WHERE 1=1]]>
+		
+		<!-- 风控员 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.emId)">
+		and tj.emId in 
+		<foreach item="item" index="index" collection="params.emIds"
+				open="(" separator="," close=")">
+				#{params.emIds[${index}]}
+			</foreach>
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+		and orgId IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		</if>
+		<!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.beginDate1)">
+			and (begin_date BETWEEN '${params.beginDate}' AND'${params.beginDate1}')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.paidTime1)">
+			and (paid_time BETWEEN '${params.paidTime}' AND'${params.paidTime1}')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+			and (begin_date &gt; '${params.normalDate}' or end_date &lt; '${params.normalDate1}')
+		</if>  -->
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				ORDER BY tj.state DESC, CONVERT(tj.name USING gbk) ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+<!-- 批次基础还款统计 -->
+	<select id="queryEmployeePaid" resultMap="modelEmployee">
+	<![CDATA[
+	SELECT
+
+	tj.name,
+	tj.emId,
+	tj.orgId,
+	tj.state,	
+	tj.case_count,
+	tj.total_case_money,
+		tj.la_count,
+	tj.la_case_money,
+	tj.average_count,
+	tj.cp_money,
+	tj.paid_num,
+	tj.cp_case_count,
+	tj.paid_case_count,
+	tj.paid_rate,
+		tj.ptp_money,
+		tj.ptp_case_count,
+		tj.zlz_paid_num,
+		tj.zlz_paid_case_count,
+		tj.paid_count_rate,
+		tj.paid_money_rate
+	
+		FROM 
+(
+#确认还款率【已确认还款案件数量（已确认的还款）/CP确认案件还款数量（cp正常和已确认的还款）】
+ SELECT 
+		em.user_name AS NAME,em.id AS emId, em.`status` AS state,em.org_id AS orgId,
+		ci.case_count,
+		IFNULL(ci.average_count,0) AS average_count,
+		CONVERT(IFNULL(ci.total_case_money, 0),DECIMAL(18,2)) AS total_case_money,
+		la.case_count AS la_count,
+		CONVERT(IFNULL(la.total_case_money, 0),DECIMAL(18,2)) AS la_case_money,
+		cp0.ptp_money,
+		cp0.ptp_case_count,
+		IFNULL(cp1.cp_money, 0) AS cp_money,
+		IFNULL(cp2.paid_num, 0) AS paid_num,
+		cp1.cp_case_count,
+		cp2.paid_case_count,
+		cp3.zlz_paid_num,
+		cp3.zlz_paid_case_count,
+		
+IFNULL(CONVERT((IFNULL(cp2.paid_case_count, 0)*1000) / IFNULL(ci.case_count, 0),DECIMAL(18,2)),0) AS paid_count_rate,
+IFNULL(CONVERT((IFNULL(cp2.paid_num, 0)*1000) / IFNULL(ci.total_case_money, 0),DECIMAL(18,2)),0) AS paid_money_rate,				
+		IFNULL(CONVERT((IFNULL(cp2.paid_case_count, 0) - IFNULL(cp3.zlz_paid_case_count, 0))*100 / (IFNULL(cp1.cp_case_count, 0) + IFNULL(cp2.paid_case_count, 0) - IFNULL(cp3.zlz_paid_case_count, 0)) ,DECIMAL(18,2)),0)
+		AS paid_rate
+
+FROM `employee_info` em 
+#案件数量
+#案件金额（委案金额之和）委案日期<=D2且退案日期>=D1的案件
+#平均案件金额（委案金额（案件的）/案件数量）
+LEFT JOIN 
+(
+		SELECT 
+		COUNT(DISTINCT case_info.id) AS case_count,case_info.`case_assigned_id`,
+		case_info.case_backdate,case_info.`case_date`,
+		SUM(case_info.case_money) AS total_case_money,
+		CONVERT(IFNULL(SUM(case_info.case_money), 0)/(IFNULL(COUNT(DISTINCT case_info.id), 0)),DECIMAL(18,2)) AS average_count
+
+		FROM case_info
+		
+		WHERE 1=1 and case_info.status!=-1
+			#AND case_info.org_id IS NOT NULL
+			#and (case_info.`case_date` <='2016-11-25' and case_info.case_backdate >= '2016-06-22')
+ 		 		]]>
+ 		 <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+  			and (case_info.`case_date` &lt;= '${params.normalDate1}' and case_info.case_backdate &gt;= '${params.normalDate}')
+  		</if> 
+  		<![CDATA[		
+		GROUP BY `case_assigned_id`
+			
+) AS ci  ON ci.`case_assigned_id` = em.id 
+LEFT JOIN 
+(
+		SELECT 
+		COUNT(DISTINCT case_info.id) AS case_count,case_info.`case_assigned_id`,
+		case_info.case_backdate,case_info.`case_date`,
+		SUM(case_info.case_money) AS total_case_money
+
+		FROM case_info
+		
+		WHERE 1=1 and case_info.status!=-1
+			#AND case_info.org_id IS NOT NULL
+			#and (case_info.`case_date` <='2016-11-25' and case_info.case_backdate >= '2016-06-22')
+ 		 	]]>
+ 		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+ 			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+ 			and (DATE_FORMAT(case_info.case_date,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+ 		</if> 
+ 		<![CDATA[	
+		GROUP BY `case_assigned_id`
+			
+) AS la ON la.`case_assigned_id` = em.id 
+LEFT JOIN 
+(
+		SELECT 
+		cp.`se_no`,cp.`ptp_time`,
+		SUM(cp.`ptp_money`) AS ptp_money,
+		COUNT(DISTINCT cp.case_id)AS ptp_case_count
+		
+		FROM case_paid cp 
+		LEFT JOIN case_info ON cp.case_id=case_info.id
+		WHERE 1=1 and case_info.status!=-1
+		#AND case_info.org_id IS NOT NULL 
+		AND cp.state='0'
+			#AND ('2016-11-25'>= paid_time >= '2016-06-22')
+ 		]]>
+  		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+  			and (DATE_FORMAT(cp.`ptp_time`,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+  		</if> 
+  		<![CDATA[		
+		GROUP BY se_no
+			
+) AS cp0  ON cp0.se_no = em.id 
+#未确认还款（cp正常的cp金额之和） D1=<CP日期<=D2且还款状态为CP正常
+#CP确认案件还款数量（cp正常和已确认的还款）
+
+
+#未确认还款
+#已确认还款
+
+#确认还款率（已确认还款案件数量/CP确认案件还款数量)
+LEFT JOIN 
+(
+		SELECT 
+		cp.cp_time,cp.`se_no`,
+		SUM(cp.cp_money) AS cp_money,
+		COUNT(DISTINCT cp.case_id) AS cp_case_count
+		
+		FROM case_paid cp 
+		LEFT JOIN case_info ON cp.case_id=case_info.id
+		WHERE 1=1 and case_info.status!=-1
+			#AND case_info.org_id IS NOT NULL 
+			AND cp.state = '1'
+			#AND ('2016-11-25'>= cp_time >= '2016-06-22')
+		  	]]>
+  		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+  			and (DATE_FORMAT(cp_time,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+ 		</if> 
+  		<![CDATA[	
+		GROUP BY se_no
+			
+) AS cp1  ON cp1.se_no = em.id 
+
+#已确认还款（已确认的已还款金额） D1=<还款日期<=D2
+#已确认还款案件数量（已确认的还款）
+LEFT JOIN 
+(
+		SELECT 
+		cp.paid_time,cp.`se_no`,
+		SUM(cp.paid_num) AS paid_num,
+		COUNT(DISTINCT cp.case_id)AS paid_case_count
+		
+		FROM case_paid cp 
+		LEFT JOIN case_info ON cp.case_id=case_info.id 
+		WHERE 1=1 and case_info.status!=-1
+		#AND case_info.org_id IS NOT NULL 
+		AND cp.state='2'
+			#AND ('2016-11-25'>= paid_time >= '2016-06-22')
+		  	]]>
+  		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+  			and (DATE_FORMAT(paid_time,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+  		</if> 
+  		<![CDATA[	
+		GROUP BY se_no
+			
+) AS cp2  ON cp2.se_no = em.id 
+LEFT JOIN 
+(
+		SELECT 
+		cp.paid_time,cp.`se_no`,
+		SUM(cp.paid_num) AS zlz_paid_num,
+		COUNT(DISTINCT cp.case_id)AS zlz_paid_case_count
+		
+		FROM case_paid cp 
+		LEFT JOIN case_info ON cp.case_id=case_info.id 
+		
+		WHERE 1=1 and case_info.status!=-1
+		#AND case_info.org_id IS NOT NULL 
+		AND cp.state='2' AND cp.`repay_type`='2'
+			#AND ('2016-11-25'>= paid_time >= '2016-06-22')
+ 		]]>
+  		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+  			and (DATE_FORMAT(paid_time,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+  		</if> 
+  		<![CDATA[		
+		GROUP BY se_no
+			
+) AS cp3 ON cp3.se_no = em.id 
+
+) AS tj WHERE 1=1]]>
+		
+		<!--  -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.emId)">
+		and tj.emId in 
+		<foreach item="item" index="index" collection="params.emIds"
+				open="(" separator="," close=")">
+				#{params.emIds[${index}]}
+			</foreach>
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+		and orgId IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		</if>
+		<!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.beginDate1)">
+			and (begin_date BETWEEN '${params.beginDate}' AND'${params.beginDate1}')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.paidTime1)">
+			and (paid_time BETWEEN '${params.paidTime}' AND'${params.paidTime1}')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+			and (begin_date &gt; '${params.normalDate}' or end_date &lt; '${params.normalDate1}')
+		</if>  -->
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+			ORDER BY tj.state DESC, CONVERT(tj.name USING gbk) ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+<!-- 风控投入统计 -->
+	<select id="queryEmployeeOrganization" resultMap="modelEmployee">
+				<![CDATA[
+	SELECT
+	tj.name,
+	tj.emId,
+	tj.orgId,
+	tj.state,	
+	tj.case_count,
+	tj.phone_count,
+	tj.visit_count,
+	tj.apply_count,
+	tj.assist_count
+		FROM 
+(
+ SELECT 
+		em.user_name AS NAME,em.id AS emId,em.`status` AS state,em.org_id as orgId,
+		ci.case_count,
+		ci1.phone_count,
+		vrd.visit_count,
+		ci2.apply_count,
+		ci2.assist_count
+FROM `employee_info` em
+#案件数量
+#电催次数
+#外访次数
+#协催次数
+#查资次数
+LEFT JOIN 
+(
+		SELECT 
+		COUNT(DISTINCT case_info.id) AS case_count,
+		case_info.case_backdate,case_info.`case_date`,
+		case_info.`case_assigned_id`
+		
+		FROM case_info  
+		WHERE 1=1 and case_info.status!=-1
+			#AND case_info.org_id IS NOT NULL
+			#AND (case_date <='2016-07-31' AND case_info.case_backdate >= '2016-07-01')
+		]]>
+   		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+   			and (case_date &lt;= '${params.normalDate1}' and case_info.case_backdate &gt;= '${params.normalDate}')
+   		</if> 
+   		<![CDATA[	
+		GROUP BY case_assigned_id
+			
+) AS ci  ON ci.case_assigned_id = em.id
+LEFT JOIN 
+(
+		SELECT 
+		pr.create_time,
+		case_info.`case_assigned_id`,
+		SUM(CASE WHEN pr.pr_cat = '0' THEN 1 ELSE 0 END) AS phone_count,
+		SUM(CASE WHEN pr.pr_cat = '1' THEN 1 ELSE 0 END) AS visit_count
+		
+		FROM case_info 
+		JOIN phone_record pr ON pr.case_id = case_info.`id`
+		
+		WHERE 1=1 and case_info.status!=-1
+ 			]]>
+ 			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+ 				and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+ 				and (DATE_FORMAT(pr.create_time,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+ 			</if> 
+  			<![CDATA[
+		GROUP BY case_assigned_id
+			
+) AS ci1  ON ci1.case_assigned_id = em.id 
+
+LEFT JOIN 
+(
+		SELECT 
+		case_info.`case_assigned_id`,
+		ca.`sur_time`,
+		SUM(CASE WHEN (ca.apply_type = '4' OR ca.apply_type = '6' OR ca.apply_type = '12' OR ca.apply_type = '9' ) THEN 1 ELSE 0 END) AS apply_count,
+		SUM(CASE WHEN (ca.apply_type = '11' OR ca.apply_type = '7' OR ca.apply_type = '5' OR ca.apply_type = '10' ) THEN 1 ELSE 0 END) 
+		AS assist_count
+		
+		FROM case_apply ca 
+		LEFT JOIN case_info ON ca.`case_id` = case_info.`id` 
+		
+		WHERE 1=1 and case_info.status!=-1
+			#AND (ca.`sur_time` between '2016-05-01' and '2016-06-01')
+ 			]]>
+  			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  				and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+  				and (DATE_FORMAT(ca.`sur_time`,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+  			</if> 
+  			<![CDATA[
+		GROUP BY case_assigned_id
+			
+) AS ci2 ON ci2.case_assigned_id = em.id 
+LEFT JOIN 
+(
+		SELECT 
+		info.`case_assigned_id`,
+		vr.`actual_visit_time`,
+		SUM(CASE WHEN vr.state = '4' THEN 1 ELSE 0 END) AS visit_count
+		
+		FROM visit_record vr
+ 		LEFT JOIN case_info info ON vr.`case_id`=info.`id`
+		
+		WHERE 1=1 and info.status!=-1
+ 		]]>
+ 			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+  				and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+  				and (DATE_FORMAT(vr.`actual_visit_time`,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+  			</if> 
+  			<![CDATA[
+		GROUP BY case_assigned_id
+			
+) AS vrd ON vrd.case_assigned_id = em.id
+
+) AS tj WHERE 1=1 ]]>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.emId)">
+		and tj.emId in 
+		<foreach item="item" index="index" collection="params.emIds"
+				open="(" separator="," close=")">
+				#{params.emIds[${index}]}
+			</foreach>
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+		and orgId IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		</if>
+		<!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.beginDate1)">
+			and (begin_date BETWEEN '${params.beginDate}' AND'${params.beginDate1}')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.paidTime1)">
+			and (paid_time BETWEEN '${params.paidTime}' AND'${params.paidTime1}')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+			and (begin_date &gt; '${params.normalDate}' or end_date &lt; '${params.normalDate1}')
+		</if>  -->
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				ORDER BY tj.state DESC, CONVERT(tj.name USING gbk) ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+<!-- 案件状态统计 -->
+	<select id="queryEmployeeCaseState" resultMap="modelEmployee">
+				<![CDATA[
+	SELECT
+	tj.name,
+	tj.emId,
+	tj.orgId,
+	tj.state,	
+	tj.case_count,
+	tj.new_case_count,
+	tj.lose_case_count,
+	tj.involve_case_count,
+	tj.negotiation_case_count,
+	tj.family_case_count,
+	tj.someone_case_count,
+	tj.oneself_case_count,
+	#暂停催收 25  要求退案 26 承诺 31 疑似欺诈 32
+	tj.stop_case_count,
+	tj.back_case_count,
+	tj.promise_case_count,
+	tj.cheat_case_count
+		FROM 
+(
+#案件数量  新案数量0  失联数量87 30 33 涉案数量34  谈判数量88  中家人数量28  中第三人数量29  中本人数量27
+		SELECT 
+		em.user_name AS name,em.id AS emId,em.`status` AS state, em.org_id as orgId,
+		case_info.case_backdate,case_info.`case_date`,
+		case_info.`case_assigned_id`,
+		COUNT(DISTINCT case_info.id) AS case_count,
+		SUM(CASE WHEN (case_info.collec_state_id = '0' ) THEN 1 ELSE 0 END) AS new_case_count,
+		SUM(CASE WHEN (case_info.collec_state_id = '30' OR case_info.collec_state_id = '87' OR case_info.collec_state_id = '33') THEN 1 ELSE 0 END) AS lose_case_count,
+		SUM(CASE WHEN case_info.collec_state_id = '34' THEN 1 ELSE 0 END) AS involve_case_count,
+		SUM(CASE WHEN case_info.collec_state_id = '88' THEN 1 ELSE 0 END) AS negotiation_case_count,
+		SUM(CASE WHEN case_info.collec_state_id = '28' THEN 1 ELSE 0 END) AS family_case_count,
+		SUM(CASE WHEN case_info.collec_state_id = '29' THEN 1 ELSE 0 END) AS someone_case_count,
+		SUM(CASE WHEN case_info.collec_state_id = '27' THEN 1 ELSE 0 END) AS oneself_case_count,
+		#暂停催收 25  要求退案 26 承诺 31 疑似欺诈 32
+		SUM(CASE WHEN case_info.collec_state_id = '25' THEN 1 ELSE 0 END) AS stop_case_count,
+		SUM(CASE WHEN case_info.collec_state_id = '26' THEN 1 ELSE 0 END) AS back_case_count,
+		SUM(CASE WHEN case_info.collec_state_id = '31' THEN 1 ELSE 0 END) AS promise_case_count,
+		SUM(CASE WHEN case_info.collec_state_id = '32' THEN 1 ELSE 0 END) AS cheat_case_count
+		FROM `employee_info` em
+		LEFT JOIN case_info ON em.id=case_info.`case_assigned_id`
+		
+		WHERE 1=1 and case_info.status!=-1
+			#AND case_info.org_id IS NOT NULL
+			#AND (case_date <='2016-07-31' AND case_info.case_backdate >= '2016-07-01')
+		]]>
+ 		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+ 			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+ 			and (case_date &lt;= '${params.normalDate1}' and case_info.case_backdate &gt;= '${params.normalDate}')
+ 		</if> 
+ 		<![CDATA[
+		GROUP BY case_assigned_id
+		
+) AS tj WHERE 1=1]]>
+		
+		<!--  -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.emId)">
+		and tj.emId in 
+		<foreach item="item" index="index" collection="params.emIds"
+				open="(" separator="," close=")">
+				#{params.emIds[${index}]}
+			</foreach>
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+		and orgId IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		</if>
+		<!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.beginDate1)">
+			and (begin_date BETWEEN '${params.beginDate}' AND'${params.beginDate1}')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.paidTime1)">
+			and (paid_time BETWEEN '${params.paidTime}' AND'${params.paidTime1}')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+			and (begin_date &gt; '${params.normalDate}' or end_date &lt; '${params.normalDate1}')
+		</if>  -->
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				ORDER BY tj.state DESC, CONVERT(tj.name USING gbk) ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<!-- 统计 -->
+	<select id="queryExport" resultMap="modelEmployee">
+				<![CDATA[
+	SELECT
+	tj.id,
+	tj.batch_code,
+	tj.begin_date,
+	tj.end_date,
+	tj.case_count,
+	tj.total_case_money,
+	tj.ptp_money,
+	tj.cp_money,
+	tj.paid_num,		
+	tj.achieve,
+	tj.target,
+	tj.new_case_count,
+	tj.lose_case_count,
+	tj.involve_case_count,
+	tj.negotiation_case_count,
+	tj.family_case_count,
+	tj.someone_case_count,
+	tj.oneself_case_count
+FROM
+	(
+
+SELECT 
+		cb.batch_code,cb.begin_date,cb.end_date,cb.id,
+		COUNT( ci.id) AS case_count,
+		CONVERT(IFNULL(SUM(ci.case_money), 0),DECIMAL(18,2)) AS total_case_money,
+		IFNULL(cp.ptp_money, 0) AS ptp_money,
+		IFNULL(cp.cp_money, 0) AS cp_money,
+		IFNULL(cp.paid_num, 0) AS paid_num,
+		CONVERT((IFNULL(cb.achieve, 0) * IFNULL(cp.paid_num, 0)) / 100,DECIMAL(18,2)) AS achieve,
+		CONVERT((IFNULL(cp.paid_num, 0) / IFNULL(SUM(ci.case_money), 0)) * 100,DECIMAL(18,2)) AS target,
+		SUM(CASE WHEN (ci.collec_state_id = '0' OR ci.collec_state_id IS NULL) THEN 1 ELSE 0 END) AS new_case_count,
+		SUM(CASE WHEN (ci.collec_state_id = '30' OR ci.collec_state_id = '87') THEN 1 ELSE 0 END) AS lose_case_count,
+		SUM(CASE WHEN ci.collec_state_id = '34' THEN 1 ELSE 0 END) AS involve_case_count,
+		SUM(CASE WHEN ci.collec_state_id = '88' THEN 1 ELSE 0 END) AS negotiation_case_count,
+		SUM(CASE WHEN ci.collec_state_id = '28' THEN 1 ELSE 0 END) AS family_case_count,
+		SUM(CASE WHEN ci.collec_state_id = '29' THEN 1 ELSE 0 END) AS someone_case_count,
+		SUM(CASE WHEN ci.collec_state_id = '27' THEN 1 ELSE 0 END) AS oneself_case_count
+
+		FROM case_batch cb
+		LEFT JOIN case_info ci ON cb.id=ci.batch_id
+
+LEFT JOIN (
+		SELECT
+			case_paid.case_id,
+			SUM(case_paid.ptp_money) AS ptp_money,
+			SUM(case_paid.cp_money) AS cp_money,
+			SUM(case_paid.paid_num) paid_num
+		FROM
+			(
+				SELECT
+					case_id,
+					SUM(
+						IF (state = 2,IFNULL(paid_num, 0),0)
+					) AS paid_num,
+					SUM(
+						IF (state = 1,IFNULL(cp_money, 0),0)
+					) AS cp_money,
+					SUM(
+						IF (state = 0,IFNULL(ptp_money, 0),0)
+					) AS ptp_money
+				FROM case_paid GROUP BY case_id
+			) case_paid
+		GROUP BY case_id
+	) AS cp ON cp.case_id = ci.id
+
+		GROUP BY cb.id
+		ORDER BY ci.create_time DESC
+) AS tj where 1=1
+		]]>
+		AND tj.id IN
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+		order by begin_date desc
+	</select>
+	
+
+</mapper>

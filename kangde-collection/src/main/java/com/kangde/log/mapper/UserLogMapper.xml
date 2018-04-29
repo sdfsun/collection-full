@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.log.mapper.UserLogMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.log.model.UserLogModel"
+		id="model" />
+
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		`id`,
+		`type`,
+		`user_name`,
+		`create_time`,
+		`operate_content`,
+		`user_id`,
+		`login_name`,
+		`ip_addr`
+	</sql>
+
+	<!-- 查询 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		user_log
+		where 1=1
+		<!-- 登录名称 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.loginName)">
+			and login_name like CONCAT('${params.loginName}','%' )
+		</if>
+		<!-- 中文名称 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.userName)">
+			and user_name like CONCAT('${params.userName}','%' )
+		</if>
+		<!-- IP地址 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.ipAddr)">
+			and ip_addr like CONCAT('%','${params.ipAddr}','%' )
+		</if>
+		<!-- 日志类型 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.type)">
+			and type like CONCAT('%','${params.type}','%' )
+		</if>
+		<!-- 操作时间 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.startTimeS) and @org.apache.commons.lang.StringUtils@isNotBlank(params.startTimeE)">
+			and create_time BETWEEN #{params.startTimeS} and #{params.startTimeE}
+		</if>
+		order by create_time desc
+	</select>
+
+	<!-- 保存 -->
+	<insert id="save">
+		INSERT INTO `user_log` (
+			`id`,
+			`type`,
+			`user_name`,
+			`create_time`,
+			`operate_content`,
+			`user_id`,
+			`login_name`,
+			`ip_addr`
+		)
+		VALUES
+			(
+				#{id},
+				#{type},
+				#{userName},
+				#{createTime},
+				#{operateContent},
+				#{userId},
+				#{loginName},
+				#{ipAddr}
+			)
+	</insert>
+
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from user_log where id = #{id}
+	</delete>
+
+	<!-- ID查询,只查异常信息字段 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		from user_log
+		where id = #{id}
+	</select>
+
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		user_log
+		where ${fieldName} ${expression} #{fieldValue}
+	</select>
+
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.log.mapper.LogMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.log.model.LogModel"
+		id="model" />
+
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		`id`, `title`, `state`, `time_consuming`, 
+		`server_host_name`, `server_host_addr`, 
+		`create_time`, `start_time`,
+		`remote_addr`, `request_url`, `user_agent`,
+		`user_id`, `login_name`, `user_name`, `http_method`, `method_name`
+	</sql>
+
+	<!-- 查询 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		sys_log
+		where 1=1
+		<!-- 状态检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.state)">
+			and state = #{params.state}
+		</if>
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.title)">
+			and title like CONCAT('%','${params.title}','%' )
+		</if>
+		<!-- 登录名称 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.loginName)">
+			and login_name like CONCAT('%','${params.loginName}','%' )
+		</if>
+		<!-- 中文名称 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.userName)">
+			and user_name like CONCAT('%','${params.userName}','%' )
+		</if>
+		<!-- 请求地址 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.requestUrl)">
+			and request_url like CONCAT('%','${params.requestUrl}','%' )
+		</if>
+		<!-- 主机 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.serverHost)">
+			and
+			(server_host_name like CONCAT('%','${params.serverHost}','%' )
+			or server_host_addr
+			like CONCAT('%','${params.serverHost}','%' )
+			)
+		</if>
+		<!-- 操作时间 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.startTimeS) and @org.apache.commons.lang.StringUtils@isNotBlank(params.startTimeE)">
+			and start_time BETWEEN #{params.startTimeS} and #{params.startTimeE}
+		</if>
+		order by create_time desc
+	</select>
+
+	<!-- 保存 -->
+	<insert id="save">
+		INSERT INTO `sys_log` 
+		(`id`, `title`, `state`, 
+		`time_consuming`, `server_host_name`, `server_host_addr`, 
+		`exception_info`, `create_time`, `start_time`, 
+		`remote_addr`, `request_url`, `params`, 
+		`user_agent`, `user_id`, `login_name`, 
+		`user_name`, `http_method`, `method_name`) VALUES 
+		(#{id}, #{title}, #{state}, 
+		#{timeConsuming}, #{serverHostName}, #{serverHostAddr}, 
+		#{exceptionInfo}, #{createTime}, #{startTime}, 
+		#{remoteAddr}, #{requestUrl}, #{params}, 
+		#{userAgent}, #{userId}, #{loginName}, 
+		#{userName}, #{httpMethod}, #{methodName})
+
+	</insert>
+
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from sys_log where id = #{id}
+	</delete>
+
+	<!-- ID查询,只查异常信息字段 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />,exception_info,params
+		from sys_log
+		where id = #{id}
+	</select>
+
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		sys_log
+		where ${fieldName} ${expression} #{fieldValue}
+	</select>
+
+</mapper>

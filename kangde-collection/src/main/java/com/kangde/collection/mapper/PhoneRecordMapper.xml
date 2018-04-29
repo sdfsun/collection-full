@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.PhoneRecordMapper">
+	<resultMap id="BaseResultMap" type="com.kangde.collection.model.PhoneRecordModel">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="type_id" property="typeId" jdbcType="VARCHAR" />
+		<result column="contact" property="contact" jdbcType="VARCHAR" />
+		<result column="case_id" property="caseId" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="con_type" property="conType" jdbcType="VARCHAR" />
+		<result column="pr_pa_id" property="prPaId" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="pr_cat" property="prCat" jdbcType="VARCHAR" />
+		<result column="relation" property="relation" jdbcType="VARCHAR" />
+		<result column="collec_state_id" property="collecStateId"
+			jdbcType="VARCHAR" />
+		<result column="negotiation" property="negotiation" jdbcType="VARCHAR" />
+		<result column="pr_cc_id" property="prCcId" jdbcType="BIGINT" />
+		<result column="call_id" property="callId" jdbcType="BIGINT" />
+		<result column="create_emp_id" property="createEmpId" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="ptp_time" property="ptpTime" jdbcType="TIMESTAMP" />
+		<result column="ptp_money" property="ptpMoney" jdbcType="DECIMAL" />
+		<result column="cp_state" property="cpState" jdbcType="VARCHAR" />
+		<association property="employeeInfo"
+			javaType="com.kangde.sys.model.EmployeeInfoModel">
+			<id property="id" column="create_emp_id" />
+			<result property="userName" column="user_name" />
+		</association>
+	</resultMap>
+
+	<resultMap id="phoneRecordVo" type="com.kangde.collection.vo.PhoneRecordVo">
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, type_id, contact, case_id, content, con_type, pr_pa_id,
+		name, pr_cat,
+		relation,
+		collec_state_id, negotiation, pr_cc_id, call_id,
+		create_emp_id, create_time, ptp_time,
+		ptp_money, cp_state
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from phone_record
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+
+	<select id="query" resultMap="BaseResultMap">
+		select
+		phone_record.*, employee_info.user_name
+		from phone_record
+		left
+		join employee_info
+		on phone_record.create_emp_id=employee_info.id
+		where
+		1=1
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseId)">
+			and case_id=#{params.caseId}
+		</if>
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.createEmpId)">
+			and create_emp_id=#{params.createEmpId}
+		</if>
+
+
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by phone_record.create_time
+				desc
+			</otherwise>
+		</choose>
+
+	</select>
+
+
+
+	<select id="queryPhoneRecordByCondition" resultMap="phoneRecordVo">
+		select
+		phone_record.*, employee_info.user_name as creatorName,
+		aaa.user_name as collectorName
+		from phone_record
+		left join employee_info
+		on phone_record.create_emp_id=employee_info.id
+		left join (
+		SELECT
+		case_info.id,
+		employee_info.user_name
+		FROM
+		case_info
+		LEFT JOIN employee_info ON case_info.case_assigned_id = employee_info.id
+		WHERE
+		case_info.id = #{params.caseId}
+		) aaa
+		on phone_record.case_id=aaa.id
+		where 1=1
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseId)">
+			and phone_record.case_id=#{params.caseId}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.prCat)">
+			and phone_record.pr_cat=#{params.prCat}
+		</if>
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.createEmpId)">
+			and phone_record.create_emp_id=#{params.createEmpId}
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by phone_record.create_time
+				desc
+			</otherwise>
+		</choose>
+
+	</select>
+
+
+	<select id="queryByCaseId" resultMap="BaseResultMap">
+		select
+		phone_record.*,
+		employee_info.user_name
+		from phone_record
+		left join employee_info
+		on
+		phone_record.create_emp_id=employee_info.id
+		where 1=1
+		and
+		case_id=#{caseId}
+		order by phone_record.create_time
+		desc
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		phone_record
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="save" parameterType="com.kangde.collection.model.PhoneRecordModel">
+		insert into phone_record (id,
+		type_id, contact,
+		case_id, content, con_type,
+		pr_pa_id, name, pr_cat,
+		relation, collec_state_id, negotiation,
+		pr_cc_id, call_id,
+		create_emp_id,
+		create_time, ptp_time, ptp_money
+		)
+		values
+		(#{id,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR},
+		#{contact,jdbcType=VARCHAR},
+		#{caseId,jdbcType=VARCHAR},
+		#{content,jdbcType=VARCHAR}, #{conType,jdbcType=VARCHAR},
+		#{prPaId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},
+		#{prCat,jdbcType=VARCHAR},
+		#{relation,jdbcType=VARCHAR},
+		#{collecStateId,jdbcType=VARCHAR}, #{negotiation,jdbcType=VARCHAR},
+		#{prCcId,jdbcType=BIGINT}, #{callId,jdbcType=BIGINT},
+		#{createEmpId,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{ptpTime,jdbcType=TIMESTAMP}, #{ptpMoney,jdbcType=DECIMAL}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.kangde.collection.model.PhoneRecordModel">
+		insert into phone_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="typeId != null">
+				type_id,
+			</if>
+			<if test="contact != null">
+				contact,
+			</if>
+			<if test="caseId != null">
+				case_id,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+			<if test="conType != null">
+				con_type,
+			</if>
+			<if test="prPaId != null">
+				pr_pa_id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="prCat != null">
+				pr_cat,
+			</if>
+			<if test="relation != null">
+				relation,
+			</if>
+			<if test="collecStateId != null">
+				collec_state_id,
+			</if>
+			<if test="negotiation != null">
+				negotiation,
+			</if>
+			<if test="prCcId != null">
+				pr_cc_id,
+			</if>
+			<if test="callId != null">
+				call_id,
+			</if>
+			<if test="createEmpId != null">
+				create_emp_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="ptpTime != null">
+				ptp_time,
+			</if>
+			<if test="ptpMoney != null">
+				ptp_money,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="typeId != null">
+				#{typeId,jdbcType=VARCHAR},
+			</if>
+			<if test="contact != null">
+				#{contact,jdbcType=VARCHAR},
+			</if>
+			<if test="caseId != null">
+				#{caseId,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=VARCHAR},
+			</if>
+			<if test="conType != null">
+				#{conType,jdbcType=VARCHAR},
+			</if>
+			<if test="prPaId != null">
+				#{prPaId,jdbcType=BIGINT},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="prCat != null">
+				#{prCat,jdbcType=VARCHAR},
+			</if>
+			<if test="relation != null">
+				#{relation,jdbcType=VARCHAR},
+			</if>
+			<if test="collecStateId != null">
+				#{collecStateId,jdbcType=VARCHAR},
+			</if>
+			<if test="negotiation != null">
+				#{negotiation,jdbcType=VARCHAR},
+			</if>
+			<if test="prCcId != null">
+				#{prCcId,jdbcType=BIGINT},
+			</if>
+			<if test="callId != null">
+				#{callId,jdbcType=BIGINT},
+			</if>
+			<if test="createEmpId != null">
+				#{createEmpId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="ptpTime != null">
+				#{ptpTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="ptpMoney != null">
+				#{ptpMoney,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateStatusByPrimaryKey" parameterType="com.kangde.collection.model.PhoneRecordModel">
+		update
+		phone_record
+		set cp_state = #{cpState,jdbcType=VARCHAR}
+		where id =
+		#{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

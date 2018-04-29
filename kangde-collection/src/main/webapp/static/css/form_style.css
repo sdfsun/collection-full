@@ -1,0 +1,63 @@
+.dialog-form {
+	margin: 0;
+	padding: 5px 20px 20px 20px;
+}
+
+.dialog-form div {
+	margin-bottom: 5px;
+}
+
+.dialog-form div textarea {
+    position: relative; resize: none; height: 75px; width: 260px;
+}
+.dialog-form div input{
+	width: 200px;
+	line-height:24px;
+    height:24px;
+}
+.dialog-form div input[type="radio"]{
+	width: auto;
+	height:auto;
+	line-height:auto;
+}
+.dialog-form div input[type="checkbox"]{
+	width: auto;
+	height:auto;
+	line-height:auto;
+}
+
+.dialog-form div label {
+	display: inline-block;
+	text-align: right;
+	width: 96px;
+	padding: .3em 1em;
+}
+
+
+/** 检索样式 */
+.search_form table input{
+	width: 160px;
+	line-height:24px;
+    height:24px;
+    margin: 0;
+    padding: 0;
+}
+.search_form table input[type="radio"]{
+	width: auto;
+	height:auto;
+	line-height:auto;
+}
+.search_form table input[type="checkbox"]{
+	width: auto;
+	height:auto;
+	line-height:auto;
+}
+.search_form table label {
+	display: inline-block;
+	text-align: right;
+	width: auto;
+}
+.search_form table td{
+	display: inline-block;
+	margin-right: 10px;
+}

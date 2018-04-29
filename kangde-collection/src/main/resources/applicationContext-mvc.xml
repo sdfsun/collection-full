@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+      http://www.springframework.org/schema/beans/spring-beans-4.2.xsd  
+      http://www.springframework.org/schema/context  
+      http://www.springframework.org/schema/context/spring-context.xsd  
+      http://www.springframework.org/schema/mvc  
+      http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+      http://www.springframework.org/schema/aop 
+	  http://www.springframework.org/schema/aop/spring-aop-4.2.xsd 
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+	<!-- 读取属性文件 -->
+	<context:property-placeholder location="classpath:config.properties"/>
+	<!-- 扫描组件,只扫描controller -->
+	<context:component-scan base-package="com.kangde.**.controller"
+		use-default-filters="false">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+
+	<!-- 上传 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<property name="maxUploadSize" value="${web.maxUploadSize}"></property>
+	</bean>
+	<!-- 支持自定义视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="100"></property>
+	</bean>
+	
+	<!-- 默认视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- 配置mvc 注解驱动 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+		    	<constructor-arg value="UTF-8" />
+			</bean>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<!-- 避免IE出现下载JSON文件的情况 -->
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/plain;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 拦截器配置，拦截顺序：先执行后定义的，排在第一位的最后执行。-->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 案件操作相关路径 -->
+			<mvc:mapping path="/sys/**" />
+			<mvc:mapping path="/collection/**" />
+			<bean class="com.kangde.log.interceptor.LogInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	<!-- 配置默认视图 -->
+	<mvc:default-servlet-handler />
+ 	<!--异常拦截器-->
+    <bean class="com.kangde.commons.exception.handler.CommonExceptionHandler"/>
+   
+    <!-- 支持Shiro对Controller的方法级AOP安全控制-->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+</beans>

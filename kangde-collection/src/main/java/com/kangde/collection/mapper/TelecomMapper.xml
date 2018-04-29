@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.TelecomMapper">
+	<resultMap id="model" type="com.kangde.collection.model.TelecomModel" />
+
+	<sql id="Column_List">
+		id, case_apply_id, mobile, operator, mobile_status, wide_band,
+		network_provide, wide_status,
+		cr_address, address, relation_1, linkman_1, case_num_1, relation_2, linkman_2,
+		case_num_2,
+		create_time, create_emp_id, status, remark
+	</sql>
+
+	<select id="findByCaseApplyId" resultMap="model" parameterType="java.lang.String">
+		select
+		<include refid="Column_List" />
+		from telecom
+		where case_apply_id = #{caseApplyId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="query" resultMap="model">
+		select
+		<include refid="Column_List" />
+		from telecom
+		where 1=1
+		<!-- 名称检索 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.batchCode)">
+			and batch_code like CONCAT('%','${params.batchCode}','%' )
+		</if>
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust_id like CONCAT('%','${params.entrustId}','%' )
+		</if>
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.collectionId)">
+			and collection_id like CONCAT('%','${params.collectionId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.state)">
+			and case_batch.state like CONCAT('%','${params.state}','%'
+			)
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.typeId)">
+			and type_id like CONCAT('%','${params.typeId}','%' )
+		</if>
+
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.beginDateEnd)">
+			and begin_date BETWEEN '${params.beginDateStart}'AND'${params.beginDateEnd}'
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by create_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<insert id="save">
+		insert into telecom
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="caseApplyId != null">
+				case_apply_id,
+			</if>
+			<if test="mobile != null">
+				mobile,
+			</if>
+			<if test="operator != null">
+				operator,
+			</if>
+			<if test="mobileStatus != null">
+				mobile_status,
+			</if>
+			<if test="wideBand != null">
+				wide_band,
+			</if>
+			<if test="networkProvide != null">
+				network_provide,
+			</if>
+			<if test="wideStatus != null">
+				wide_status,
+			</if>
+			<if test="crAddress != null">
+				cr_address,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="relation1 != null">
+				relation_1,
+			</if>
+			<if test="linkman1 != null">
+				linkman_1,
+			</if>
+			<if test="caseNum1 != null">
+				case_num_1,
+			</if>
+			<if test="relation2 != null">
+				relation_2,
+			</if>
+			<if test="linkman2 != null">
+				linkman_2,
+			</if>
+			<if test="caseNum2 != null">
+				case_num_2,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createEmpId != null">
+				create_emp_id,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="caseApplyId != null">
+				#{caseApplyId},
+			</if>
+			<if test="mobile != null">
+				#{mobile},
+			</if>
+			<if test="operator != null">
+				#{operator},
+			</if>
+			<if test="mobileStatus != null">
+				#{mobileStatus},
+			</if>
+			<if test="wideBand != null">
+				#{wideBand},
+			</if>
+			<if test="networkProvide != null">
+				#{networkProvide},
+			</if>
+			<if test="wideStatus != null">
+				#{wideStatus},
+			</if>
+			<if test="crAddress != null">
+				#{crAddress},
+			</if>
+			<if test="address != null">
+				#{address},
+			</if>
+			<if test="relation1 != null">
+				#{relation1},
+			</if>
+			<if test="linkman1 != null">
+				#{linkman1},
+			</if>
+			<if test="caseNum1 != null">
+				#{caseNum1},
+			</if>
+			<if test="relation2 != null">
+				#{relation2},
+			</if>
+			<if test="linkman2 != null">
+				#{linkman2},
+			</if>
+			<if test="caseNum2 != null">
+				#{caseNum2},
+			</if>
+			<if test="createTime != null">
+				#{createTime},
+			</if>
+			<if test="createEmpId != null">
+				#{createEmpId},
+			</if>
+			<if test="status != null">
+				#{status},
+			</if>
+			<if test="remark != null">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="update">
+		update telecom
+		<set>
+			<if test="caseApplyId != null">
+				case_apply_id = #{caseApplyId},
+			</if>
+			<if test="mobile != null">
+				mobile = #{mobile},
+			</if>
+			<if test="operator != null">
+				operator = #{operator},
+			</if>
+			<if test="mobileStatus != null">
+				mobile_status = #{mobileStatus},
+			</if>
+			<if test="wideBand != null">
+				wide_band = #{wideBand},
+			</if>
+			<if test="networkProvide != null">
+				network_provide = #{networkProvide},
+			</if>
+			<if test="wideStatus != null">
+				wide_status = #{wideStatus},
+			</if>
+			<if test="crAddress != null">
+				cr_address = #{crAddress},
+			</if>
+			<if test="address != null">
+				address = #{address},
+			</if>
+			<if test="relation1 != null">
+				relation_1 = #{relation1},
+			</if>
+			<if test="linkman1 != null">
+				linkman_1 = #{linkman1},
+			</if>
+			<if test="caseNum1 != null">
+				case_num_1 = #{caseNum1},
+			</if>
+			<if test="relation2 != null">
+				relation_2 = #{relation2},
+			</if>
+			<if test="linkman2 != null">
+				linkman_2 = #{linkman2},
+			</if>
+			<if test="caseNum2 != null">
+				case_num_2 = #{caseNum2},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime},
+			</if>
+			<if test="createEmpId != null">
+				create_emp_id = #{createEmpId},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="remark != null">
+				remark = #{remark},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="updateForStatus">
+		update
+		telecom
+		set
+		modify_time=#{modifyTime},
+		status=#{status},
+		where id = #{id}
+	</update>
+</mapper>

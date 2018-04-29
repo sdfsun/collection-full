@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CasePhoneMapper" >
+  <resultMap id="BaseResultMap" type="com.kangde.collection.model.CasePhoneModel" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="case_id" property="caseId" jdbcType="VARCHAR" />
+    <result column="type_id" property="typeId" jdbcType="BIGINT" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="isdel" property="isdel" jdbcType="INTEGER" />
+    <result column="isnew" property="isnew" jdbcType="INTEGER" />
+    <result column="relation" property="relation" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+    <result column="create_emp_id" property="createEmpId" jdbcType="VARCHAR" />
+    <result column="modify_emp_id" property="modifyEmpId" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, status, name, number, case_id, type_id, count, remark, isdel, isnew, relation, 
+    version, create_emp_id, modify_emp_id, modify_time, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from case_phone
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="query" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from case_phone
+    where case_id = #{params.caseId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from case_phone
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="save" parameterType="com.kangde.collection.model.CasePhoneModel" >
+    insert into case_phone (id, status, name, 
+      number, case_id, type_id, 
+      count, remark, isdel, 
+      isnew, relation, version, 
+      create_emp_id, modify_emp_id, modify_time, 
+      create_time)
+    values (#{id,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{number,jdbcType=VARCHAR}, #{caseId,jdbcType=VARCHAR}, #{typeId,jdbcType=BIGINT}, 
+      #{count,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{isdel,jdbcType=INTEGER}, 
+      #{isnew,jdbcType=INTEGER}, #{relation,jdbcType=VARCHAR}, #{version,jdbcType=INTEGER}, 
+      #{createEmpId,jdbcType=VARCHAR}, #{modifyEmpId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kangde.collection.model.CasePhoneModel" >
+    insert into case_phone
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="caseId != null" >
+        case_id,
+      </if>
+      <if test="typeId != null" >
+        type_id,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
+      <if test="isnew != null" >
+        isnew,
+      </if>
+      <if test="relation != null" >
+        relation,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="createEmpId != null" >
+        create_emp_id,
+      </if>
+      <if test="modifyEmpId != null" >
+        modify_emp_id,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="caseId != null" >
+        #{caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null" >
+        #{typeId,jdbcType=BIGINT},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=INTEGER},
+      </if>
+      <if test="isnew != null" >
+        #{isnew,jdbcType=INTEGER},
+      </if>
+      <if test="relation != null" >
+        #{relation,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="createEmpId != null" >
+        #{createEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyEmpId != null" >
+        #{modifyEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kangde.collection.model.CasePhoneModel" >
+    update case_phone
+    <set >
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="caseId != null" >
+        case_id = #{caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null" >
+        type_id = #{typeId,jdbcType=BIGINT},
+      </if>
+      <if test="count != null" >
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=INTEGER},
+      </if>
+      <if test="isnew != null" >
+        isnew = #{isnew,jdbcType=INTEGER},
+      </if>
+      <if test="relation != null" >
+        relation = #{relation,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="createEmpId != null" >
+        create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyEmpId != null" >
+        modify_emp_id = #{modifyEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kangde.collection.model.CasePhoneModel" >
+    update case_phone
+    set status = #{status,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      number = #{number,jdbcType=VARCHAR},
+      case_id = #{caseId,jdbcType=VARCHAR},
+      type_id = #{typeId,jdbcType=BIGINT},
+      count = #{count,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      isdel = #{isdel,jdbcType=INTEGER},
+      isnew = #{isnew,jdbcType=INTEGER},
+      relation = #{relation,jdbcType=VARCHAR},
+      version = #{version,jdbcType=INTEGER},
+      create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+      modify_emp_id = #{modifyEmpId,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

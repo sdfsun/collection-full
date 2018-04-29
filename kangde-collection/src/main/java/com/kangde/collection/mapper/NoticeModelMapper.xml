@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.NoticeModelMapper" >
+  <resultMap id="BaseResultMap" type="com.kangde.collection.model.NoticeModel" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="available" property="available" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="create_emp_id" property="createEmpId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="save" parameterType="com.kangde.collection.model.NoticeModel" >
+    insert into notice (id, title, available, 
+      content, create_emp_id, create_time
+      )
+    values (#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{available,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{createEmpId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  
+  <select id="query" resultMap="BaseResultMap">
+		select * from notice order by create_time desc
+  </select>
+  <select id="queryTop" resultMap="BaseResultMap">
+		select * from notice order by create_time desc limit 0,20
+  </select>
+  <select id="findById" resultMap="BaseResultMap">
+		select * from notice where id=#{id}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String">
+		delete from notice
+		where
+		id = #{id,jdbcType=VARCHAR}
+	</delete>
+  <update id="update" parameterType="com.kangde.collection.model.NoticeModel">
+    update notice
+    set title = #{title,jdbcType=VARCHAR},
+    content = #{content,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

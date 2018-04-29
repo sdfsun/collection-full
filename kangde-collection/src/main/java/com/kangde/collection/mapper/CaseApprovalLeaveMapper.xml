@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CaseApprovalLeaveMapper">
+	<resultMap type="com.kangde.collection.dto.ApproveDto" id="model">
+			<id column="id" property="id" />
+			<result column="case_id" property="caseId" />
+			<result column="approve_state" property="approveState" />
+			<result column="stay_reason" property="stayReason" />
+			<result column="stay_time" property="stayTime" />
+			<result column="apply_emp_id" property="applyEmpId" />
+			<result column="apply_time" property="applyTime" />
+			<result column="apply_reason" property="applyReason" />
+			<result column="stay_period" property="stayPeriod" />
+		<association property="caseModel" javaType="com.kangde.collection.model.CaseModel">
+			<result column="org_id" property="orgId" />
+			<result column="case_code" property="caseCode" />
+			<result column="case_date" property="caseDate" />
+			<result column="case_name" property="caseName" />
+			<result column="case_num" property="caseNum" />
+			<result column="case_card" property="caseCard" />
+			<result column="mobile1" property="mobile1" />
+			<result column="case_money" property="caseMoney" />
+			<result column="surplus_principal" property="surplusPrincipal" />
+			<result column="company_Address" property="companyAddress" />
+			<result column="collec_state_id" property="collecStateId" />
+			<result column="case_assigned_id" property="caseAssignedId" />
+			<result column="family_address" property="familyAddress" />
+			<result column="color" property="color" />
+			<result column="agent_rate" property="agentRate" />
+			<result column="overdue_days" property="overdueDays" />
+		</association>
+		<association property="batchmodel" javaType="com.kangde.collection.model.CaseBatchModel">
+			<id column="batchId" property="id" />
+			<result column="batch_code" property="batchCode" />
+			<result column="entrust_id" property="entrustId" />
+			<result column="achieve" property="achieve" />
+		</association>
+		<association property="casepaidmodel" javaType="com.kangde.collection.model.CasePaid">
+			<result column="paid_num" property="paidNum" />
+			<result column="sumMoney" property="sumMoney" />
+		</association>
+		<association property="employeeInfo" javaType="com.kangde.sys.model.EmployeeInfoModel">
+			<result column="user_name" property="userName" />
+			<result column="login_name" property="loginName" />
+		</association>
+	</resultMap>
+	<resultMap type="com.kangde.collection.model.ApproveRecordModel" id="approvalModel">
+		<result column="case_id" property="caseId" />
+		<result column="stay_period" property="stayPeriod" />
+	</resultMap>
+
+	<select id="queryforLeave" resultMap="model">
+	<![CDATA[
+	SELECT  ar.`id`,ci.collec_state_id,ci.case_code,ci.case_name,ci.case_date,ci.case_num,ci.org_id,ci.agent_rate,
+		ci.case_card,ci.mobile1,ci.case_money,ci.surplus_principal,ci.company_address,
+		cb.batch_code,cb.achieve,ci.overdue_days,
+		ar.case_id,ar.approve_state,ar.stay_reason,ar.stay_time,ar.apply_emp_id,ar.apply_time,ar.create_time,
+		cp.paid_num,ei.user_name ,ar.apply_reason,ci.family_address,ci.color,
+		CASE WHEN (ci.case_money - (SELECT IFNULL(SUM(paid_num),0) FROM case_paid WHERE case_id = cp.case_id AND state='2')- ci.out_derate)< 0 
+		THEN 0 ELSE  (ci.case_money - (SELECT IFNULL(SUM(paid_num),0) FROM case_paid WHERE case_id = cp.case_id AND state='2')-ci.out_derate) END AS sumMoney
+		 FROM
+	        approve_record ar
+	        INNER JOIN case_info ci ON ci.`id`=ar.case_id
+	        INNER JOIN case_batch cb ON ci.batch_id=cb.id
+	        LEFT JOIN(SELECT SUM(cp_money) AS sumMoney ,paid_num,case_id FROM
+		case_paid) cp ON cp.case_id=ci.`id`
+		INNER JOIN employee_info ei 
+		ON ei.id=ci.case_assigned_id
+		WHERE 1=1
+		and ci.status != -1 and cb.status != -1 
+			]]>
+			
+			
+		AND (
+			ci.org_id IN (
+				${params.queryOrgs}
+			)
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.attachEntrustId)">
+			OR cb.entrust_id IN (${params.attachEntrustId})
+			</if>	
+			<if test="@org.apache.commons.lang.StringUtils@equals('admin',params.loginName)">
+			OR 1=1
+			</if>	
+			)
+			
+			
+		<if test="@org.apache.commons.lang.StringUtils@isBlank(params.caseState)">
+			and  ci.`state` != '3'
+		</if>
+		<!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseState)">
+			and  ci.`state`IN ('0','1','4','3')
+		</if> -->
+		<!-- 多条查询条件 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.CodeAll)">
+			and ci.case_code in  ${params.CodeAll}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.CodeOne)">
+			and ci.case_code =  '${params. CodeOne}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseFileNoAll)">
+			and ci.case_file_no in  ${params.caseFileNoAll}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseFileNoOne)">
+			and ci.case_file_no =  '${params. caseFileNoOne}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseNumAll)">
+			and ci.case_num in  ${params.caseNumAll}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseNumOne)">
+			and ci.case_num =  '${params. caseNumOne}'
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCardAll)">
+			and ci.case_card in  ${params.caseCardAll}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCardOne)">
+			and ci.case_card =  '${params. caseCardOne}'
+		</if>
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.approveState)">
+			and approve_state = #{params.approveState} 
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.batchCode)">
+			and cb.id in ${params.batchCode}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.collecStateId)">
+			and collec_state_id like CONCAT('%','${params.collecStateId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust_id = #{params.entrustId}
+		</if>
+	
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseAssignedId)">
+				and case_assigned_id in (${params.caseAssignedIds})
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and case_code like CONCAT('%','${params.caseCode}','%' )
+		</if>
+		
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseIdMore)">
+			 and ar.id in
+			<foreach item="item" index="index" collection="params.caseIdMore"
+				open="(" separator="," close=")">
+
+				#{params.caseIdMore[${index}]}
+			</foreach>
+		</if>
+		<!-- 组织机构 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+			AND ci.org_id IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		 </if>
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by create_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<update id="approvalYes">
+		update
+		approve_record
+		set
+		approve_opinion=#{visitRecord.approveOpinion},
+		approve_state=#{visitRecord.approveState},
+		stay_period=#{visitRecord.stayPeriod},
+		stay_time=#{visitRecord.stayTime}
+		 where
+		id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+	<select id="findIds" resultMap="approvalModel">
+	select id,case_id,stay_period from approve_record
+		where
+		id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</select>
+</mapper>

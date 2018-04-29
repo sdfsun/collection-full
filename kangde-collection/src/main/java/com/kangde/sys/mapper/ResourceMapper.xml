@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.ResourceMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.ResourceModel"
+		id="model" />
+	<!-- 查询字段 -->
+	<sql id="fields">
+		id, create_time, status, modify_time, version, code,
+		icon_cls, name,
+		order_no, type,
+		url, parent_id
+	</sql>
+	<!-- 排序 -->
+	<sql id="sort">
+		order by order_no
+	</sql>
+	<!-- 表名称 -->
+	<sql id="table">
+		sys_resource
+	</sql>
+	<!-- 新增 -->
+	<insert id="save">
+		insert into
+		<include refid="table"/>
+		(id, create_time,
+		status,
+		modify_time, version, code,
+		icon_cls, name, order_no,
+		type, url,
+		parent_id)
+		values (#{id}, #{createTime}, #{status},
+		#{modifyTime},
+		#{version}, #{code},
+		#{iconCls,jdbcType=VARCHAR}, #{name}, #{orderNo},
+		#{type}, #{url}, #{parentId})
+	</insert>
+	
+	<!-- 通过父ID查询,供超级管理员使用 -->
+	<select id="findParent" resultMap="model">
+		select
+			<include refid="fields" />
+		from
+		<include refid="table"/>
+		where parent_id = #{parentId}
+		<if test="type != null">
+			and type = #{type}
+		</if>
+		<include refid="sort" />
+	</select>
+	
+	<!-- 查询顶级节点不考虑权限,供超级管理员使用,：parentId为空,admin -->
+	<select id="findTops" resultMap="model">
+		select
+			<include refid="fields" />
+		from
+		<include refid="table"/>
+		where parent_id is null
+		<if test="_parameter != null">
+			and type = #{_parameter}
+		</if>
+		<include refid="sort" />
+	</select>
+	
+	<!-- 查询所有资源 -->
+	<select id="query" resultMap="model">
+		select
+			<include refid="fields" />
+		from
+		<include refid="table"/>
+		<include refid="sort" />
+	</select>
+	
+	<!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select
+			<include refid="fields" />
+		from
+		<include refid="table"/>
+		where id = #{id}
+	</select>
+	
+	<!-- 查找最大排序号 -->
+	<select id="findMaxSort" resultType="int">
+		select max(order_no) from <include refid="table"/>
+	</select>
+	
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from <include refid="table"/> where id = #{id}
+	</delete>
+	
+	<!-- 更新 -->
+	<update id="update">
+    	update <include refid="table"/>
+    <set>
+        status = #{status},
+        modify_time = #{modifyTime},
+        version = version+1,
+        code = #{code},
+        icon_cls = #{iconCls},
+        name = #{name},
+        order_no = #{orderNo},
+        type = #{type},
+        url = #{url},
+        parent_id = #{parentId}
+        where id = #{id}
+    </set>
+  </update>
+  
+  <!-- 用户权限相关 -->
+  
+  <!-- 别名字段 -->
+  <sql id="Asfield">
+  	R.id, R.create_time, R.status, R.modify_time, R.version, R.code,
+	R.icon_cls, R.name,
+	R.order_no,R.type,
+	R.url,R.parent_id
+  </sql>
+  
+  <!-- 查询资源从用户角色关系表检索(涉及用户权限,基本SQL) -->
+  <sql id="Role_R">
+  	select distinct
+	<include refid="Asfield"/> 
+	from sys_resource as R 
+	join sys_role_resource_relation as RoleR on R.id = RoleR.resource_id
+	join sys_user_role_relation as UserR on RoleR.role_id = UserR.role_id
+  </sql>
+  
+  <!-- 查询资源从用户资源关系表检索(涉及用户权限,基本SQL) -->
+  <sql id="User_R">
+  	select
+  	<include refid="Asfield"/> 
+  	from sys_resource as R 
+	join sys_user_resource_relation  as UserR on R.id = UserR.resource_id
+  </sql>
+  
+  <!-- 排序 -->
+  <sql id="AsSort">
+  	order by order_no
+  </sql>
+  
+  <!-- 通过用户ID,资源类型:查询顶级菜单 -->
+  <select id="findTopsByUser" resultMap="model">
+	<include refid="Role_R"/>
+	where UserR.user_id = #{userId}
+	<if test="type != null">
+		and R.type = #{type}
+	</if>
+	and R.parent_id is null
+	and status = '${@com.kangde.commons.CoreConst@STATUS_NORMAL}'
+	union 
+	<include refid="User_R"/>
+	where UserR.user_id = #{userId}
+	<if test="type != null">
+		and R.type = #{type}
+	</if>
+	and R.parent_id is null
+	and status = '${@com.kangde.commons.CoreConst@STATUS_NORMAL}'
+	<include refid="AsSort"></include>
+  </select>
+  
+  <!-- 通过用户ID和资源ID查询菜单节点 -->
+  <select id="findParentByUser" resultMap="model">
+	<include refid="Role_R"/>
+	where UserR.user_id = #{userId} 
+	<if test="type != null">
+		and R.type = #{type}
+	</if>
+	and R.parent_id = #{parentId}
+	and status = '${@com.kangde.commons.CoreConst@STATUS_NORMAL}'
+	union 
+	<include refid="User_R"/>
+	where UserR.user_id = #{userId}
+	<if test="type != null">
+		and R.type = #{type}
+	</if>
+	and R.parent_id = #{parentId}
+	and status = '${@com.kangde.commons.CoreConst@STATUS_NORMAL}'
+	<include refid="AsSort"></include>
+  </select>
+  
+  <!-- 通过用户ID,查询所有资源(权限) -->
+  <select id="findByUserId" resultMap="model">
+  	<include refid="Role_R"/>
+	where UserR.user_id = #{userId}
+	and status = '${@com.kangde.commons.CoreConst@STATUS_NORMAL}'
+	union 
+	<include refid="User_R"/>
+	where UserR.user_id = #{userId}
+	and status = '${@com.kangde.commons.CoreConst@STATUS_NORMAL}'
+	<include refid="AsSort"></include>
+  </select>
+  
+  <!-- 通过字段查询 -->
+  <select id="findByField" resultMap="model">
+		select 
+		<include refid="fields" />
+		from 
+		<include refid="table" />
+		where ${fieldName} ${expression} #{fieldValue} 
+  </select>
+  
+</mapper>

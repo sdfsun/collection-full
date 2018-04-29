@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.EntrustProductMapper" >
+  	<!-- <resultMap id="model" type="com.kangde.sys.model.EntrustProduct" /> -->
+ 	<resultMap id="model" type="com.kangde.sys.model.EntrustProduct" >
+ 		<id column="id" 				 property="id" />
+	    <result column="case_source_id"  property="caseSourceId" />
+	    <result column="name" 			 property="name" />
+	    <result column="case_type_id" 	 property="caseTypeId" />
+	    <result column="handle" 		 property="handle" />
+	    <result column="case_type_name"  property="caseTypeName" />
+	    <result column="handle_name" 	 property="handleName" />
+	    <result column="code"			 property="code" />
+	    <result column="cus_type" 		 property="cusType" />
+	    <result column="rate" 			 property="rate" />
+	    <result column="contract_award_date" property="contractAwardDate" />
+	    <result column="contract_cycle"  property="contractCycle" />
+	    <result column="custom_service_total" property="customServiceTotal" />
+	    <result column="service_project" property="serviceProject" />
+	    <result column="area_id1" 		 property="areaId1" />
+	    <result column="area_id2" 		 property="areaId2" />
+	    <result column="area_id3" 		 property="areaId3" />
+	    <result column="address" 		 property="address" />
+	    <result column="staff" 			 property="staff" />
+	    <result column="staff_name" 	 property="staffName" />
+	    <result column="create_emp_id" 	 property="createEmpId" />
+	    <result column="create_emp_name" property="createEmpName" />
+	    <result column="create_time" 	 property="createTime" />
+	    <result column="state" 			 property="state" />
+	    <result column="modify_time" 	 property="modifyTime" />
+	    <result column="modify_name" 	 property="modifyName" />
+	    
+	    <result column="purpose_id" 	 property="purposeId" />
+	    <result column="guarantee_way_id" 	 property="guaranteeWayId" />
+	    <result column="product_category_id" 	 property="productCategoryId" />
+	    <result column="entrust_abbrevia" 	 property="entrustAbbrevia" />
+	    
+			<result column="en_name" property="en_name" />
+			<result column="user_name" property="user_name" />
+			<result column="userCus_name" property="userCus_name" />
+	
+			<result column="ecs_name" property="ecs_name" />
+			<result column="entrust_id" property="entrustId" />
+			<result column="enId" property="enId" />
+			<result column="ecsId" property="ecsId" />
+		
+ 	</resultMap>
+  
+  <sql id="list" >
+    id, case_source_id,entrust_id,staff_name,case_type_id, handle,case_type_name, 
+    handle_name,
+    code, cus_type, rate, contract_award_date, 
+    contract_cycle, custom_service_total, service_project, area_id1, area_id2, area_id3, 
+    address, staff, create_emp_id, create_emp_name, create_time, state, modify_time, 
+    modify_name,purpose_id,guarantee_way_id,product_category_id,entrust_abbrevia
+  </sql>
+ 
+  <select id="queryProduct" resultMap="model"> 			
+ 			
+SELECT 
+    ep.id,
+    ep.case_source_id,
+    ep.purpose_id,
+    ep.guarantee_way_id,
+    ep.product_category_id,
+    ep.entrust_abbrevia,
+    ep.area_id1,
+    ep.area_id2,
+    ep.area_id3,
+    ep.address,
+    ep.`entrust_id`,
+    ecs.`id` as ecsId,
+    en.id as enId,
+	ep.state,				#客户状态
+	en.name AS en_name,		#委托方
+	ecs.name AS ecs_name,
+	ep.`case_type_id`,
+	ep.`handle`,
+	ep.`code`,
+	ep.`service_project`,
+	ep.create_time,
+	ep.`create_emp_name`,
+	ep.`staff`,
+	ep.`staff_name`,
+	ep.`contract_award_date`,
+	ep.`contract_cycle`,
+	ep.`rate`,
+	ep.`custom_service_total`,
+	ep.`cus_type`,
+	ep.`modify_time`,
+	em.user_name AS user_name,
+	emp.user_name AS userCus_name
+	
+	FROM entrust_product ep
+	LEFT JOIN entrust_case_source ecs ON ecs.`id`= ep.`case_source_id`
+	LEFT JOIN entrust en ON ecs.`entrust_id`=en.`id`
+	LEFT JOIN employee_info em ON em.id = ep.staff
+	LEFT JOIN employee_info emp ON emp.id = ep.custom_service_total
+		where 1=1
+		<!--  名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and ep.entrust_id like CONCAT('%','${params.entrustId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseSourceId)">
+			and ep.case_source_id like CONCAT('%','${params.caseSourceId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseTypeId)">
+			and ep.case_type_id like CONCAT('%','${params.caseTypeId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.handle)">
+			and ep.handle like CONCAT('%','${params.handle}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.staff)">
+			and staff like CONCAT('%','${params.staff}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.contractAwardDate)
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.contractAwardDate1)">
+			and (DATE_FORMAT(contract_award_date,'%Y-%m-%d') between #{params.contractAwardDate} and #{params.contractAwardDate1})
+		</if> 
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by ep.create_time desc
+			</otherwise>
+		</choose>
+	</select>
+  <select id="findById" resultMap="model" >
+    select 
+    <include refid="list" />
+    from entrust_product
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="findByCode" resultMap="model" >
+    select 
+    <include refid="list" />
+    from entrust_product
+    where code = #{code,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="save" >
+     insert into entrust_product (id,entrust_id, case_source_id, 
+      case_type_id, handle,case_type_name,handle_name, code, 
+      cus_type, rate, contract_award_date, 
+      contract_cycle, custom_service_total, service_project, 
+      area_id1, area_id2, area_id3,
+      purpose_id,guarantee_way_id,
+      product_category_id,entrust_abbrevia,
+      address, staff,staff_name, create_emp_id, 
+      create_emp_name, create_time, state, 
+      modify_time, modify_name)
+    values (#{id,jdbcType=VARCHAR},#{entrustId,jdbcType=VARCHAR}, #{caseSourceId,jdbcType=VARCHAR}, 
+      #{caseTypeId,jdbcType=VARCHAR}, #{handle,jdbcType=VARCHAR},
+      #{caseTypeName,jdbcType=VARCHAR}, #{handleName,jdbcType=VARCHAR},
+      #{code,jdbcType=VARCHAR}, 
+      #{cusType,jdbcType=VARCHAR}, #{rate,jdbcType=DECIMAL}, #{contractAwardDate,jdbcType=TIMESTAMP}, 
+      #{contractCycle,jdbcType=VARCHAR}, #{customServiceTotal,jdbcType=VARCHAR}, #{serviceProject,jdbcType=VARCHAR}, 
+      #{areaId1,jdbcType=VARCHAR}, #{areaId2,jdbcType=VARCHAR}, #{areaId3,jdbcType=VARCHAR}, 
+      #{purposeId,jdbcType=VARCHAR}, #{guaranteeWayId,jdbcType=VARCHAR}, 
+      #{productCategoryId,jdbcType=VARCHAR}, #{entrustAbbrevia,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{staff,jdbcType=VARCHAR}, #{staffName,jdbcType=VARCHAR}, #{createEmpId,jdbcType=VARCHAR}, 
+      #{createEmpName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}, 
+      #{modifyTime,jdbcType=TIMESTAMP}, #{modifyName,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="update" >
+    update entrust_product
+    <set >
+      <if test="entrustId != null" >
+        entrust_id = #{entrustId,jdbcType=VARCHAR},
+      </if>
+     <!--  2016.12.19新增字段 起-->
+      <if test="purposeId != null" >
+        purpose_id =  #{purposeId,jdbcType=VARCHAR}, 
+      </if>
+      <if test="guaranteeWayId != null" >
+        guarantee_way_id = #{guaranteeWayId,jdbcType=VARCHAR}, 
+      </if>
+      <if test="productCategoryId != null" >
+        product_category_id =  #{productCategoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="entrustAbbrevia != null" >
+        entrust_abbrevia =  #{entrustAbbrevia,jdbcType=VARCHAR},
+      </if>
+      <!--  2016.12.19新增字段 至-->
+      <if test="caseSourceId != null" >
+        case_source_id = #{caseSourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="caseTypeId != null" >
+        case_type_id = #{caseTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="handle != null" >
+        handle = #{handle,jdbcType=VARCHAR},
+      </if>
+      <if test="caseTypeName != null" >
+        case_type_name = #{caseTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="handleName != null" >
+        handle_name = #{handleName,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="cusType != null" >
+        cus_type = #{cusType,jdbcType=VARCHAR},
+      </if>
+      <if test="rate != null" >
+        rate = #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="contractAwardDate != null" >
+        contract_award_date = #{contractAwardDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractCycle != null" >
+        contract_cycle = #{contractCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="customServiceTotal != null" >
+        custom_service_total = #{customServiceTotal,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceProject != null" >
+        service_project = #{serviceProject,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId1 != null" >
+        area_id1 = #{areaId1,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId2 != null" >
+        area_id2 = #{areaId2,jdbcType=VARCHAR},
+      </if>
+      <if test="areaId3 != null" >
+        area_id3 = #{areaId3,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="staff != null" >
+        staff = #{staff,jdbcType=VARCHAR},
+      </if>
+      <if test="staffName != null" >
+        staff_name = #{staffName,jdbcType=VARCHAR},
+      </if>
+      <if test="createEmpId != null" >
+        create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="createEmpName != null" >
+        create_emp_name = #{createEmpName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyName != null" >
+        modify_name = #{modifyName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+  <!-- 更新 -->
+	<update id="updateForStatus" >
+		update
+		entrust_product
+		set
+		state=#{entrust.state},
+		modify_time=#{entrust.modifyTime}
+		where 
+		id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+ 
+</mapper>

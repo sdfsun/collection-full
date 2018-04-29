@@ -1,0 +1,937 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.VisitRecordMapper">
+
+	<resultMap id="visitRecordVo" type="com.kangde.collection.dto.VisitRecordVo"></resultMap>
+	<resultMap id="model" type="com.kangde.collection.dto.VisitRecordDto">
+		<!-- id -->
+		<id column="id" property="id" />
+		<!-- 外访姓名 -->
+		<id column="name" property="name" />
+		<!-- 姓名 -->
+		<result column="sex" property="sex" />
+		<!-- 年龄 -->
+		<result column="age" property="age" />
+		<result column="adr_cat" property="adrCat" />
+		<!-- 外访地址 -->
+		<result column="visit_address" property="visitAddress" />
+		<!-- 外访要求 -->
+		<result column="require" property="require" />
+		<!-- 申请时间 -->
+		<result column="apply_time" property="applyTime" />
+		<!-- 外访员 -->
+		<result column="visit_user" property="visitUser" />
+		<!-- 外访员 -->
+		<result column="visit_user_id" property="visitUserId" />
+		<!-- 外访报告 -->
+		<result column="visit_report" property="visitReport" />
+		<!-- 地址是否有效 -->
+		<result column="is_effective" property="isEffective" />
+		<!-- 实际外访时间 -->
+		<result column="actual_visit_time" property="actualVisitTime" />
+		<!-- 预计外访时间 -->
+		<result column="visit_time" property="visitTime" />
+		<!-- 外访结果 -->
+		<result column="visit_state" property="visitState" />
+		<!-- 地址表id -->
+		<result column="address_id" property="addressId" />
+		<result column="area_id1" property="areaId1" />
+		<result column="area_id2" property="areaId2" />
+		<result column="area_id3" property="areaId3" />
+		<result column="case_id" property="caseId" />
+		<result column="paidNum" property="paidNum" />
+		<result column="reason_type_id" property="reasonTypeId" />
+		<result column="remark" property="remark" />
+		<result column="countSize" property="countSize" />
+		<association property="caseModel"
+			javaType="com.kangde.collection.model.CaseModel">
+			<!-- <id column="c.id" property="caseModel.id" /> -->
+			<result column="case_code" property="caseCode" />
+			<result column="collec_state_id" property="collecStateId" />
+			<result column="case_date" property="caseDate" />
+			<result column="case_num" property="caseNum" />
+			<result column="case_name" property="caseName" />
+			<result column="overdue_date" property="overdueDate" />
+			<result column="overdue_days" property="overdueDays" />
+			<result column="overdue_periods" property="overduePeriods" />
+			<result column="overdue_age" property="overdueAge" />
+			<result column="case_money" property="caseMoney" />
+			<result column="case_card" property="caseCard" />
+			<result column="case_sex" property="caseSex" />
+			<result column="case_age" property="caseAge" />
+			<result column="case_is_marriage" property="caseIsMarriage" />
+			<result column="company_name" property="companyName" />
+			<result column="company_phone" property="companyPhone" />
+			<result column="company_address" property="companyAddress" />
+			<result column="family_phone" property="familyPhone" />
+			<result column="mobile1" property="mobile1" />
+			<result column="mobile2" property="mobile2" />
+			<result column="family_address" property="familyAddress" />
+			<result column="domicile" property="domicile" />
+			<result column="collateral_no" property="collateralNo" />
+			<result column="collateral_id" property="collateralId" />
+			<result column="collateral_name" property="collateralName" />
+			<result column="collateral_address" property="collateralAddress" />
+			<result column="collateral_evalua" property="collateralEvalua" />
+			<result column="account_no" property="accountNo" />
+			<result column="case_file_no" property="caseFileNo" />
+			<result column="case_date" property="caseDate" />
+			<result column="loan_startdate" property="loanStartdate" />
+			<result column="principal" property="principal" />
+			<result column="org_name" property="orgName" />
+			<result column="company_zipcode" property="companyZipcode" />
+			<result column="family_zipcode" property="familyZipcode" />
+			<result column="bill" property="bill" />
+			<result column="last_repayment" property="lastRepayment" />
+			<result column="surplus_principal" property="surplusPrincipal" />
+			<result column="repayment_periods" property="repaymentPeriods" />
+			<result column="month_repayment" property="monthRepayment" />
+			<result column="overdue_penalty" property="overduePenalty" />
+			<result column="case_app_no" property="caseAppNo" />
+			<result column="case_num_id" property="caseNumId" />
+			<result column="commodity" property="commodity" />
+			<result column="case_assign_name" property="caseAssignName" />
+			<result column="color" property="color" />
+		</association>
+
+
+
+		<association property="addressModel"
+			javaType="com.kangde.collection.model.AddressModel">
+			<result column="relation" property="relation" />
+			<result column="vis_count" property="visCount" />
+		</association>
+
+		<association property="entrustModel" javaType="com.kangde.sys.model.EntrustModel">
+			<result column="name" property="name" />
+			<result column="ename" property="ename"/>
+		</association>
+		<association property="employeeInfo"
+			javaType="com.kangde.sys.model.EmployeeInfoModel">
+			<result column="user_name" property="userName" />
+		</association>
+
+		<association property="batchModel"
+			javaType="com.kangde.collection.model.CaseBatchModel">
+			<result column="actual_end_date" property="actualEndDate" />
+			<result column="batch_code" property="batchCode" />
+		</association>
+
+
+	</resultMap>
+	<!-- 外访导出sql -->
+	<select id="findVisitRecordIds" resultType="com.kangde.collection.dto.VisitShowView">
+	SELECT
+		cb.`batch_code`,cb.`actual_end_date`,en.name as entrustName,
+		c.`case_code`,c.`case_card`,c.`account_no`,c.`case_file_no`,c.`case_money`,c.`case_date`,c.`loan_startdate`,c.`principal`,
+		c.`org_name`,c.`case_name`,c.`case_sex`,c.`case_age`,c.`case_is_marriage`,c.`company_name`,c.`company_address`,c.`company_zipcode`,
+		c.`company_phone`,c.`family_address`,c.`family_phone`,c.`family_zipcode`,c.`bill`,c.`last_repayment`,c.`surplus_principal`,c.`repayment_periods`,
+		c.`month_repayment`,c.`overdue_penalty`,c.`case_app_no`,c.`collec_state_id`,c.`domicile`,c.`mobile1`,c.`mobile2`,c.`case_num`,
+		c.`case_num_id`,c.`overdue_age`,c.`overdue_days`,c.`overdue_periods`,c.`commodity`,c.`case_assign_name`,c.`collateral_name`,
+		c.`collateral_no`,c.`collateral_id`,c.`collateral_address`,
+		vr.`name`,vr.`age`,vr.`sex`,vr.`require`,vr.`reason_type_id`,vr.`visit_address`,
+		vr.`apply_time`,vr.`actual_visit_time`,vr.`visit_user`,vr.`visit_user_id`,vr.`remark`,c.case_assigned_id,e.user_name,
+		r1.`name` AS oName,r2.`name` AS tName,r3.`name`AS sName,
+		
+	IFNULL((SELECT SUM(IFNULL(paid_num, 0)) FROM case_paid WHERE
+		case_id= c.id
+		AND state = 2),0) AS paidNum	
+		
+		FROM
+		visit_record vr
+		LEFT JOIN case_info c ON vr.case_id = c.id
+		LEFT JOIN
+		case_batch cb ON c.batch_id = cb.id
+		LEFT JOIN
+		entrust en ON cb.entrust_id = en.id
+		LEFT JOIN region r1 ON
+		r1.`id`=vr.`area_id1`
+		LEFT JOIN region r2 ON r2.`id`=vr.`area_id2`
+		LEFT
+		JOIN region r3 ON r3.`id`=vr.`area_id3`
+		LEFT JOIN
+		 employee_info e ON e.id=c.case_assigned_id
+		WHERE
+		c.state IN (0, 1, 4)
+		AND
+		vr.state='3'
+		and vr.id in
+		<foreach collection="visitRecordIds" open="(" close=")"
+			separator="," item="id">
+			#{id}
+		</foreach>
+	</select>
+
+	<!-- 待审批 待排程查询sql -->
+	<select id="queryToApproveORToAppoint" resultMap="model">
+			SELECT
+		IFNULL(
+		(
+		SELECT
+		SUM(IFNULL(paid_num, 0))
+		FROM
+		case_paid
+		WHERE
+		case_id
+		= c.id
+		AND state = 2
+		),
+		0
+		) AS paidNum,
+		vr.id,
+		c.collec_state_id,
+		c.case_code,
+		c.case_date,
+		cb.batch_code,
+		c.id case_id,
+		ad.name,
+		ad.relation,
+		ad.adr_cat,
+		vr.sex,
+		vr.age,
+		c.case_money,
+		vr.visit_user,
+		vr.visit_report,
+		vr.actual_visit_time,
+		vr.area_id1,
+		vr.area_id2,
+		vr.area_id3,
+		vr.visit_time,
+		vr.address_id,
+		vr.visit_user_id,
+		vr.is_effective,
+		vr.visit_address,
+		ad.vis_count,
+		vr.
+		`REQUIRE`,
+		ei.user_name,
+		vr.apply_time,
+		so. NAME AS orgName,
+		r1.name AS
+		caName,
+		r2.name AS ccName,
+		r3.name AS cpName,
+		ei.org_id,
+		c.`color`
+		FROM
+		visit_record
+		vr
+		LEFT
+		JOIN address ad ON vr.address_id = ad.id
+		LEFT JOIN case_info c ON
+		vr.case_id = c.id
+		LEFT JOIN case_batch cb ON c.batch_id = cb.id
+		LEFT
+		JOIN employee_info ei ON c.case_assigned_id = ei.id
+		LEFT JOIN
+		employee_info e ON vr.visit_user_id = e.id
+		LEFT JOIN sys_organization
+		so ON ei.org_id = so.id
+		LEFT JOIN region r1 ON r1.id = vr.area_id3
+		LEFT
+		JOIN region r2 ON r2.id = vr.area_id2
+		LEFT JOIN region r3 ON r3.id =
+		vr.area_id1
+		WHERE
+		1=1
+		and c.state IN (0, 1, 4)	
+		and c.status!=-1 
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseName)">
+			and c.case_name like CONCAT('%','${params.caseName}','%' )
+		</if>	
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.batchCode)">
+			and cb.id in ${params.batchCode}
+		</if>	
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.state)">
+			and vr.state='${params.state}'
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.area)">
+			and vr.area_id1 in
+			<foreach item="item" index="index" collection="params.area"
+				open="(" separator="," close=")">
+
+				#{params.area[${index}]}
+			</foreach>
+		</if>
+
+		<!-- 外方姓名 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and vr.name like CONCAT('%','${params.name}','%' )
+		</if>
+
+		<!-- 案件序列号 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and c.case_code like CONCAT('%','${params.caseCode}','%' )
+		</if>
+
+		<!-- 委托方 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust_id ='${params.entrustId}'
+		</if>
+
+
+		<!-- 外访地区 省 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.areaId1)">
+			and vr.area_id1 ='${params.areaId1}'
+		</if>
+		<!-- 外访地区 市 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.areaId2)">
+			and vr.area_id2 ='${params.areaId2}'
+		</if>
+		<!-- 外访地区 区 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.areaId3)">
+			and vr.area_id3 ='${params.areaId3}'
+		</if>
+
+
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and case_code like CONCAT('%','${params.caseCode}','%' )
+		</if>
+		<!-- 风控状态 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.collecStateId)">
+			and collec_state_id ='${params.collecStateId}'
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by apply_time desc,vr.create_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="queryAppointedORFinished" resultMap="model">
+	    ${params.dynamicSql}
+	</select>
+
+	<!-- 导出所用查询方法，查询勾选案件信息 -->
+	<select id="selectByIds" resultMap="model">
+		SELECT
+		IFNULL(
+		(
+		SELECT
+		SUM(IFNULL(paid_num, 0))
+		FROM
+		case_paid
+		WHERE
+		case_id
+		= c.id
+		AND state = 2
+		),
+		0
+		) AS paidNum,
+		vr.id,
+		c.collec_state_id,
+		vr.case_id,
+		c.case_code,
+		vr.`name`,
+		ad.relation,
+		vr.sex,
+		vr.age,
+		c.case_money,
+		vr.visit_user,
+		vr.visit_report,
+		vr.actual_visit_time,
+		vr.area_id1,
+		vr.area_id2,
+		vr.area_id3,
+		vr.visit_time,
+		vr.address_id,
+		vr.visit_user_id,
+		vr.is_effective,
+		vr.visit_address,
+		ad.vis_count,
+		vr.`require`,
+		ei.user_name,
+		vr.apply_time,
+		so. NAME AS orgName,
+		r1.name AS
+		caName,
+		r2.name AS ccName,
+		r3.name AS cpName,
+		ei.org_id,
+		et.`name` AS ename,
+		vr.`visit_state`
+		FROM
+		visit_record
+		vr
+		LEFT JOIN address ad ON vr.address_id = ad.id
+		LEFT JOIN case_info c
+		ON vr.case_id = c.id
+		LEFT JOIN case_batch cb ON c.batch_id = cb.id
+		LEFT
+		JOIN employee_info ei ON c.case_assigned_id = ei.id
+		LEFT JOIN
+		employee_info e ON vr.visit_user_id = e.id
+		LEFT JOIN sys_organization
+		so ON ei.org_id = so.id
+		LEFT JOIN region r1 ON r1.id = vr.area_id3
+		LEFT
+		JOIN region r2 ON r2.id = vr.area_id2
+		LEFT JOIN region r3 ON r3.id =
+		vr.area_id1
+		LEFT JOIN entrust et ON et.`id`=cb.`entrust_id`
+		WHERE
+	
+		vr.id in
+		<foreach collection="list" open="(" close=")" separator="," item="id" index="index">
+			#{id}
+		</foreach>
+		order by visit_time
+				desc
+		
+	</select>
+
+	<!-- 已排程查询sql -->
+	<select id="queryAll" resultType="com.kangde.collection.dto.VisitShowView">
+	SELECT
+		cb.`batch_code`,cb.`actual_end_date`,en.name as entrustName,
+		c.`case_code`,c.`case_card`,c.`account_no`,c.`case_file_no`,c.`case_money`,c.`case_date`,c.`loan_startdate`,c.`principal`,
+		c.`org_name`,c.`case_name`,c.`case_sex`,c.`case_age`,c.`case_is_marriage`,c.`company_name`,c.`company_address`,c.`company_zipcode`,
+		c.`company_phone`,c.`family_address`,c.`family_phone`,c.`family_zipcode`,c.`bill`,c.`last_repayment`,c.`surplus_principal`,c.`repayment_periods`,
+		c.`month_repayment`,c.`overdue_penalty`,c.`case_app_no`,c.`collec_state_id`,c.`domicile`,c.`mobile1`,c.`mobile2`,c.`case_num`,
+		c.`case_num_id`,c.`overdue_age`,c.`overdue_days`,c.`overdue_periods`,c.`commodity`,c.`case_assign_name`,c.`collateral_name`,
+		c.`collateral_no`,c.`collateral_id`,c.`collateral_address`,
+		vr.`name`,vr.`age`,vr.`sex`,vr.`require`,vr.`reason_type_id`,vr.`visit_address`,
+		vr.`apply_time`,vr.`actual_visit_time`,vr.`visit_user`,vr.`visit_user_id`,vr.`remark`,
+		r1.`name` AS oName,r2.`name` AS tName,r3.`name`AS sName,e.`user_name`,
+			IFNULL((SELECT SUM(IFNULL(paid_num, 0)) FROM case_paid WHERE
+		case_id= c.id
+		AND state = 2),0) AS paidNum	
+		FROM
+		visit_record vr
+		LEFT JOIN case_info c ON vr.case_id = c.id
+		LEFT JOIN
+		case_batch cb ON c.batch_id = cb.id
+		LEFT JOIN
+		entrust en ON cb.entrust_id = en.id
+		LEFT JOIN region r1 ON
+		r1.`id`=vr.`area_id1`
+		LEFT JOIN region r2 ON r2.`id`=vr.`area_id2`
+		LEFT
+		JOIN region r3 ON r3.`id`=vr.`area_id3`
+		LEFT JOIN `employee_info` e ON e.`id`=c.case_assigned_id
+		WHERE
+		c.state IN (0, 1, 4)
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.state)">
+			and vr.state='${params.state}'
+		</if>
+
+		<!-- 风控方 <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)"> 
+			AND c.org_id IN ( SELECT id FROM sys_organization WHERE path LIKE CONCAT(( 
+			SELECT path FROM sys_organization WHERE id = #{params.orgId} ), '%') ) </if> -->
+		<!-- 风控员 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseAssignedId)">
+			and c.case_assigned_id='${params.caseAssignedId}'
+		</if>
+		<!-- 外访员 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.visitUserId)">
+			and vr.visit_user_id='${params.visitUserId}'
+		</if>
+		<!-- 委托方 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust_id ='${params.entrustId}'
+		</if>
+		<!-- 案件序列号 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and c.case_code like CONCAT('%','${params.caseCode}','%' )
+		</if>
+		<!-- 外访地区 省 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.areaId1)">
+			and vr.area_id1 ='${params.areaId1}'
+		</if>
+		<!-- 外访地区 市 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.areaId2)">
+			and vr.area_id2 ='${params.areaId2}'
+		</if>
+		<!-- 外访地区 区 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.areaId3)">
+			and vr.area_id3 ='${params.areaId3}'
+		</if>
+		<!-- 外方姓名 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and vr.name like CONCAT('%','${params.name}','%' )
+		</if>
+		<!-- 外方员姓名 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.visitUser)">
+			and vr.visit_user like CONCAT('%','${params.visitUser}','%')
+		</if>
+		<!-- 风控状态 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.collecStateId)">
+			and collec_state_id ='${params.collecStateId}'
+		</if>
+		<!-- 预计外访时间 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.visitTimeStart) 
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.visitTimeEnd)">
+			and visit_time BETWEEN
+			'${params.visitTimeStart}' AND
+			'${params.visitTimeEnd}'
+		</if>
+		<!-- 实际外访时间 -->
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.actualVisitTimeStart) 
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.actualVisitTimeEnd)">
+			and actual_visit_time BETWEEN
+			'${params.actualVisitTimeStart}'
+			AND '${params.actualVisitTimeEnd}'
+		</if>
+
+		<!-- 案件序列号 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and c.case_code like CONCAT('%','${params.caseCode}','%' )
+		</if>
+
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by visit_time
+				desc
+			</otherwise>
+		</choose>
+
+	</select>
+
+
+
+	<!-- 查询字段 -->
+	<sql id="list">
+		id, state, address_id, case_id, num, area_id1, area_id2,
+		area_id3,
+		reason_type_id,
+		name, sex, age, 'require', apply_reason,
+		approve_state, approve_opinion,
+		remark, visit_report,
+		visit_time,
+		back_time, visit_user, visit_user_id, visit_address, create_emp_id,
+		create_time,
+		apply_emp_id,
+		apply_time, is_effective, modify_time
+	</sql>
+
+	<select id="findById" resultMap="model">
+		select
+		*
+		from visit_record
+		<!-- entrust.id entrust.name left join entrust on case_batch.entrust_id 
+			= entrust.id -->
+		where id = #{id}
+	</select>
+	
+		<select id="findByAddresId" resultMap="model">
+		select
+		*
+		from visit_record
+		where address_id = #{id}
+		and state in (0,2,3)
+	</select>
+
+<select id="selectIds" resultMap="model">
+		select *
+		from visit_record
+		where id in
+		<foreach collection="list" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</select>
+
+	<select id="findByIds" resultMap="model">
+		select *
+		from visit_record
+		where visit_user_id in
+		<foreach collection="list" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</select>
+	<select id="query" resultMap="visitRecordVo">
+		SELECT visit_record.*,
+		employee_info.user_name applyEmpName, empaddress.relation relation
+		from
+		visit_record
+		LEFT JOIN employee_info
+		on
+		visit_record.create_emp_id=employee_info.id
+		left join address
+		on
+		visit_record.address_id=address.id
+		where
+		visit_record.case_id=#{params.caseId}
+	</select>
+
+	<select id="queryVisitRecordVo" resultMap="visitRecordVo">
+		SELECT
+		visit_record.id,
+		visit_record.case_id,
+		visit_record.`name`,
+		address.relation,
+		visit_record.visit_address,
+		visit_record.apply_reason,
+		visit_record.actual_visit_time,
+		visit_record.visit_report,
+		<!-- info2.user_name as
+		visitUser, -->
+		
+		visit_record.visit_user as visitUser,
+		
+		info2.contact_mode,
+		
+		visit_record.visit_user_id as infoId,
+		
+		visit_record.apply_time,
+		visit_record.state,
+		visit_record.approve_opinion
+		FROM
+		visit_record
+		LEFT JOIN address ON
+		visit_record.address_id = address.id
+		LEFT JOIN employee_info info2 ON
+		visit_record.visit_user_id = info2.id
+		WHERE
+		visit_record.case_id =
+		#{params.caseId}
+	</select>
+
+	<insert id="save" parameterType="com.kangde.collection.model.VisitRecordModel">
+		insert into visit_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="state != null">
+				state,
+			</if>
+			<if test="addressId != null">
+				address_id,
+			</if>
+			<if test="caseId != null">
+				case_id,
+			</if>
+			<if test="num != null">
+				num,
+			</if>
+			<if test="areaId1 != null">
+				area_id1,
+			</if>
+			<if test="areaId2 != null">
+				area_id2,
+			</if>
+			<if test="areaId3 != null">
+				area_id3,
+			</if>
+			<if test="reasonTypeId != null">
+				reason_type_id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="age != null">
+				age,
+			</if>
+			<if test="require != null">
+				`require`,
+			</if>
+			<if test="applyReason != null">
+				apply_reason,
+			</if>
+			<if test="approveState != null">
+				approve_state,
+			</if>
+			<if test="approveOpinion != null">
+				approve_opinion,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="visitReport != null">
+				visit_report,
+			</if>
+			<if test="visitTime != null">
+				visit_time,
+			</if>
+			<if test="backTime != null">
+				back_time,
+			</if>
+			<if test="visitUser != null">
+				visit_user,
+			</if>
+			<if test="visitUserId != null">
+				visit_user_id,
+			</if>
+			<if test="visitAddress != null">
+				visit_address,
+			</if>
+			<if test="createEmpId != null">
+				create_emp_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="applyEmpId != null">
+				apply_emp_id,
+			</if>
+			<if test="applyTime != null">
+				apply_time,
+			</if>
+			<if test="isEffective != null">
+				is_effective,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="visitState != null">
+				visit_state,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="state != null">
+				#{state},
+			</if>
+			<if test="addressId != null">
+				#{addressId},
+			</if>
+			<if test="caseId != null">
+				#{caseId},
+			</if>
+			<if test="num != null">
+				#{num},
+			</if>
+			<if test="areaId1 != null">
+				#{areaId1},
+			</if>
+			<if test="areaId2 != null">
+				#{areaId2},
+			</if>
+			<if test="areaId3 != null">
+				#{areaId3},
+			</if>
+			<if test="reasonTypeId != null">
+				#{reasonTypeId},
+			</if>
+			<if test="name != null">
+				#{name},
+			</if>
+			<if test="sex != null">
+				#{sex},
+			</if>
+			<if test="age != null">
+				#{age},
+			</if>
+			<if test="require != null">
+				#{require},
+			</if>
+			<if test="applyReason != null">
+				#{applyReason},
+			</if>
+			<if test="approveState != null">
+				#{approveState},
+			</if>
+			<if test="approveOpinion != null">
+				#{approveOpinion},
+			</if>
+			<if test="remark != null">
+				#{remark},
+			</if>
+			<if test="visitReport != null">
+				#{visitReport},
+			</if>
+			<if test="visitTime != null">
+				#{visitTime},
+			</if>
+			<if test="backTime != null">
+				#{backTime},
+			</if>
+			<if test="visitUser != null">
+				#{visitUser},
+			</if>
+			<if test="visitUserId != null">
+				#{visitUserId},
+			</if>
+			<if test="visitAddress != null">
+				#{visitAddress},
+			</if>
+			<if test="createEmpId != null">
+				#{createEmpId},
+			</if>
+			<if test="createTime != null">
+				#{createTime},
+			</if>
+			<if test="applyEmpId != null">
+				#{applyEmpId},
+			</if>
+			<if test="applyTime != null">
+				#{applyTime},
+			</if>
+			<if test="isEffective != null">
+				#{isEffective},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime},
+			</if>
+			<if test="visitState != null">
+				#{visitState},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="update">
+		update visit_record
+		<set>
+			<if test="state != null">
+				state = #{state,jdbcType=INTEGER},
+			</if>
+			<if test="addressId != null">
+				address_id = #{addressId,jdbcType=VARCHAR},
+			</if>
+			<if test="caseId != null">
+				case_id = #{caseId,jdbcType=VARCHAR},
+			</if>
+			<if test="num != null">
+				num = #{num,jdbcType=INTEGER},
+			</if>
+			<if test="areaId1 != null">
+				area_id1 = #{areaId1,jdbcType=VARCHAR},
+			</if>
+			<if test="areaId2 != null">
+				area_id2 = #{areaId2,jdbcType=VARCHAR},
+			</if>
+			<if test="areaId3 != null">
+				area_id3 = #{areaId3,jdbcType=VARCHAR},
+			</if>
+			<if test="reasonTypeId != null">
+				reason_type_id = #{reasonTypeId,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="age != null">
+				age = #{age,jdbcType=INTEGER},
+			</if>
+			<if test="require != null">
+				`require` = #{require,jdbcType=VARCHAR},
+			</if>
+			<if test="applyReason != null">
+				apply_reason = #{applyReason,jdbcType=VARCHAR},
+			</if>
+			<if test="approveState != null">
+				approve_state = #{approveState,jdbcType=INTEGER},
+			</if>
+			<if test="approveOpinion != null">
+				approve_opinion = #{approveOpinion,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="visitReport != null">
+				visit_report = #{visitReport,jdbcType=VARCHAR},
+			</if>
+			<if test="visitTime != null">
+				visit_time = #{visitTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="backTime != null">
+				back_time = #{backTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="visitUser != null">
+				visit_user = #{visitUser,jdbcType=VARCHAR},
+			</if>
+			<if test="visitUserId != null">
+				visit_user_id = #{visitUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="visitAddress != null">
+				visit_address = #{visitAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="createEmpId != null">
+				create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="applyEmpId != null">
+				apply_emp_id = #{applyEmpId,jdbcType=VARCHAR},
+			</if>
+			<if test="applyTime != null">
+				apply_time = #{applyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isEffective != null">
+				is_effective = #{isEffective,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="actualVisitTime != null">
+				actual_visit_time =
+				#{actualVisitTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="visitState != null">
+				visit_state =
+				#{visitState,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="repairquery" resultType="com.kangde.collection.dto.VisitRecordVo">
+		select id, visit_user from visit_record_to_hand
+	</select>
+	
+	<update id="repairupdate">
+		update  visit_record_to_hand set visit_record_to_hand.visit_user_=#{ids} where id=#{id}
+	</update>
+	
+	<select id="visitCount" resultType="int">
+		SELECT count(1) FROM visit_record vr
+		where vr.state=3 and visit_time=#{date} and visit_user_id like '%,${userId},%'
+	</select>
+	
+	<select id="caseToUploadReport"  resultMap="model">
+		SELECT vr.*, ci.case_code FROM visit_record vr
+		left join case_info ci on vr.case_id=ci.id
+		where vr.state=3
+		and visit_time=#{yesterday}
+		and visit_user_id like '%,${userId},%'
+	</select>
+	
+	<select id="queryToApproveORToAppointCount"  resultType="int">
+		SELECT count(*) FROM visit_record vr LEFT JOIN case_info c ON vr.case_id = c.id
+		WHERE c.state IN (0, 1, 4) AND c. STATUS !=- 1
+		and vr.state=#{state}
+		and vr.area_id1 in
+		<foreach item="item" index="index" collection="area"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		
+	</select>
+</mapper>

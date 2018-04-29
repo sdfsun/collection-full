@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.TemplateMapper">
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.TemplateModel" id="model" />
+
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		id, name, sys_column_ids,
+		grop_no,state,create_emp_id,modify_emp_id
+	</sql>
+	<!-- 表名称 -->
+	<sql id="table">
+		template
+	</sql>
+
+	<!-- 查询所有案件模板信息及条件 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		<include refid="table" />
+		where 1=1
+		and
+		grop_no='case_info'
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by name
+				desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 查询所有催记模板信息及条件 -->
+	<select id="querycollection" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		<include refid="table" />
+		where 1=1
+		and
+		grop_no='phone_record'
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by name
+				desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 案件启用 -->
+	<update id="updateForStatus">
+		update
+		<include refid="table" />
+		set
+		state=1
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+		<!-- 催记禁用模板 -->
+	<update id="updateForStatusStop">
+		update
+		<include refid="table" />
+		set
+		state=0
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+		<!-- 案件启用模板 -->
+	<update id="updateForStart">
+		update
+		<include refid="table" />
+		set
+		state=1
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+	<!-- 案件停用模板 -->
+	<update id="updateForStop">
+		update
+		<include refid="table" />
+		set
+		state=0
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+	<!-- ID删除 -->
+	<delete id="delateIds">
+		delete from
+		<include refid="table" />
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!-- ID删除 -->
+	<delete id="deleteAll">
+		delete from
+		<include refid="table" />
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+
+	<!-- 新增案件模板 -->
+	<insert id="saveTemplate">
+		insert into
+		<include refid="table" />
+		( id,name,sys_column_ids,grop_no,state,create_emp_id,create_time)
+		values
+		(#{id},#{name},#{sysColumnIds}, #{gropNo}, #{state},#{createEmpId},#{createTime})
+	</insert>
+	
+		<!-- 修改案件模板 -->
+	<update id="updateTemplate">
+		update
+		<include refid="table" />
+		set
+		name=#{name},
+		sys_column_ids=#{sysColumnIds},
+		modify_time=#{modifyTime},
+		modify_emp_id=#{modifyEmpId}
+		where id =
+		#{id}
+	</update>
+
+
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		<include refid="table" />
+		where
+		id=#{id}
+		</select>
+		
+		<select id="findByName" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		<include refid="table" />
+		where
+		name=#{0}
+		and
+		grop_no=#{1}
+		</select>
+	
+	<!-- 通过组号查询模板信息 -->
+	<select id="findByGropNo" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		<include refid="table" />
+		where 1=1 and
+		grop_no=#{_parameter}
+		and
+		state=1
+	</select>
+
+</mapper>

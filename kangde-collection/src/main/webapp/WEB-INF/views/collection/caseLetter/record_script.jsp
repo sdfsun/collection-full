@@ -1,0 +1,210 @@
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<script type="text/javascript" charset="utf-8">
+var _datagrid;
+var _form;
+var _search_form;
+var _dialog;
+var change_state_form;
+//请求基础路径
+var baseUrl = ctx+"/collection/caseLetter";
+$(function () {
+    _form = $('#_form').form();
+    _search_form = $('#_search_form').form();
+    loadOrgs();
+    loadEntrust('#search_entrustId');
+    //数据列表
+    _datagrid = $('#_datagrid').datagrid({
+        url: baseUrl + '/query',
+        fit: true,
+        method:'GET',
+        pagination: true,//底部分页
+        rownumbers: true,//显示行数
+        fitColumns: false,//自适应列宽
+        striped: true,//显示条纹
+        remoteSort:true,//是否通过远程服务器对数据排序
+        idField: 'id',
+        queryParams:$.serializeObject(_search_form),
+        frozenColumns : [ [ {field : 'id', checkbox : true,width:1} ] ],
+        columns: [
+            [
+                {field:'state',title:'信函状态',align:'left',width:95,
+                	formatter:function(value, row, index){
+                		return app.dictName('LETTER_STATE',value)
+                	}
+                },
+             
+                        {field: 'caseCode', title: '案件序列号', width: 180,sortable:true},
+                        {field: 'caseName', title: '姓名', width: 95},
+                        {field: 'caseNum', title: '证件号', width: 180,sortable:true},
+                        {field: 'address', title: '地址', width: 280},
+                        {field: 'caseMoney', title: '委案金额', width: 95,sortable:true,
+                        	formatter:function(value, row, index){
+                        		return $.fmoney(value); 
+                        	}
+                        },
+                        {field: 'paidNum', title: '已还款', width: 95,sortable:true,
+                        	formatter:function(value, row, index){
+                        		return $.fmoney(value); 
+                        	}
+                        },
+                        {field: 'orgName', title: '风控方', width: 95,sortable:true},
+                        {field: 'applyUserName', title: '申请人', width: 95,sortable:true,
+                        	formatter:function(value, row, index){
+                        		if(value){
+                        			return value;
+                        		}
+                        		return row.applyUserName2;
+                        	}	
+                        },
+                        {field:'appTime',title:'申请时间',align:'left',width:150,sortable:true,
+                        	formatter:function(value, row, index){
+                        		if(value){
+                        			return $.formatDate(value,'yyyy-MM-dd HH:mm:ss');
+                        		}
+                        		return value;
+                        	}
+                        }
+                       
+               
+            ]
+        ],
+        toolbar: [
+			<shiro:hasPermission name="caseLetter:backLetter">
+            {
+            	text: '退回',
+                iconCls: 'eu-icon-butongyi',
+                handler: function () {
+                	backLetter();
+                }
+            }
+            </shiro:hasPermission>
+        ],
+        rowStyler: function(index,row){
+            color=app.dictName('CASE_COLOR',row.color);
+    		return 'color:'+color;
+    	},
+    	onLoadSuccess: function () {
+        	$(this).datagrid('showTooltip').datagrid('columnMoving');
+        	app.unCheckAll(this);//取消所有选中
+        },
+        onRowContextMenu: function (e, rowIndex, rowData) {
+            e.preventDefault();
+            app.unCheckAll(this);//取消所有选中
+            $(this).datagrid('selectRow', rowIndex);
+            $('#_datagrid_menu').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+            });
+        },
+        onDblClickRow: function (rowIndex, rowData) {
+            edit(rowIndex, rowData);
+        }
+    })
+
+});
+//加载组织机构
+function loadOrgs(){
+	var url = ctx+'/sys/organization/getOrganizationList';
+	$('#orgId').combotree({
+        url:url,
+	    multiple:false,//是否可多选
+	    editable:false,//是否可编辑
+        valueField:'id',
+        width:150,
+        value:'${CURRENT_USER.orgId}',
+        loadFilter: function(rows){
+            return convert(rows);
+        }
+	});
+}
+
+//退回信函
+function backLetter(){
+	app.dataGridSelect(_datagrid, function(rows){
+		$.messager.confirm('确认提示！','您共选中了【'+rows.length+'】条数据，确定要退回信函吗？',function(r){
+            if (r){
+            	var isOk = true;
+            	var ids = '';
+                $.each(rows, function (i, row) {
+                	if(row.state==2){
+                		isOk = false;
+                	}
+             	   ids += row.id+",";
+                });
+                ids = ids.substring(0,ids.length-1);
+                if(isOk){
+	                app.ajax({
+	    		        url: baseUrl+"/changeState",
+	    		        type: 'post',
+	    		        data: {'ids':ids,'state':2},
+	    		        dataType: 'json',
+	    		        success: function (data) {
+	    		        	//渲染结果
+	    	 	        	app.renderAjax(data,function(json){
+	    		            	 _datagrid.datagrid('load');
+		   		            });
+	    		        }
+	    		    });
+                }else{
+                	eu.showAlertMsg("选中的数据包含【已退回】，无法完成操作！",'warning');
+                }
+            }
+        });
+	});
+}
+
+//初始化改变状态表单
+function initChangeStateForm(rows,state){
+	change_state_form = $('#change_state_form').form({
+       url: baseUrl+"/changeState",
+       onSubmit: function (param) {
+           $.messager.progress({
+               title: '提示信息！',
+               text: '数据处理中，请稍后....'
+           });
+           var isValid = $(this).form('validate');
+           if (!isValid) {
+               $.messager.progress('close');
+           }
+           var ids = new Array();
+           $.each(rows, function (i, row) {
+        	   ids[i] = row.id;
+           });
+           param.ids = ids;
+           param.state = state;
+           return isValid;
+       },
+       success: function (data) {
+           $.messager.progress('close');
+           //渲染结果
+           app.renderAjax(data,function(json){
+	       	 _dialog.dialog('destroy');
+           	 _datagrid.datagrid('load');
+           });
+       }
+   });
+}
+
+function reset(){
+	_search_form.form('reset');
+	$('#applyState').combobox('setValue',1);
+}
+//委托方 
+function loadEntrust(domId){
+	var url = ctx+'/sys/entrust/entrustlist';
+	$(domId).combobox({
+        url:url,
+        width:150,
+	    multiple:false,//是否可多选
+	    editable:true,//是否可编辑
+	    valueField:'value',
+        textField:'text'
+	});
+}
+//搜索
+function search() {
+	//重新加载datagrid
+	app.load(_datagrid,$.serializeObject(_search_form));
+}
+</script>

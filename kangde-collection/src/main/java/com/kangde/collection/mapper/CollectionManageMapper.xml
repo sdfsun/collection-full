@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CollectionManageMapper">
+	<!-- 解析字段 dto 里的表字段 -->
+	<resultMap type="com.kangde.collection.dto.ControllerMessageDto" id="model">
+			<!-- 协催表 caseModel -->
+			<id column="id" property="id"/>
+			<result column="case_id" property="caseId" />
+			<result column="pr_cat" property="prCat" />
+			<result column="create_time" property="createTime" />
+			<result column="name" property="name" />
+			<result column="contact" property="contact" />
+			<result column="relation" property="relation" />
+			<result column="con_type" property="conType" />
+			<result column="type_id" property="typeId" />
+			<result column="content" property="content" />
+			<result column="collec_state_id" property="collecStateId" />
+			<result column="ptp_money" property="ptpMoney" />
+			<result column="ptp_time" property="ptpTime" />
+		<!-- 协催表 PhoneRecordModel -->
+		<association property="casemodel" javaType="com.kangde.collection.model.CaseModel">
+			<result column="case_code" property="caseCode" />
+			<result column="case_name" property="caseName" />
+			<result column="case_assigned_id" property="caseAssignedId" />
+			<result column="case_date" property="caseDate" />
+			<result column="case_backdate" property="caseBackdate" />
+			<result column="case_num" property="caseNum" />
+			<result column="case_card" property="caseCard" />
+			<result column="loan_contract" property="loanContract" />
+			<result column="org_id" property="orgId" />
+			<result column="org_name" property="orgName" />
+			<result column="color" property="color" />
+			<result column="agent_rate" property="agentRate" />
+			<result column="account_no" property="accountNo" />
+			<result column="cus_no" property="cusNo" />
+			<result column="case_file_no" property="caseFileNo" />
+			<result column="remark1" property="remark1" />
+			<result column="remark2" property="remark2" />
+			<result column="state" property="state" />
+			<result column="overdue_age" property="overdueAge" />
+			<result column="case_money" property="caseMoney" />
+			<result column="case_app_no" property="caseAppNo" />
+			<result column="commodity" property="commodity" />
+			<!-- 11/22 添加催记导出字段 -->
+		
+			<result column="surplus_principal" property="surplusPrincipal" />
+			<result column="overdue_days" property="overdueDays" />
+			<result column="mark_id" property="markId" />
+			
+			<result column="end_date" property="endDate" />
+			<result column="overdue_money" property="overdueMoney" />
+			
+		</association>
+		<association property="batchmodel" javaType="com.kangde.collection.model.CaseBatchModel">
+			<result column="entrust_id" property="entrustId" />
+			<result column="entrustName" property="entrustName" />
+			<result column="batch_code" property="batchCode" />
+			<result column="begin_date" property="beginDate" />
+			<result column="achieve" property="achieve" />
+			
+			
+		</association>
+		<association property="employeeInfoModel" javaType="com.kangde.sys.model.EmployeeInfoModel">
+			<result column="user_name" property="userName" />
+		</association>
+		
+		<association property="casePaidModel" javaType="com.kangde.collection.model.CasePaid">
+			<result column="cp_money" property="cpMoney" />
+			<result column="cp_time" property="cpTime" />
+		</association>
+	</resultMap>
+	<select id="query" resultMap="model">
+	
+SELECT 
+	ci.surplus_principal,
+	ci.agent_rate,
+	ci.state,
+	ci.case_code,
+	ci.case_name,
+	ci.case_assigned_id,
+	ci.STATUS,
+	ci.case_date,
+	ci.case_num,
+	ci.case_card,
+	ci.loan_contract,
+	ci.org_id,
+	ci.org_name,
+	
+	ci.remark1,
+	ci.remark2,
+	ci.account_no,
+	ci.cus_no,
+	ci.case_file_no,
+	ci.overdue_days,
+	ci.end_date,
+	ci.case_backdate,
+	ci.mark_id,
+	ci.overdue_money,
+	pr.id,
+	pr.pr_cat,
+	pr.create_time,
+	pr.name,
+	pr.relation,
+	pr.contact,
+	pr.con_type,
+	pr.type_id,
+	pr.content,
+	pr.case_id,
+	pr.collec_state_id,
+	pr.ptp_money,
+	pr.ptp_time,
+	entrust.name AS entrustName,
+	cb.entrust_id,
+	cb.batch_code,
+	cb.begin_date,
+	cb.achieve,
+	cb.actual_end_date,
+	ei.user_name,
+	ci.`color`,
+	ci.overdue_age,
+	ci.case_money,
+	ci.case_app_no,
+	ci.commodity	
+	FROM phone_record pr
+	LEFT JOIN case_info ci ON pr.case_id = ci.id 
+	LEFT JOIN case_batch cb ON ci.batch_id = cb.id
+	LEFT JOIN entrust ON cb.entrust_id = entrust.id
+	LEFT JOIN employee_info ei ON ci.case_assigned_id = ei.id 
+	WHERE  ci.status != -1 and cb.status != -1 
+		 	AND (
+			ci.org_id IN (
+				${params.queryOrgs}
+			)
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.attachEntrustId)">
+			OR cb.entrust_id IN (${params.attachEntrustId})
+			</if>	
+			<if test="@org.apache.commons.lang.StringUtils@equals('admin',params.loginName)">
+			OR 1=1
+			</if>	
+			
+			)
+		
+		
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and cb.entrust_id = #{params.entrustId}
+		</if>	
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.userName)">
+			and ei.user_name like CONCAT('${params.userName}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.state)">
+			and ci.state =#{params.state}
+		</if>	
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.prCat)">
+			and pr.pr_cat =#{params.prCat}
+		</if>		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.typeId)">
+			and pr.type_id =${params.typeId}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseName)">
+			and ci.case_name like CONCAT('${params.caseName}','%' )
+		</if>	
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.batchCode)">
+			and cb.id in ${params.batchCode}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.contact)">
+			and pr.contact like CONCAT('${params.contact}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseNum)">
+			and ci.case_num like CONCAT('${params.caseNum}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCard)">
+			and ci.case_card like CONCAT('${params.caseCard}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.loanContract)">
+			and ci.loan_contract like CONCAT('${params.loanContract}','%' )
+		</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and ci.case_code like CONCAT('${params.caseCode}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseAssignedId)">
+				and ci.case_assigned_id =#{params.caseAssignedId}
+		</if>	
+		<!-- 退案日期 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.actualEndDate)
+			  and @org.apache.commons.lang.StringUtils@isNotBlank(params.actualEndDate1)">
+			and (DATE_FORMAT(cb.actual_end_date,'%Y-%m-%d') between #{params.actualEndDate} and #{params.actualEndDate1})
+		</if>
+		<!-- 风控日期 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.createTime)
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.createTime1)">
+			and (DATE_FORMAT(pr.create_time,'%Y-%m-%d') between #{params.createTime} and #{params.createTime1})
+		</if>
+		<!-- 委案日期 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseDate)
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.caseDate1)">
+			and (DATE_FORMAT(ci.case_date,'%Y-%m-%d') between #{params.caseDate} and #{params.caseDate1})
+		</if>
+		
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseIdMore)">
+			 and pr.id in
+			<foreach item="item" index="index" collection="params.caseIdMore"
+				open="(" separator="," close=")">
+
+				#{params.caseIdMore[${index}]}
+			</foreach>
+		</if>
+		
+		
+		<!-- 多条查询条件 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.CodeAll)">
+			and ci.case_code in  ${params.CodeAll}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.CodeOne)">
+			and ci.case_code =  '${params. CodeOne}'
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseFileNoAll)">
+			and ci.case_file_no in  ${params.caseFileNoAll}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseFileNoOne)">
+			and ci.case_file_no =  '${params. caseFileNoOne}'
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseNumAll)">
+			and ci.case_num in  ${params.caseNumAll}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseNumOne)">
+			and ci.case_num =  '${params. caseNumOne}'
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCardAll)">
+			and ci.case_card in  ${params.caseCardAll}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCardOne)">
+			and ci.case_card =  '${params. caseCardOne}'
+		</if>
+		
+		
+		<!-- 组织机构 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+			AND EXISTS(
+		
+			SELECT
+				id
+			FROM
+				sys_organization
+			WHERE
+			ci.org_id=id AND
+				path LIKE CONCAT(
+					(
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+								id = #{params.orgId}
+					),
+					'%'
+				)
+		) 
+			
+						
+			
+		 </if>
+			<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by pr.create_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+	
+</mapper>

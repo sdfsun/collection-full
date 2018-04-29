@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CallRecordMapper" >
+  <resultMap id="model" type="com.kangde.collection.model.CallRecord" />
+ 
+  <sql id="Base_Column_List" >
+    id, uniqueId, customerNumber, customerProvince, customerCity, numberTrunk, queueName, 
+    cno, clientNumber, callStatus, startTime, bridgeTime, bridgeDuration, cost, totalDuration, 
+    recordFile, inCaseLib, score, callType, taskName, endReason, userField, sipCause, 
+    mark, answerTime, hotline, ivrName, comment
+  </sql>
+  
+  <select id="query" resultMap="model">
+  <![CDATA[
+    SELECT
+	tj.name,
+	tj.emId,
+	tj.orgId,
+	tj.crCount,
+	tj.`status`,
+	tj.bridgeDuration,
+	tj.averageDuration,
+	tj.rate,
+	tj.averageTime
+		FROM 
+
+(
+
+ SELECT 
+		em.user_name AS NAME,em.id AS emId, em.`status` AS state,em.org_id AS orgId,
+		
+		IFNULL(cal.bridgeDuration,'00:00:00') AS bridgeDuration,
+		IFNULL(cal.crCount,0) AS crCount,
+		IFNULL(cal.status,0) AS `status`,
+		IFNULL(cal.averageDuration,'00:00:00') AS averageDuration,
+		IFNULL(cal.rate,'0.00') AS rate,
+		IFNULL(cal.averageTime,'00:00:00') AS averageTime 
+			
+FROM `employee_info` em 
+LEFT JOIN 
+(
+		SELECT 
+		COUNT(cr.id) AS crCount,#致电次数
+		SUM(CASE WHEN (cr.status = '双方接听' ) THEN 1 ELSE 0 END) AS `status`,#致电接通次数
+		SEC_TO_TIME(SUM(TIME_TO_SEC(cr.bridgeDuration))) AS bridgeDuration,#致电通话时长
+		#致电通话时长/致电接通次数 平均致电通话时长（时:分:秒）
+		SEC_TO_TIME(CONVERT(SUM(TIME_TO_SEC(cr.bridgeDuration))/SUM(CASE WHEN (cr.status = '双方接听' ) THEN 1 ELSE 0 END),DECIMAL(18,0))) AS averageDuration,
+		#致电接通率 致电次数*100/致电接通次数
+		CONVERT(SUM(CASE WHEN (cr.status = '双方接听' ) THEN 1 ELSE 0 END) *100/COUNT(cr.id) ,DECIMAL(18,2)) AS rate,
+		#CONVERT(SUM(TIME_TO_SEC(cr.bridgeDuration)) / ('2017-01-05'-'2016-12-05'),DECIMAL(18,2)) AS averageTime,
+		#平均每日通话时长（时:分:秒) 致电通话时长/天数
+		SEC_TO_TIME(CONVERT(SUM(TIME_TO_SEC(cr.bridgeDuration)) / (TO_DAYS(IFNULL(#{params.normalDate1},'9999-01-01')) - TO_DAYS(IFNULL(#{params.normalDate},'1990-01-01'))),DECIMAL(18,0))) AS averageTime,
+		cr.`cno`,cr.startTime
+		
+		FROM call_record cr 
+		
+		WHERE 1=1 AND callType='点击外呼'
+ 		]]>
+   		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+   			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+ 			and (DATE_FORMAT(startTime,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+  		</if> 
+   		<![CDATA[ 
+ 			
+		GROUP BY cno
+) AS cal ON cal.cno = em.`cc_phone` 
+
+) AS tj WHERE 1=1]]>
+   <!-- 风控员 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.emId)">
+		and tj.emId in 
+		<foreach item="item" index="index" collection="params.emIds"
+				open="(" separator="," close=")">
+				#{params.emIds[${index}]}
+			</foreach>
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+		and orgId IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		</if>
+		
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				ORDER BY CONVERT(tj.name USING gbk) ASC
+			</otherwise>
+		</choose>
+  </select>
+  
+</mapper>

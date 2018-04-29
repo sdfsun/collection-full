@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.CityMapper">
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.dto.CityDto" id="model">
+			<result column="city_id" property="cityId" />
+			<result column="city_name" property="cityName" />
+			<result column="province_id" property="provinceId" />
+			<result column="status" property="status" />
+		<association property="provinceModel" javaType="com.kangde.sys.model.ProvinceModel">
+			<result column="cityProvinceId" property="provinceId" />
+			<result column="province_name" property="provinceName" />
+		</association>
+	</resultMap>
+
+<!-- 通过字段查询 -->
+	<select id="sizeNum" resultMap="model">
+		select
+		city_name
+		from
+		cus_city
+		where
+		city_name=#{cityName}
+	</select>
+	
+	<!-- 查询所有案件模板信息及条件 -->
+	<select id="query" resultMap="model">
+SELECT cc.city_name,cc.province_id,STATUS,cc.city_id,
+		cp. cityProvinceId,cp.province_name
+		FROM cus_city cc
+		INNER JOIN 
+		(SELECT province_id AS cityProvinceId,province_name FROM cus_province)cp ON
+		cc.province_id=cp.cityProvinceId
+		WHERE 
+		cc.`status`!=-1
+	</select>
+	
+	<!-- 省份启用/禁用模板 -->
+	<update id="updateForStatus">
+		update
+		cus_city
+		set
+		status=#{status}
+		where city_id =
+		#{cityId}
+	</update>
+	
+		<!-- 保存 -->
+	<insert id="saveCity">
+		insert into
+		cus_city
+		(city_id,province_id,city_name,city_isenabled,status)
+		values
+		(#{cityId},#{provinceId},#{cityName},#{cityIsenabled},#{status})
+	</insert>
+	
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from
+			cus_city
+		where city_id = #{cityId}
+	</delete>
+	
+	<!-- 修改外访区域 -->
+	<update id="updateCity">
+		update
+		cus_city
+		set
+		city_name=#{cityName},
+		province_id=#{provinceId},
+		status=#{status}
+		where city_id =
+		#{cityId}
+	</update>
+	
+	<select id="findAllCity" resultMap="model">
+		SELECT 
+		*
+		FROM cus_city
+		WHERE
+		cus_city.`status`!=-1
+		and
+		cus_city.`status`!=0
+	</select>
+
+</mapper>

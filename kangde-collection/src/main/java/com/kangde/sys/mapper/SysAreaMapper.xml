@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.SysAreaMapper">
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.dto.AreaDto" id="model">
+			<result column="area_id" property="areaId" />
+			<result column="area_name" property="areaName" />
+			<result column="status" property="status" />
+				<result column="city_id" property="cityId" />
+		<association property="provinceModel" javaType="com.kangde.sys.model.ProvinceModel">
+			<result column="province_name" property="provinceName" />
+		</association>
+		<association property="cityModel" javaType="com.kangde.sys.model.CityModel">
+			<result column="city_name" property="cityName" />
+		</association>
+	</resultMap>
+
+<!-- 通过字段查询 -->
+	<select id="sizeNum" resultMap="model">
+		select
+		area_name
+		from
+		cus_area
+		where
+		area_name=#{areaName}
+	</select>
+	
+	<!-- 查询所有案件模板信息及条件 -->
+	<select id="query" resultMap="model">
+SELECT ca.`area_name`,ca.`status`,ca.`area_id`,ca.`city_id`,
+			   cc.city_name,
+			   cp.province_name 
+		FROM `cus_area` ca
+		INNER JOIN 
+		(SELECT city_name,city_id,province_id FROM `cus_city`)cc 
+		ON ca.`city_id`=cc.city_id
+		INNER JOIN 
+		(SELECT province_name,province_id FROM `cus_province`)cp 
+		ON cc.province_id=cp.province_id
+		WHERE ca.`status`!=-1
+	</select>
+	
+	<!-- 省份启用/禁用模板 -->
+	<update id="updateForStatus">
+		update
+		cus_area
+		set
+		status=#{status}
+		where area_id =
+		#{areaId}
+	</update>
+	
+			<!-- 保存 -->
+	<insert id="saveArea">
+		insert into
+		cus_area
+		(area_id,city_id,area_name,area_isenabled,status)
+		values
+		(#{areaId},#{cityId},#{areaName},#{areaIsenabled},#{status})
+	</insert>
+	
+		<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from
+			cus_area
+		where area_id = #{areaId}
+	</delete>
+	
+		<!-- 修改外访区域 -->
+	<update id="updateArea">
+		update
+		cus_area
+		set
+		city_id=#{cityId},
+		area_name=#{areaName},
+		status=#{status},
+		area_isenabled=#{areaIsenabled}
+		where area_id =
+		#{areaId}
+	</update>
+	
+</mapper>

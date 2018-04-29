@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.collection.mapper.CaseLinkmanMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.collection.model.CaseLinkmanModel"
+		id="model" />
+	<!-- 保存 -->
+	<insert id="save">
+		insert into case_linkman (id,
+		case_id, name,
+		mobile,
+		phone,
+		phone_type,
+		card_no, unit_name,
+		unit_phone, family_phone,
+		address,
+		create_time,
+		create_emp_id, status,
+		position, relation,
+		version,remark,source)
+		values (#{id},
+		#{caseId},
+		#{name},
+		#{mobile},
+		#{phone},
+		#{phoneType},
+		#{cardNo},
+		#{unitName},
+		#{unitPhone},
+		#{familyPhone},
+		#{address},
+		#{createTime},
+		#{createEmpId}, #{status},
+		#{position}, #{relation},#{version},#{remark},#{source}
+		)
+	</insert>
+
+
+	<sql id="fields">
+		id, case_id, name, mobile, phone,phone_type, card_no, unit_name, unit_phone, family_phone,
+		address,
+		create_time, create_emp_id, status, position, relation, version, remark,source
+	</sql>
+	
+	
+		<select id="findById" resultMap="model"
+		parameterType="java.lang.String">
+		select
+		*
+		from case_linkman
+		where id = #{id,jdbcType=VARCHAR}
+		</select>
+	
+
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from case_linkman
+		where 1=1 and case_id = #{params.caseId,jdbcType=VARCHAR}
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.id)">
+			and id='${params.id}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.phone)">
+			and phone='${params.phone}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.phoneType)">
+			and phone_type='${params.phoneType}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.relation)">
+			and relation='${params.relation}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.cardNo)">
+			and card_no='${params.cardNo}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and name='${params.name}'
+		</if>
+		
+		
+	    order by create_time desc
+			
+	</select>
+	
+	<select id="findCaseIds" resultMap="model">
+		select
+		<include refid="fields" />
+		from case_linkman
+		where
+		case_id =#{caseId}
+	</select>
+	
+	<select id="findCaseId" resultMap="model">
+		select id,case_id,phone,phone_type,source 
+		from case_linkman 
+		where relation ='本人' 
+		AND case_id=#{caseId}
+	</select>
+	
+	<update id="update">
+	update case_linkman
+		set  name = #{name},
+		phone_type=#{phoneType},
+		relation=#{relation},
+		phone=#{phone},
+		remark=#{remark}
+		where id =#{id}
+	</update>
+	
+	<delete id="deleteById">
+		delete from
+		case_linkman
+		where id = #{id}
+	</delete>
+	
+	<update id="updateStatus">
+	update case_linkman
+		set 
+		status=#{status}
+		where id =#{id}
+	</update>
+
+
+	<select id="findPhone" resultMap="model">
+		select
+		<include refid="fields" />
+		from case_linkman
+		where
+		phone =#{phone}
+		and case_id=#{caseId}
+	</select>
+	
+	
+	<select id="findByCaseIds" resultMap="model">
+		select * from case_linkman 
+		where relation ='本人'
+		AND source='0'
+		AND case_id=#{caseId}
+	</select>
+	
+	<select id="iPhone" resultMap="model">
+		select * from case_linkman 
+		where relation ='本人'
+		AND phone_type='手机'
+		AND case_id=#{caseId}
+	</select>
+	
+	<select id="iPhone1" resultMap="model">
+		select * from case_linkman 
+		where relation ='本人'
+		AND phone_type='手机'
+		AND source='3'
+		AND case_id=#{caseId}
+	</select>
+	
+	<update id="updateForPhone">
+	update case_linkman
+		set  
+		phone=#{1}
+		where id =#{0}
+	</update>
+</mapper>

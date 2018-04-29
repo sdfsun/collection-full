@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.sys.mapper.RoleMapper">
+	
+	<!-- 开启二级缓存 -->
+ 	<!-- <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/> -->
+	
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.RoleModel"
+		id="model">
+	</resultMap>
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		id,name,description,create_time,modify_time,version,status,role_code 
+	</sql>
+	<!-- 保存 -->
+	<insert id="save">
+		INSERT INTO sys_role
+		(`id`, `name`, `description`,
+		`create_time`, `modify_time`, `version`, `status`,`role_code`)
+		VALUES
+		(#{id}, #{name}, #{description}, #{createTime}, #{modifyTime}, #{version},
+		#{status},#{roleCode})
+	</insert>
+	<!-- 更新 -->
+	<update id="update">
+		update sys_role
+		set
+		name = #{name},
+		description = #{description},
+		modify_time = #{modifyTime},
+		role_code = #{roleCode},
+		version = version+1
+		where id = #{id}
+		and
+		version = #{version}
+	</update>
+	
+	<!-- ID批量删除 -->
+	<delete id="deleteByIds">
+		delete from sys_role
+		where id in
+		<foreach collection="list" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_role
+		where id = #{id}
+	</select>
+	
+	<!-- 查询 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_role
+		where 1=1
+		<!-- 角色名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and name like CONCAT('%','${params.name}','%' )
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by create_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<!-- 角色-资源相关SQL(权限) -->
+	
+	<!-- 保存角色-资源-关系 -->
+	<insert id="saveRoleResourceRelation" parameterType="com.kangde.sys.dto.RoleResourceRelationDto">
+		INSERT INTO `sys_role_resource_relation` (`role_id`, `resource_id`) 
+		VALUES (#{roleId}, #{resourceId})
+	</insert>
+	
+	<!-- 删除角色-资源-关系 -->
+	<delete id="deleteRoleResourceRelation">
+		delete from sys_role_resource_relation where role_id = #{roleId}
+	</delete>
+	
+	<!-- 通过角色ID,查询资源Id -->
+	<select id="findResourceIdsByRoleId" resultType="string">
+		select resource_id from sys_role_resource_relation where role_id = #{roleId}
+	</select>
+	
+	<!-- 通过用户ID,查询角色信息 -->
+	<select id="findRolesByUserId" resultMap="model">
+		select <include refid="fields" /> 
+		from sys_role where id in (
+			select role_id from sys_user_role_relation
+			where user_id = #{_parameter}
+		)
+	</select>
+
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select 
+		<include refid="fields" />
+		from 
+		sys_role
+		where ${fieldName} ${expression} #{fieldValue} 
+	</select>
+	
+	
+	<!-- 根据组织机构id查询组织机构编码 -->
+	<select id="getRolCode" resultMap="model">
+		SELECT
+		role_code
+		FROM sys_role
+		WHERE
+		sys_role.`id`in
+		 <foreach collection="list" open="(" close=")" separator="," item="list" index="index">
+			#{list.id}
+		</foreach>
+	</select>
+	
+</mapper>

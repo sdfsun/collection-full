@@ -1,0 +1,65 @@
+.amazonmenu ul {
+	font: normal 13px Verdana;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.amazonmenu ul li {
+	position: static; /* menu li items should have position set to static */
+}
+.amazonmenu > ul {
+	/* border: 1px solid gray; */
+	border-radius: 5px;
+	width: 100px; /* width of main menu */
+	/* height: 400px; */ /* height of main menu */
+	position: relative;
+	
+}
+.amazonmenu > ul li a {
+	color: black;
+	display: block;
+	overflow: auto;
+	padding: 10px 0;
+	position: relative;
+	text-decoration: none;
+	text-indent: 10px;
+}
+ .amazonmenu > ul li.hassub > a::after { /* Arrow to indicate this item has sub menu (LI elements with sub menus have a ".hassub" class). */
+ border: 5px solid transparent;
+ border-left-color: gray; /* Default color of arrow */
+ content: '';
+ height: 0;
+ position: absolute;
+ right: 5px;
+ top: 35%;
+ width: 0;
+}
+ .amazonmenu > ul li.hassub.selected > a::after { /* Style of arrow when corresponding sub menu is open (LI element has a "selected" class during this state */
+ border-left-color: orange;
+}
+.amazonmenu ul li a:hover, .amazonmenu ul li.hassub.selected > a { /* style of hover and selected menu item links */
+	background: #2970a1;
+	color: navy;
+	cursor:pointer;
+}
+.amazonmenu ul li > div, .amazonmenu ul li > ul { /* Sub menus (Could be a DIV or UL wrapper) style */
+	background: #4b91c2;
+	border: 1px solid #468bbb;
+	border-radius: 0 8px 8px 0;
+	/* box-shadow: 2px 2px 2px red; */
+	display: none;
+	font-weight: normal;
+	width: 145px;
+	/* height: 400px; */ /* height of sub menu */
+	left: 100%;
+	padding: 0;
+	position: absolute;
+	/* top: 0; */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	z-index: 1000;
+}

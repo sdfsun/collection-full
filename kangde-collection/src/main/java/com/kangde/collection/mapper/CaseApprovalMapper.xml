@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CaseApprovalMapper">
+		<resultMap id="BaseResultMap"
+		type="com.kangde.collection.model.ApproveRecordModel">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="case_id" property="caseId" jdbcType="VARCHAR" />
+		<result column="apply_reason" property="applyReason" jdbcType="VARCHAR" />
+		<result column="approve_state" property="approveState"
+			jdbcType="INTEGER" />
+		<result column="approve_opinion" property="approveOpinion"
+			jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="create_emp_id" property="createEmpId" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="apply_emp_id" property="applyEmpId" jdbcType="VARCHAR" />
+		<result column="apply_time" property="applyTime" jdbcType="TIMESTAMP" />
+		<result column="stay_reason" property="stayReason" jdbcType="VARCHAR" />
+		<result column="stay_time" property="stayTime" jdbcType="TIMESTAMP" />
+		<result column="stay_period" property="stayPeriod" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<association property="employeeInfo"
+			javaType="com.kangde.sys.model.EmployeeInfoModel">
+			<id property="id" column="apply_emp_id" />
+			<result property="userName" column="user_name" />
+		</association>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, case_id, apply_reason, approve_state, approve_opinion,
+		remark,
+		create_emp_id,
+		create_time, apply_emp_id, apply_time,
+		stay_reason, stay_time, stay_period,
+		modify_time
+	</sql>
+	<!-- 解析字段 dto 里的表字段 -->
+	<resultMap type="com.kangde.collection.dto.CaseDto" id="model">
+		<id column="id" property="id" />
+		<result column="org_id" property="orgId" />
+		<result column="case_code" property="caseCode" />
+		<result column="case_date" property="caseDate" />
+		<result column="case_name" property="caseName" />
+		<result column="case_num" property="caseNum" />
+		<result column="case_card" property="caseCard" />
+		<result column="mobile1" property="mobile1" />
+		<result column="case_money" property="caseMoney" />
+		<result column="surplus_principal" property="surplusPrincipal" />
+		<result column="company_Address" property="companyAddress" />
+		<result column="collec_state_id" property="collecStateId" />
+		<result column="case_assigned_id" property="caseAssignedId" />
+		<association property="batchmodel" javaType="com.kangde.collection.model.CaseBatchModel">
+			<id column="batchId" property="id" />
+			<result column="batch_code" property="batchCode" />
+			<result column="entrust_id" property="entrustId" />
+			
+		</association>
+		<association property="approverecordmodel"
+			javaType="com.kangde.collection.model.ApproveRecordModel">
+			<id column="approve_record.id" property="ApproveRecordModel.id" />
+			<result column="case_id" property="caseId" />
+			<result column="approve_state" property="approveState" />
+			<result column="stay_reason" property="stayReason" />
+			<result column="stay_time" property="stayTime" />
+			<result column="apply_emp_id" property="applyEmpId" />
+			<result column="apply_time" property="applyTime" />
+			<result column="apply_reason" property="applyReason" />
+		</association>
+		<association property="visitrecordmodel"
+			javaType="com.kangde.collection.model.VisitRecordModel">
+			<result column="case_id" property="caseId" />
+			<result column="approve_opinion" property="approveOpinion" />
+			<result column="name" property="name" />
+			<result column="apply_reason" property="applyReason" />
+			<result column="apply_emp_id" property="applyEmpId" />
+			<result column="vrState" property="vrState" />
+			<result column="area_id1" property="areaId1" />
+			<result column="area_id2" property="areaId2" />
+			<result column="area_id3" property="areaId3" />
+			<result column="visit_user" property="visitUser" />
+		</association>
+		<association property="casepaidmodel"
+			javaType="com.kangde.collection.model.CasePaid">
+			<result column="paid_num" property="paidNum" />
+			<result column="sumMoney" property="sumMoney" />
+		</association>
+			<association property="employeeInfo" javaType="com.kangde.sys.model.EmployeeInfoModel">
+			<result column="user_name" property="userName" />
+			<result column="login_name" property="loginName" />
+			</association>
+	</resultMap>
+
+
+	<select id="findByCaseId" resultMap="BaseResultMap"  parameterType="java.lang.String">
+			SELECT * from approve_record  where case_id= #{caseId,jdbcType=VARCHAR} and approve_state=0
+	</select>
+
+
+
+	<!-- 所有查询留案案件 -->
+	<select id="queryforLeave" resultMap="model">
+SELECT
+		ci.id,ci.collec_state_id,ci.case_code,ci.case_name,ci.case_date,ci.case_num,
+		ci.case_card,ci.mobile1,ci.case_money,ci.surplus_principal,ci.company_address,
+		cb.batch_code,
+		ar.case_id,ar.approve_state,ar.stay_reason,ar.stay_time,ar.apply_emp_id,ar.apply_time,
+		cp.paid_num,cp.sumMoney,ei.user_name ,ar.apply_reason
+		FROM case_info ci
+		INNER JOIN case_batch cb ON ci.batch_id=cb.id
+		INNER JOIN(SELECT
+		case_id,stay_reason,stay_time,apply_emp_id,apply_time,approve_state,apply_reason
+		FROM approve_record ) ar ON ar.case_id=ci.id
+		LEFT JOIN(SELECT SUM(cp_money) AS sumMoney ,paid_num,case_id FROM
+		case_paid WHERE state='2' GROUP BY case_id) cp ON cp.case_id=ci.`id`
+		INNER JOIN(SELECT id,user_name FROM employee_info) ei 
+		ON ei.id=ci.case_assigned_id
+		
+		WHERE 1=1
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.approveState)">
+			and approve_state like CONCAT('%','${params.approveState}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+			and org_id like CONCAT('%','${params.orgId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.batchCode)">
+			and batch_code like CONCAT('%','${params.batchCode}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.collecStateId)">
+			and collec_state_id like CONCAT('%','${params.collecStateId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust_id like CONCAT('%','${params.entrustId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseAssignedId)">
+			and case_assigned_id like CONCAT('%','${params.caseAssignedId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and case_code like CONCAT('%','${params.caseCode}','%' )
+		</if>
+	</select>
+
+
+
+	<select id="queryforGo" resultMap="model">
+SELECT
+		ci.org_id,cb.entrust_id,ci.id,ci.collec_state_id,ci.case_code,ci.case_name,ci.case_date,ci.case_num,
+		ci.case_card,ci.mobile1,ci.case_money,ci.surplus_principal,ci.company_address,
+		cb.batch_code,
+		vr.name,vr.apply_reason,vr.apply_emp_id,vr.vrState,vr.area_id1,vr.area_id2,vr.area_id3,
+		cp.paid_num,cp.sumMoney,ci.case_assigned_id,
+		ee.login_name,vr.visit_user
+		FROM case_info ci
+		INNER JOIN case_batch cb ON ci.batch_id=cb.id
+		INNER JOIN(SELECT case_id,`name`,apply_reason,apply_emp_id,approve_state AS
+		vrState,area_id1,area_id2,area_id3,visit_user FROM visit_record GROUP BY case_id) vr ON vr.case_id=ci.id
+		LEFT JOIN(SELECT SUM(cp_money) AS sumMoney ,paid_num,case_id FROM
+		case_paid WHERE state='2' GROUP BY case_id) cp ON cp.case_id=ci.`id`   
+		LEFT JOIN (SELECT id,login_name FROM employee_info) ee
+		ON ee.id=vr.apply_emp_id
+		where 1=1
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.vrState)">
+			and vrState like CONCAT('%','${params.vrState}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+			and org_id like CONCAT('%','${params.orgId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.batchCode)">
+			and batch_code like CONCAT('%','${params.batchCode}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.areaId1)">
+			and area_id1 like CONCAT('%','${params.areaId1}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.areaId2)">
+			and area_id2 like CONCAT('%','${params.areaId2}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.areaId3)">
+			and area_id3 like CONCAT('%','${params.areaId3}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.collecStateId)">
+			and collec_state_id like CONCAT('%','${params.collecStateId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust_id like CONCAT('%','${params.entrustId}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseAssignedId)">
+				and case_assigned_id in (${params.caseAssignedIds})
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and case_code like CONCAT('%','${params.caseCode}','%' )
+		</if>
+		
+	</select>
+
+	<!-- 更新外访表 更新审批意见和状态 -->
+	<update id="updatefoVi">
+		update
+		visit_record
+		set
+		approve_opinion=#{visitRecord.approveOpinion},
+		approve_state=#{visitRecord.approveState},
+		state=#{visitRecord.state}
+		where
+		id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	<!-- 更新留案表 更新审批意见和状态 -->
+	<update id="updatefoApp">
+		update
+		approve_record
+		set
+		approve_opinion=#{approveOpinion},
+		modify_time=#{modifyTime},
+		approve_state=#{approveState}
+		where
+		case_id = #{caseId}
+	</update>
+
+	<insert id="insert" parameterType="com.kangde.collection.model.ApproveRecordModel">
+		insert into approve_record
+		(id, case_id, apply_reason,
+		approve_state, approve_opinion, remark,
+		create_emp_id, create_time, apply_emp_id,
+		apply_time, stay_reason,
+		stay_time,
+		stay_period,
+		modify_time)
+		values (#{id,jdbcType=VARCHAR},
+		#{caseId,jdbcType=VARCHAR},
+		#{applyReason,jdbcType=VARCHAR},
+		#{approveState,jdbcType=INTEGER}, #{approveOpinion,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{createEmpId,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{applyEmpId,jdbcType=VARCHAR},
+		#{applyTime,jdbcType=TIMESTAMP}, #{stayReason,jdbcType=VARCHAR},
+		#{stayTime,jdbcType=TIMESTAMP},
+		#{stayPeriod,jdbcType=VARCHAR},
+		#{modifyTime,jdbcType=TIMESTAMP})
+	</insert>
+	<select id="findStayTime" resultMap="model">
+	select stay_time from approve_record
+	where
+	case_id = #{caseId}
+	</select>
+	
+	<select id="queryStay" resultMap="BaseResultMap">
+	SELECT approve_record.*, employee_info.user_name from approve_record
+	LEFT
+	JOIN employee_info on
+	approve_record.apply_emp_id=employee_info.id
+	where 1=1 and approve_record.case_id=#{params.caseId}
+	<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.approveState)">
+		and approve_record.approve_state=#{params.approveState}
+	</if>
+		
+	<choose>
+		<when test="_parameter.hasOrder()">
+			order by ${sort}
+			${order}
+		</when>
+		<otherwise>
+			order by approve_record.apply_time
+			desc
+		</otherwise>
+	</choose>
+</select>
+
+
+
+</mapper>

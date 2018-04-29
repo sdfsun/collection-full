@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.EmployeeInfoMapper">
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.EmployeeInfoModel" id="model" />
+
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		employee_info.id, employee_info.create_time, employee_info.modify_time, 
+		employee_info.version, employee_info.status, employee_info.user_name,
+		employee_info.personal_id,employee_info.sex,employee_info.birthday,employee_info.nation,
+		employee_info.married,employee_info.attach_entrust_id,
+		employee_info.province,city,
+		employee_info.email,
+		employee_info.join_time,
+		employee_info.position_id,
+		employee_info.org_id,
+		employee_info.login_name,employee_info.salt,employee_info.number,
+		cc_login,cc_pwd,cc_server,cc_phone,contact_mode,employee_info.attach_org_id
+	</sql>
+
+	<!-- where条件 -->
+	<sql id="where">
+		where status =
+		'${@com.kangde.commons.CoreConst@STATUS_NORMAL}'
+	</sql>
+	<!-- 保存 -->
+	<insert id="save">
+		insert into
+		employee_info
+		(id, create_time,
+		modify_time,
+		version, status,
+		user_name,
+		personal_id, sex, birthday,
+		nation, married, province,
+		city, email,
+		join_time, position_id, org_id,login_name,password,salt,number,contact_mode,
+		cc_login,cc_pwd,cc_server,cc_phone,attach_org_id,attach_entrust_id)
+		values (#{id}, #{createTime},
+		#{modifyTime},
+		#{version}, #{status},
+		#{userName},
+		#{personalId}, #{sex}, #{birthday},
+		#{nation}, #{married}, #{province},
+		#{city}, #{email},
+		#{joinTime}, #{positionId}, #{orgId}, #{loginName}, #{password},#{salt},#{number},#{contactMode},
+		#{ccLogin},#{ccPwd},#{ccServer},#{ccPhone},#{attachOrgId},#{attachEntrustId})
+	</insert>
+
+	<!-- 更新 -->
+	<update id="update">
+		update
+		employee_info
+		set
+		<if test="userName != null" >
+		user_name=#{userName},
+        </if>
+		<if test="personalId != null" >
+		personal_id=#{personalId},
+        </if>
+		<if test="sex != null" >
+		sex=#{sex},
+        </if>
+		<if test="birthday != null" >
+		birthday=#{birthday},
+        </if>
+		<if test="nation != null" >
+		nation=#{nation},
+        </if>
+		<if test="married != null" >
+		married=#{married},
+        </if>
+		<if test="province != null" >
+		province=#{province},
+        </if>
+		<if test="city != null" >
+		city=#{city},
+        </if>
+		<if test="email != null" >
+		email = #{email},
+        </if>
+		<if test="positionId != null" >
+		position_id = #{positionId},
+        </if>
+		<if test="orgId != null" >
+		org_id = #{orgId},
+        </if>
+		<if test="loginName != null" >
+		login_name = #{loginName},
+        </if>
+		<if test="contactMode != null" >
+		contact_mode = #{contactMode},
+        </if>
+		<if test="ccLogin != null" >
+		cc_login = #{ccLogin},
+        </if>
+		<if test="ccPwd != null" >
+		cc_pwd = #{ccPwd},
+        </if>
+		<if test="password != null" >
+		password = #{password},
+        </if>
+		<if test="salt != null" >
+		salt = #{salt},
+        </if>
+		<if test="ccServer != null" >
+		cc_server = #{ccServer},
+        </if>
+		<if test="ccPhone != null" >
+		cc_phone = #{ccPhone},
+        </if>
+		<if test="joinTime != null" >
+		join_time = #{joinTime},
+        </if>
+		
+		attach_org_id = #{attachOrgId},
+        
+		attach_entrust_id = #{attachEntrustId},
+		<if test="attachEntrustId != null" >
+		attach_entrust_id = #{attachEntrustId},
+        </if>
+		modify_time = #{modifyTime},
+		version = version+1
+		where id = #{id}
+		and
+		version = #{version}
+	</update>
+
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from
+		employee_info
+		where id = #{id}
+	</delete>
+
+	<!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		,sys_organization.name as org_name
+		from
+		employee_info
+		left join sys_organization on employee_info.org_id = sys_organization.id
+		where employee_info.status = 1
+		and employee_info.id = #{id}
+	</select>
+	<select id="findByIds" resultMap="model">
+		select * from employee_info where id in
+		 <foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</select>
+	<!-- 查询所有员工信息及条件 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />,sys_position.name as posiName
+		<!-- 
+		group_concat(sys_organization.name separator ',') as org_names,
+		group_concat(sys_organization.id separator ',') as org_ids -->
+		<!-- ,sys_organization.name as orgAttachName -->
+		from
+		employee_info 
+		left join sys_position on employee_info.position_id=sys_position.id
+		<!-- left join sys_organization on employee_info.attach_org_id = org.id -->
+		<!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(attachOrgId)">
+			where attach_org_id in (
+				select id from sys_organization where path like concat((select path from sys_organization where id = #{attachOrgId}),'%')
+		)
+		</if> -->
+		where 1=1
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.userName)">
+			and user_name like CONCAT('%','${params.userName}','%' )
+		</if>
+		<!-- 登录名检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.loginName)">
+			and login_name like CONCAT('%','${params.loginName}','%' )
+		</if>
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+			and org_id like CONCAT('%','${params.orgId}','%' )
+		</if>
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.status)">
+			and status like CONCAT('%','${params.status}','%' )
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by create_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select 
+		<include refid="fields" />,password
+		from 
+		employee_info
+		where ${fieldName} ${expression} #{fieldValue} and status = 1
+	</select>
+	
+	<!-- 用户-角色相关SQL(权限组) -->
+	
+	<!-- 保存用户-角色-关系 -->
+	<insert id="saveUserRoleRelation" parameterType="com.kangde.sys.dto.UserRoleRelationDto">
+		INSERT INTO sys_user_role_relation (`user_id`, `role_id`)
+		VALUES (#{userId}, #{roleId})
+	</insert>
+	
+	<!-- 删除用户-角色-关系 -->
+	<delete id="deleteUserRoleRelation">
+		delete from sys_user_role_relation where user_id = #{userId}
+	</delete>
+	
+	<!-- 通过用户ID,查询角色Id -->
+	<select id="findRoleIdsByUserId" resultType="string">
+		select role_id from sys_user_role_relation where user_id = #{userId}
+	</select>
+	
+	
+	<!-- 用户-资源相关SQL(权限) -->
+	
+	<!-- 保存用户-资源-关系 -->
+	<insert id="saveUserResourceRelation" parameterType="com.kangde.sys.dto.UserResourceRelationDto">
+		INSERT INTO sys_user_resource_relation (`user_id`, `resource_id`) 
+		VALUES (#{userId}, #{resourceId})
+	</insert>
+	
+	<!-- 删除用户-资源-关系 -->
+	<delete id="deleteUserResourceRelation">
+		delete from sys_user_resource_relation where user_id = #{userId}
+	</delete>
+	
+	<!-- 通过用户ID,查询资源Id -->
+	<select id="findResourceIdsByUserId" resultType="string">
+		select resource_id from sys_user_resource_relation where user_id = #{userId}
+	</select>
+	
+	<!-- 获取组织机构负责人可用列表 -->
+	<select id="findEmpsForOrg" resultMap="model">
+		select 
+		<include refid="fields" />
+		from employee_info
+		where id not in (
+			select principal_id from sys_organization where principal_id is not null
+		)
+		and 1=1
+		<!-- 组织机构 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(orgId)">
+			AND employee_info.org_id IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id =  #{orgId}
+					), '%')
+			)
+		 </if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(userId)">
+			or id = #{userId}
+		</if>
+	</select>
+	
+	<!-- 获取组织机构负责人可用列表 -->
+	<select id="findEmpsByOrg" resultMap="model">
+		select 
+		<include refid="fields" />,
+		org.name as orgName
+		from employee_info
+		left join sys_organization as org on employee_info.org_id = org.id
+		where 1 = 1
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(orgId)">
+			and org_id in (
+				select id from sys_organization where path like concat((select path from sys_organization where id = #{orgId}),'%')
+			)
+		</if>
+		order by employee_info.user_name desc
+	</select>
+	
+	<!-- 获取组织机构负责人可用列表 -->
+	<select id="findEmpsByPos" resultMap="model">
+		select 
+		<include refid="fields" />,
+		pos.name AS posName
+		FROM employee_info
+		LEFT JOIN sys_position AS pos ON employee_info.position_id = pos.id
+		WHERE employee_info.status = 1
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(posId)">
+			and position_id = #{posId}
+		</if>
+		order by employee_info.user_name desc
+	</select>
+	
+	<!-- 启用/停用 -->
+	<update id="updateForStatus" >
+		update
+		employee_info
+		set
+		modify_time=#{visitRecord.modifyTime},
+		status=#{visitRecord.status}
+		where 
+		id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+	<!-- 通过登录名称查询用户 -->
+	<select id="findByLoginName" parameterType="string" resultMap="model">
+		select 
+		<include refid="fields" />,password
+		from employee_info
+		where login_name = #{_parameter}
+	</select>
+	
+	<!-- 更新密码 -->
+	<update id="updateUserPassword">
+		update
+		employee_info
+		<set>
+			<if test="salt != null" >
+	        salt = #{salt},
+	      	</if>
+			<if test="password != null" >
+	        password = #{password},
+	      	</if>
+			<if test="ccPwd != null" >
+	        cc_pwd = #{ccPwd}, 
+	      	</if>
+			<if test="modifyTime != null" >
+	     	modify_time = #{modifyTime}
+	      	</if>
+      	</set>
+		where id = #{id}
+	</update>
+</mapper>

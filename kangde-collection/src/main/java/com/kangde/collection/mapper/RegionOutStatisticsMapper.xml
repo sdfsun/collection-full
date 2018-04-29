@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.RegionOutStatisticsMapper">
+	<resultMap id="model"
+		type="com.kangde.collection.model.RegionOutStatistics" >
+	<id column="id" property="id" jdbcType="VARCHAR" />
+	<result column="customerProvince" property="customerProvince" jdbcType="VARCHAR" />
+	<result column="customerCity" property="customerCity" jdbcType="VARCHAR" />
+    <result column="cno" property="cno" jdbcType="VARCHAR" />
+    <result column="empId" property="empId" jdbcType="VARCHAR" />
+    <result column="empName" property="empName" jdbcType="VARCHAR" />
+    <result column="orgId" property="orgId" jdbcType="VARCHAR" />
+    <result column="bridgeDurationTotal" property="bridgeDurationTotal" jdbcType="VARCHAR" />
+    <result column="callOutCount" property="callOutCount" jdbcType="INTEGER" />
+    <result column="callOutConnectCount" property="callOutConnectCount" jdbcType="INTEGER" />
+    <result column="callOutConnectDuration" property="callOutConnectDuration" jdbcType="VARCHAR" />
+    <result column="callOutConnectDurationAvg" property="callOutConnectDurationAvg" jdbcType="VARCHAR" />
+    <result column="callOutConnectRate" property="callOutConnectRate" jdbcType="VARCHAR" />
+    <result column="bridgeDurationDayAvg" property="bridgeDurationDayAvg" jdbcType="VARCHAR" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+	  </resultMap>
+	<select id="query" resultMap="model">
+		SELECT
+<!-- 		emp_name AS empName, -->
+<!-- 		emp_id AS empId, -->
+		org_id AS orgId,
+		customerCity,
+		customerProvince,
+<!-- 		cno, -->
+		SUM(callOutCount) AS callOutCount,
+		#致电次数
+		SUM(callOutConnectCount) AS callOutConnectCount,#致电接通次数
+		CONVERT(SEC_TO_TIME(SUM(TIME_TO_SEC(callOutConnectDuration))),CHAR) AS
+		callOutConnectDuration,
+		#致电接通时长 
+		#致电通话时长/致电接通次数 平均致电通话时长（时:分:秒）
+		IFNULL(SEC_TO_TIME(FLOOR(SUM(TIME_TO_SEC(callOutConnectDuration))/SUM(callOutConnectCount))),'00:00:00')
+		AS callOutConnectDurationAvg,
+		#致电接通率 致电次数*100/致电接通次数
+		CONVERT(SUM(callOutConnectCount) *100/SUM(callOutCount) ,DECIMAL(18,2)) AS callOutConnectRate,
+		#平均每日通话时长（时:分:秒) 致电通话时长/天数
+		CONVERT(SEC_TO_TIME(CONVERT(SUM(TIME_TO_SEC(callOutConnectDuration)) / (TO_DAYS(#{params.normalDate1}) - TO_DAYS(#{params.normalDate})+1),DECIMAL(18,0))),CHAR) AS bridgeDurationDayAvg,
+		createTime
+		FROM `region_out_statistics`
+		WHERE 1=1 
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+   			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+   			and createTime &gt;=#{params.normalDate} AND createTime &lt;=#{params.normalDate1}
+  		</if>
+  		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+		and org_id IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		</if>
+		GROUP BY customerProvince,customerCity,cno
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				ORDER BY orgId
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

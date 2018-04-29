@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.collection.mapper.RegionMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.collection.model.RegionModel" id="model" />
+	<select id="findById" resultMap="model">
+		select 
+		`id`, `administration_code`, `name`, `father_name`, `city_code`, `area_grade`, `parent_id`
+		from 
+		region
+		where id = #{id}
+	</select>
+	
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select 
+		`id`, `administration_code`, `name`, `father_name`, `city_code`, `area_grade`, `parent_id`
+		from 
+		region
+		where ${fieldName} ${expression} #{fieldValue} 
+	</select>
+	
+	<select id="findByCityName" resultMap="model">
+		select 
+		`id`, `administration_code`, `name`, `father_name`, `city_code`, `area_grade`, `parent_id`
+		from 
+		region
+		where area_grade = 1 and name like CONCAT('${_parameter}','%' )
+	</select>
+	
+	<select id="findByProvinceName" resultMap="model">
+		select 
+		`id`, `administration_code`, `name`, `father_name`, `city_code`, `area_grade`, `parent_id`
+		from 
+		region
+		where area_grade = 0 and name like CONCAT('%','${_parameter}','%' )
+	</select>
+	<!-- and name like CONCAT('%','${_parameter}','%' ) -->
+	<select id="findProvince" resultMap="model">
+		select 
+		`id`, `administration_code`, `name`, `father_name`, `city_code`, `area_grade`, `parent_id`
+		from 
+		region
+		where  parent_id is null
+	</select>
+	<select id="findCityByProvinceId" resultMap="model">
+		select 
+		`id`, `administration_code`, `name`, `father_name`, `city_code`, `area_grade`, `parent_id`
+		from 
+		region
+		where  parent_id=#{provinceId}
+	</select>
+	<select id="findAreaByCityId" resultMap="model">
+		select 
+		`id`, `administration_code`, `name`, `father_name`, `city_code`, `area_grade`, `parent_id`
+		from 
+		region
+		where  parent_id =#{cityId}
+	</select>
+	
+
+</mapper>

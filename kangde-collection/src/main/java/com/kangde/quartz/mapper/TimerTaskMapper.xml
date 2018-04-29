@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.quartz.mapper.TimerTaskMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.quartz.model.TimerTaskModel" id="model" />
+	
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		*
+	</sql>
+	
+	<!-- 查询全部 -->
+	<select id="findAll" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		sys_timer_task
+	</select>
+	
+	<!-- 查询 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		sys_timer_task
+		where 1=1
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and name like CONCAT('%','${params.name}','%' )
+		</if>
+	</select>
+	
+	<!-- 保存 -->
+	<insert id="save">
+		INSERT INTO `sys_timer_task` 
+		(`id`, `name`, `description`, `jobClass`, `cronExpression`, `params`,
+		 `state`, `create_time`, `create_emp_id`,`error_email`) 
+		VALUES (#{id}, #{name}, #{description}, #{jobClass}, #{cronExpression},#{params}, 
+		#{state},#{createTime},#{createEmpId},#{errorEmail})
+	</insert>
+	
+	<!-- 更新 -->
+	<update id="update">
+		UPDATE `sys_timer_task` SET 
+		`name`=#{name}, 
+		`description`=#{description}, 
+		`jobClass`= #{jobClass}, 
+		`cronExpression`=#{cronExpression}, 
+		`params`=#{params}, 
+		`state`=#{state},
+		`modify_time`=#{modifyTime}, 
+		`modify_emp_id`=#{modifyEmpId}, 
+		`error_email`=#{errorEmail} 
+		WHERE (`id`=#{id})
+	</update>
+	
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from sys_timer_task where id = #{id}
+	</delete>
+	
+	<!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_timer_task
+		where id = #{id}
+	</select>
+	
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select 
+		<include refid="fields" />
+		from 
+		sys_timer_task
+		where ${fieldName} ${expression} #{fieldValue} 
+	</select>
+	
+</mapper>

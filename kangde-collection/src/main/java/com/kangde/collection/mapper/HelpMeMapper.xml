@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.HelpMeMapper">
+	<resultMap id="modelapply" type="com.kangde.collection.model.CaseApplyModel"></resultMap>
+	<resultMap id="model" type="com.kangde.collection.dto.HelpMeDto">
+		<result column="id" property="id" />
+		<result column="state" property="state" />
+		<result column="apply_type" property="applyType" />
+		<result column="apply_content" property="applyContent" />
+		<result column="ch_cat_1" property="chCat1" />
+		<result column="ch_cat_2" property="chCat2" />
+		<result column="address_id" property="addressId" />
+		<result column="msg_state" property="msgState" />
+		<result column="case_id" property="caseId" />
+		<result column="hurry_content" property="hurryContent" />
+		<result column="apply_user" property="applyUser" />
+		<result column="sur_user" property="surUser" />
+		<result column="app_time" property="appTime" />
+		<result column="sur_time" property="surTime" />
+		<result column="remark" property="remark" />
+		<result column="contact_user" property="contactUser" />
+		<result column="address" property="address" />
+		<result column="apply_user_name" property="applyUserName" />
+		<result column="sur_time" property="surTime" />
+		<result column="case_id" property="caseId" />
+		<result column="surplusMoney" property="surplusMoney" />
+		<result column="entrustId" property="entrustId" />
+		<result column="state" property="state" />
+		<association property="caseModel"
+			javaType="com.kangde.collection.model.CaseModel">
+			<result column="case_code" property="caseCode" />
+			<result column="case_num" property="caseNum" />
+			<result column="case_name" property="caseName" />
+			<result column="case_money" property="caseMoney" />
+			<result column="address" property="address" />
+			<result column="org_id" property="orgId" />
+			<result column="color" property="color" />
+			<result column="agent_rate" property="agentRate" />
+			<result column="collec_state_id" property="collecStateId" />
+			<result column="case_date" property="caseDate" />
+			
+		</association>
+		<association property="entrustModel" javaType="com.kangde.sys.model.EntrustModel">
+			<result column="name" property="name" />
+		</association>
+		<association property="caseBatchModel" javaType="com.kangde.collection.model.CaseBatchModel">
+			<result column="achieve" property="achieve" />
+		</association>
+		<association property="casePaidModel"
+			javaType="com.kangde.collection.model.CasePaid">
+			<result column="sumMoney" property="sumMoney" />
+		</association>
+		<association property="employeeInfoModel"
+			javaType="com.kangde.sys.model.EmployeeInfoModel">
+			<result column="user_name" property="userName" />
+		</association>
+		<association property="caseCarLoanModel" javaType="com.kangde.collection.model.CaseCarLoanModel">
+			<result column="lice_no" property="liceNo" />
+		</association>
+	</resultMap>
+
+	<!-- 待审批协催记录 -->
+	<select id="query" resultMap="model">
+	<![CDATA[
+	SELECT
+	case_info.`case_code`,
+	case_info.`case_num`,
+	case_info.`case_name`,
+	case_info.agent_rate,
+	case_info.`case_money`,
+	case_info.`org_id`,
+	entrust.`id` AS entrustId,
+	case_apply.`apply_content`,
+	case_apply.`app_time`,
+	case_apply.`apply_user`,
+	case_apply.`apply_type`,
+	case_apply.`state`,
+	case_apply.`id`,
+	case_apply.apply_user_name,
+	case_apply.case_id,
+	case_batch.achieve,
+	sys_organization.`name`,
+	ci.`user_name`,
+	case_info.`color`,
+IFNULL(
+		(
+		SELECT
+		SUM(IFNULL(paid_num, 0))
+		FROM
+		case_paid
+		WHERE
+		case_id
+		= case_info.id
+		AND state = 2
+		),
+		0
+		) AS surplusMoney
+FROM
+	case_apply
+LEFT JOIN case_info ON case_info.`id` = case_apply.`case_id`
+LEFT JOIN case_batch ON case_batch.`id` = case_info.`batch_id`
+LEFT JOIN `sys_organization` ON case_info.`org_id` = sys_organization.`id`
+LEFT JOIN `entrust` ON entrust.`id` = case_batch.`entrust_id`
+
+LEFT JOIN `employee_info` ci ON ci.`id` = case_apply.`apply_user`
+WHERE
+	case_apply.state =- 2
+AND case_apply.apply_type IN ('4', '12', '6','15')
+and
+		case_info.status != -1 and case_batch.status != -1 
+		]]>
+		
+		AND (
+			case_info.org_id IN (
+				${params.queryOrgs}
+			)
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.attachEntrustId)">
+			OR case_batch.entrust_id IN (${params.attachEntrustId})
+			</if>	
+			<if test="@org.apache.commons.lang.StringUtils@equals('admin',params.loginName)">
+			OR 1=1
+			</if>	
+			)
+			
+		<if test="@org.apache.commons.lang.StringUtils@isBlank(params.caseState)">
+			and  case_info.`state`IN ('0','1','4')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseState)">
+			and  case_info.`state`IN ('0','1','4','3')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and case_info.case_code like
+			CONCAT('%','${params.caseCode}','%' )
+		</if>
+		
+		<!-- 委托方 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust.`id` = #{params.entrustId}
+		</if>
+		
+		<!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustIds)">
+		and entrust.`id` in 
+		<foreach item="item" index="index" collection="params.entrustIds"
+				open="(" separator="," close=")">
+				#{params.entrustIds[${index}]}
+			</foreach>
+		</if> -->
+		
+		<!-- 申请时间 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.appTime) 
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.appTime1)">
+			and (DATE_FORMAT(case_apply.app_time,'%Y-%m-%d') between #{params.appTime} and #{params.appTime1})
+		</if>
+		
+		
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.applyType)">
+			and case_apply.apply_type like
+			CONCAT('%','${params.applyType}','%' )
+		</if>
+<!-- 		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.applyUser)">
+			and case_apply.apply_user like
+			CONCAT('%','${params.applyUser}','%' )
+		</if>
+		 -->
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.applyUserName)">
+			and (
+				case_apply.apply_user like CONCAT('%','${params.applyUserName}','%' ) or 
+				case_apply.apply_user_name like CONCAT('%','${params.applyUserName}','%' )
+			)
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseName)">
+			and case_info.case_name like
+			CONCAT('%','${params.caseName}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseNum)">
+			and case_info.case_num like
+			CONCAT('%','${params.caseNum}','%' )
+		</if>
+		<!-- 组织机构 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+			AND case_info.org_id IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		 </if>
+		
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by app_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 待处理协催记录 -->
+	<select id="querydeal" resultMap="model">
+	<![CDATA[ 	SELECT
+	case_info.`case_code`,
+	case_info.`case_num`,
+	case_info.`case_name`,
+	case_info.`case_money`,
+	case_info.`org_id`,
+	case_info.agent_rate,
+	entrust.`id` AS entrustId,
+	case_apply.`apply_content`,
+	case_apply.`app_time`,
+	case_apply.`apply_user`,
+	case_apply.`apply_type`,
+	case_apply.`state`,
+	case_apply.`id`,
+	case_apply.case_id,
+	case_batch.achieve,
+	sys_organization.`name`,
+	ci.`user_name`,
+	case_apply.apply_user_name,
+	case_info.`color`,
+IFNULL(
+		(
+		SELECT
+		SUM(IFNULL(paid_num, 0))
+		FROM
+		case_paid
+		WHERE
+		case_id
+		= case_info.id
+		AND state = 2
+		),
+		0
+		) AS surplusMoney
+FROM
+	case_apply
+LEFT JOIN case_info ON case_info.`id` = case_apply.`case_id`
+LEFT JOIN case_batch ON case_batch.`id` = case_info.`batch_id`
+LEFT JOIN `sys_organization` ON case_info.`org_id` = sys_organization.`id`
+LEFT JOIN `entrust` ON entrust.`id` = case_batch.`entrust_id`
+
+LEFT JOIN `employee_info` ci ON ci.`id` = case_apply.`apply_user`
+WHERE
+	case_apply.state = 0
+AND case_apply.apply_type IN ('4', '12', '6','15') 
+and
+case_info.status != -1 and case_batch.status != -1 ]]>
+		
+			AND (
+			case_info.org_id IN (
+				${params.queryOrgs}
+			)
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.attachEntrustId)">
+			OR case_batch.entrust_id IN (${params.attachEntrustId})
+			</if>	
+			<if test="@org.apache.commons.lang.StringUtils@equals('admin',params.loginName)">
+			OR 1=1
+			</if>	
+			)
+			
+		<if test="@org.apache.commons.lang.StringUtils@isBlank(params.caseState)">
+			and  case_info.`state`IN ('0','1','4')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseState)">
+			and  case_info.`state`IN ('0','1','4','3')
+		</if>
+
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and case_info.case_code like
+			CONCAT('%','${params.caseCode}','%' )
+		</if>
+		<!-- 委托方 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust.`id` = #{params.entrustId}
+		</if>
+		
+		<!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustIds)">
+		and entrust.`id` in 
+		<foreach item="item" index="index" collection="params.entrustIds"
+				open="(" separator="," close=")">
+				#{params.entrustIds[${index}]}
+			</foreach>
+		</if> -->
+			<!-- 申请时间 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.appTime) 
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.appTime1)">
+			and (DATE_FORMAT(case_apply.app_time,'%Y-%m-%d') between #{params.appTime} and #{params.appTime1})
+		</if>
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.applyType)">
+			and case_apply.apply_type like
+			CONCAT('%','${params.applyType}','%' )
+		</if>
+	<!-- 	<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.applyUser)">
+			and case_apply.apply_user like
+			CONCAT('%','${params.applyUser}','%' )
+		</if> -->
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.applyUserName)">
+			and (
+				case_apply.apply_user like CONCAT('%','${params.applyUserName}','%' ) or 
+				case_apply.apply_user_name like CONCAT('%','${params.applyUserName}','%' )
+			)
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseName)">
+			and case_info.case_name like
+			CONCAT('%','${params.caseName}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseNum)">
+			and case_info.case_num like
+			CONCAT('%','${params.caseNum}','%' )
+		</if>
+		<!-- 组织机构 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+			AND case_info.org_id IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		 </if>
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by app_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 批协催记录 -->
+	<select id="queryrecord" resultMap="model">
+	<![CDATA[	SELECT
+	case_info.`case_code`,
+	case_info.`case_num`,
+	case_info.`case_name`,
+	case_info.`case_money`,
+	case_info.`org_id`,
+	case_info.agent_rate,
+	entrust.`id` AS entrustId,
+	case_apply.`apply_content`,
+	case_apply.`app_time`,
+	case_apply.`apply_user`,
+	case_apply.`apply_type`,
+	case_apply.`state`,
+	case_apply.`id`,
+	case_apply.case_id,
+	case_batch.achieve,
+	sys_organization.`name`,
+	ci.`user_name`,
+	case_apply.apply_user_name,
+	case_info.`color`,
+IFNULL(
+		(
+		SELECT
+		SUM(IFNULL(paid_num, 0))
+		FROM
+		case_paid
+		WHERE
+		case_id
+		= case_info.id
+		AND state = 2
+		),
+		0
+		) AS surplusMoney,
+	case_apply.sur_time
+FROM
+	case_apply
+LEFT JOIN case_info ON case_info.`id` = case_apply.`case_id`
+LEFT JOIN case_batch ON case_batch.`id` = case_info.`batch_id`
+LEFT JOIN `sys_organization` ON case_info.`org_id` = sys_organization.`id`
+LEFT JOIN `entrust` ON entrust.`id` = case_batch.`entrust_id`
+
+
+LEFT JOIN `employee_info` ci ON ci.`id` = case_apply.`apply_user`
+WHERE
+	(
+		case_apply.state = 1
+		OR case_apply.state = 3
+	)
+AND case_apply.apply_type IN ('4', '12', '6','15') 
+and case_info.status != -1 and case_batch.status != -1 ]]>
+		
+			AND (
+			case_info.org_id IN (
+				${params.queryOrgs}
+			)
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.attachEntrustId)">
+			OR case_batch.entrust_id IN (${params.attachEntrustId})
+			</if>	
+			<if test="@org.apache.commons.lang.StringUtils@equals('admin',params.loginName)">
+			OR 1=1
+			</if>	
+			)
+			
+		<if test="@org.apache.commons.lang.StringUtils@isBlank(params.caseState)">
+			and  case_info.`state`IN ('0','1','4')
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseState)">
+			and  case_info.`state`IN ('0','1','4','3')
+		</if>
+
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseCode)">
+			and case_info.case_code like
+			CONCAT('%','${params.caseCode}','%' )
+		</if>
+			<!-- 申请时间 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.appTime) 
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.appTime1)">
+			and (DATE_FORMAT(case_apply.app_time,'%Y-%m-%d') between #{params.appTime} and #{params.appTime1})
+		</if>
+		<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.applyType)">
+			and case_apply.apply_type like
+			CONCAT('%','${params.applyType}','%' )
+		</if>
+		<!-- 委托方 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust.`id` = #{params.entrustId}
+		</if>
+		
+		<!-- <if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustIds)">
+		and entrust.`id` in 
+		<foreach item="item" index="index" collection="params.entrustIds"
+				open="(" separator="," close=")">
+				#{params.entrustIds[${index}]}
+			</foreach>
+		</if> -->
+	<!-- 	<if
+			test="@org.apache.commons.lang.StringUtils@isNotBlank(params.applyUser)">
+			and case_apply.apply_user like
+			CONCAT('%','${params.applyUser}','%' )
+		</if> -->
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.applyUserName)">
+			and (
+				case_apply.apply_user like CONCAT('%','${params.applyUserName}','%' ) or 
+				case_apply.apply_user_name like CONCAT('%','${params.applyUserName}','%' )
+			)
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.state)">
+			and  case_apply.`state`= ${params.state}
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseName)">
+			and case_info.case_name like
+			CONCAT('%','${params.caseName}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.caseNum)">
+			and case_info.case_num like
+			CONCAT('%','${params.caseNum}','%' )
+		</if>
+			<!-- 组织机构 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+			AND case_info.org_id IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		 </if>
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by app_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 协催审批 -->
+	<update id="agree">
+		update
+		case_apply
+		set
+		state=#{visitRecord.state},
+		approval_opinion=#{visitRecord.approvalOpinion},
+		sur_time=#{visitRecord.surTime}
+		where
+		id in
+		<foreach collection="list" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+		<!-- 协催审批 -->
+	<update id="agree1">
+		update
+		case_apply
+		set
+		state=#{visitRecord.state},
+		sur_time=#{visitRecord.surTime}
+		where
+		id in
+		<foreach collection="list" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</update>
+
+	<select id="findById" resultMap="modelapply">
+		SELECT case_id from case_apply
+		where id=#{id}
+	</select>
+
+<select id="queryExport" resultMap="model">
+<![CDATA[
+SELECT
+	ci.case_code,
+	ci.case_num,
+	ci.case_name,
+	ca.id,
+	ca.apply_type,
+	ca.apply_content,
+	
+	ci.case_date,
+	ci.case_money,
+	IFNULL(
+		(
+		SELECT
+		SUM(IFNULL(paid_num, 0))
+		FROM
+		case_paid
+		WHERE
+		case_id
+		= ci.id
+		AND state = 2
+		),
+		0
+		) AS surplusMoney,
+	ei.user_name,
+	et.name,
+	ccl.lice_no,
+	ca.app_time,
+	ci.collec_state_id
+FROM
+	case_apply ca
+LEFT JOIN case_info ci ON ci.id = ca.case_id
+
+LEFT JOIN employee_info ei on ci.case_assigned_id=ei.id
+LEFT JOIN case_batch cb on ci.batch_id=cb.id
+LEFT JOIN entrust et ON et.id=cb.entrust_id
+LEFT JOIn case_car_loan ccl ON ccl.case_id=ci.id
+WHERE
+	]]>
+		ca.id in
+		 <foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+		order by app_time
+				desc
+</select>
+
+	<select id="findIds" resultMap="modelapply">
+	select id,case_id from case_apply
+		where
+		id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</select>
+	
+		<select id="findByApplyId" resultMap="modelapply">
+	select case_id from case_apply
+		where
+		id =#{id}
+	</select>
+		<select id="chaziToApproveCount" resultType="int">
+			SELECT
+	count(1)
+FROM
+	case_apply
+LEFT JOIN case_info ON case_info.`id` = case_apply.`case_id`
+LEFT JOIN case_batch ON case_batch.`id` = case_info.`batch_id`
+
+WHERE
+	case_apply.state =- 2
+AND case_apply.apply_type IN ('4', '12', '6','15')
+and
+		case_info.status != -1 and case_batch.status != -1 
+	
+		
+		AND (
+			case_info.org_id IN (
+				${queryOrgs}
+			)
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(attachEntrustId)">
+			OR case_batch.entrust_id IN (${attachEntrustId})
+			</if>	
+			<if test="@org.apache.commons.lang.StringUtils@equals('admin',loginName)">
+			OR 1=1
+			</if>	
+			)
+			and  case_info.`state`IN ('0','1','4')
+			AND case_info.org_id IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{orgId}
+					), '%')
+			)
+	</select>
+	
+	<select id="queryDealCount" resultType="int">
+	
+	
+SELECT
+	count(1)
+FROM
+	case_apply
+LEFT JOIN case_info ON case_info.`id` = case_apply.`case_id`
+LEFT JOIN case_batch ON case_batch.`id` = case_info.`batch_id`
+
+WHERE
+	case_apply.state = 0
+AND case_apply.apply_type IN ('4', '12', '6','15') 
+and
+case_info.status != -1 and case_batch.status != -1 
+
+		
+			AND (
+			case_info.org_id IN (
+				${queryOrgs}
+			)
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(attachEntrustId)">
+			OR case_batch.entrust_id IN (${attachEntrustId})
+			</if>	
+			<if test="@org.apache.commons.lang.StringUtils@equals('admin',loginName)">
+			OR 1=1
+			</if>	
+			)
+			
+	and  case_info.`state`IN ('0','1','4')
+	
+
+	
+			AND case_info.org_id IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{orgId}
+					), '%')
+			)
+		
+	
+	
+	</select>
+</mapper>

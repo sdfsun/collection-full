@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.EntrustCaseSourceMapper" >
+  <resultMap id="model" type="com.kangde.sys.model.EntrustCaseSource" >
+  	<id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="entrust_id" property="entrustId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="create_emp_id" property="createEmpId" jdbcType="VARCHAR" />
+    <result column="create_emp_name" property="createEmpName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modify_name" property="modifyName" />
+    
+    <result column="contract_name" property="contract_name" />
+    <result column="en_code" property="en_code" />
+    <result column="en_name" property="en_name" />
+  </resultMap>
+   
+  <sql id="list" >
+    id, entrust_id, name, code, create_emp_id, create_emp_name, create_time, state, modify_time, 
+    modify_name
+  </sql>
+  
+  <select id="query" resultMap="model">
+    SELECT 
+    ecs.id, 
+    ecs.entrust_id, 
+    en.`contract_name` AS contract_name,
+    en.`code` AS en_code,
+    en.`name` AS en_name,
+    ecs.name, 
+    ecs.code, 
+    ecs.create_emp_name, 
+    ecs.create_time, 
+    ecs.state, 
+    ecs.modify_time, 
+    ecs.modify_name
+    
+    FROM entrust_case_source ecs
+    LEFT JOIN entrust en ON en.id = ecs.entrust_id
+where 1=1
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.entrustId)">
+			and entrust_id like CONCAT('%','${params.entrustId}','%' )
+		</if>
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and ecs.name like CONCAT('%','${params.name}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.createEmpName)">
+			and ecs.create_emp_name like CONCAT('%','${params.createEmpName}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.createTime)
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.createTime1)">
+			and (DATE_FORMAT(ecs.create_time,'%Y-%m-%d') between #{params.createTime} and #{params.createTime1})
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by convert(ecs.name using gbk) asc
+			</otherwise>
+		</choose>
+  </select>
+  
+  	<!-- 通过登录名称查询用户 -->
+	<select id="findByName" resultMap="model">
+		select 
+		<include refid="list" />
+		from entrust_case_source
+		where name = #{name}
+	</select>
+	<select id="findByCode" resultMap="model">
+		select 
+		<include refid="list" />
+		from entrust_case_source
+		where code = #{code}
+	</select>
+	
+    <select id="findCodeById" resultType="String">
+	select code from entrust_case_source where id = #{id}
+	</select> 
+	
+  	<!-- 获取组织机构负责人可用列表 -->
+	<select id="findSourcesByEnId" resultMap="model">
+		select 
+		entrust_case_source.id,entrust_case_source.name,
+		en.name as en_name
+		from entrust_case_source
+		left join entrust as en on entrust_case_source.entrust_id = en.id
+		where 1 = 1
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(entrustId)">
+			and entrust_id = #{entrustId}
+		</if>
+		order by entrust_case_source.name
+	</select>
+  
+  <!-- 更新 -->
+	<update id="updateForStatus" >
+		update
+		entrust_case_source
+		set
+		state=#{entrust.state},
+		modify_time=#{entrust.modifyTime}
+		where 
+		id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+  
+  <select id="findById" resultMap="model">
+    select 
+    <include refid="list" />
+    from entrust_case_source
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="save">
+     insert into entrust_case_source (id, entrust_id, name, 
+      code, create_emp_id, create_emp_name, 
+      create_time, state, modify_time, 
+      modify_name)
+    values (#{id,jdbcType=VARCHAR}, #{entrustId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{code,jdbcType=VARCHAR}, #{createEmpId,jdbcType=VARCHAR}, #{createEmpName,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{modifyName,jdbcType=VARCHAR})
+  </insert>
+ 
+  <update id="update">
+     update entrust_case_source
+    <set >
+      <if test="entrustId != null" >
+        entrust_id = #{entrustId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="createEmpId != null" >
+        create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="createEmpName != null" >
+        create_emp_name = #{createEmpName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyName != null" >
+        modify_name = #{modifyName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

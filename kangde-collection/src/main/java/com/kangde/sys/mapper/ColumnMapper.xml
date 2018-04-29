@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.sys.mapper.ColumnMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.ColumnModel" id="model" />
+
+	<!-- 查询案件所有列 -->
+	<select id="findCaseColumns" resultMap="model">
+		select c.* from
+		sys_column as c where c.` indicate` = 'CIDC'
+		order by c.order_no
+	</select>
+	
+		<!-- 查询案件所有列 -->
+	<select id="findCaseColumnsNotDC" resultMap="model">
+		SELECT * FROM
+		sys_column 
+		WHERE
+		grop_no = 'case_info'
+		ORDER BY
+		order_no
+	</select>
+	
+	<!-- 查询外放所有列 -->
+	<select id="findVisitRecord" resultMap="model">
+		select c.* from
+		sys_column as c where c.grop_no = 'visit_record'
+		order by c.order_no
+	</select>
+	
+	
+	<!-- 查询风控所有列 -->
+	<select id="findCheckboxcollection" resultMap="model">
+		select c.* from
+		sys_column as c where c.grop_no = 'phone_record'
+		order by c.order_no
+	</select>
+	
+	<!-- 保存用户列关系 -->
+	<insert id="saveUserColumnRelation">
+		insert into sys_user_column_relation
+		(user_id,column_id)
+		values(#{userId},#{columnId})
+	</insert>
+	
+	<!-- 保存 -->
+	<insert id="save">
+		insert into sys_column (id, field, width,
+		sortable, title, grop_no,
+		order_no, align)
+		values (#{id}, #{field}, #{width},
+		#{sortable}, #{title}, #{gropNo},
+		#{orderNo}, #{align})
+	</insert>
+
+
+	<!-- 通过角色ID,查询资源Id -->
+	<select id="findCaseColumnsByUserId" resultMap="model">
+		select c.* from
+		sys_column as c
+		join sys_user_column_relation as r on c.id = r.column_id
+		where c.grop_no =
+		'case_info' and
+		r.user_id = #{_parameter}
+		order by c.order_no
+	</select>
+	
+	<!-- 查询勾选列 -->
+	<select id="findOk" resultMap="model" parameterType="String">
+	select * from sys_column  as c where c.` indicate`='CIDC'
+		and
+		id in(${_parameter})
+		order by c.order_no
+	</select>
+	
+		
+	<!-- 查询勾选列 -->
+	<select id="findOkCollection" resultMap="model" parameterType="String">
+		select c.* from
+		sys_column as c where c.grop_no = 'phone_record'
+		and
+		id in(${_parameter})
+		order by c.order_no
+	</select>
+	
+	<!-- ID集查询 -->
+	<select id="findByIds" resultMap="model">
+		select c.* from sys_column as c where c.id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</select>
+
+</mapper>

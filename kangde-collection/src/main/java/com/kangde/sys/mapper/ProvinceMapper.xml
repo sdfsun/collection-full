@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.ProvinceMapper">
+<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.ProvinceModel" id="model" />
+	
+	<!-- 查询所有案件模板信息及条件 -->
+	<select id="query" resultMap="model">
+		SELECT
+		province_id,province_name,STATUS
+		FROM
+		cus_province
+		WHERE STATUS !=-1
+		<!-- 排序 -->
+		order by province_name
+	</select>
+	
+	
+	<!-- 省份启用/禁用模板 -->
+	<update id="updateForStatus">
+		update
+		cus_province
+		set
+		status=#{status}
+		where province_id =
+		#{provinceId}
+	</update>
+	
+	
+	<!-- 保存 -->
+	<insert id="saveProv">
+		insert into
+		cus_province
+		(province_id,province_name,province_isenabled,status)
+		values
+		(#{provinceId},#{provinceName},#{provinceIsenabled},#{status})
+	</insert>
+	
+	<!-- 通过字段查询 -->
+	<select id="sizeNum" resultMap="model">
+		select
+		province_name
+		from
+		cus_province
+		where
+		province_name=#{provinceName}
+	</select>
+	
+	<!-- 修改外访区域 -->
+	<update id="updateProv">
+		update
+		cus_province
+		set
+		province_name=#{provinceName},
+		status=#{status}
+		where province_id =
+		#{provinceId}
+	</update>
+	
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from
+			cus_province
+		where province_id = #{provinceId}
+	</delete>
+	
+	<select id="findAll" resultMap="model">
+	SELECT 
+		*
+		FROM cus_province
+		WHERE 
+		cus_province.`status`!=-1
+		and
+		cus_province.`status`!=0
+		
+	</select>
+
+</mapper>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.demo.mapper.StudentMapper">
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.demo.model.StudentModel"
+		id="model">
+	</resultMap>
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		id,name,student_no,age,create_time,modify_time,version,status
+	</sql>
+	<!-- 保存 -->
+	<insert id="save">
+		INSERT INTO test_student
+		(`id`, `name`, `age`,`student_no`,
+		`create_time`, `modify_time`, `version`, `status`)
+		VALUES
+		(#{id}, #{name}, #{age},#{studentNo}, #{createTime}, #{modifyTime}, #{version},
+		#{status})
+	</insert>
+	<!-- 更新 -->
+	<update id="update">
+		update test_student
+		set
+		name = #{name},
+		age = #{age},
+		create_time = #{createTime},
+		modify_time = #{modifyTime},
+		version =
+		version+1,
+		status = #{status},
+		state = #{state}
+		where id = #{id}
+		and
+		version = #{version}
+	</update>
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from test_student
+		where id = #{id}
+	</delete>
+	<!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		from test_student
+		where id = #{id}
+	</select>
+	<!-- 查询 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from test_student
+		where 1=1
+		<!-- 姓名检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and name like CONCAT('%','${params.name}','%' )
+		</if>
+		<!-- 年龄 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.age)">
+			and age = #{params.age}
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by create_time
+				desc
+			</otherwise>
+		</choose>
+	</select>
+
+</mapper>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CnoInStatisticsMapper" >
+  <resultMap id="model" type="com.kangde.collection.model.CnoInStatistics" >
+ 	<id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="cno" property="cno" jdbcType="VARCHAR" />
+    <result column="empId" property="empId" jdbcType="VARCHAR" />
+    <result column="empName" property="empName" jdbcType="VARCHAR" />
+    <result column="orgId" property="orgId" jdbcType="VARCHAR" />
+    <result column="bridgeDurationTotal" property="bridgeDurationTotal" jdbcType="VARCHAR" />
+    <result column="callInCount" property="callInCount" jdbcType="INTEGER" />
+    <result column="callInConnectCount" property="callInConnectCount" jdbcType="INTEGER" />
+    <result column="callInConnectDuration" property="callInConnectDuration" jdbcType="VARCHAR" />
+    <result column="callInConnectDurationAvg" property="callInConnectDurationAvg" jdbcType="VARCHAR" />
+    <result column="callInConnectRate" property="callInConnectRate" jdbcType="VARCHAR" />
+    <result column="bridgeDurationDayAvg" property="bridgeDurationDayAvg" jdbcType="VARCHAR" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <select id="query" resultMap="model" >
+    SELECT 
+		emp_name AS empName,emp_id AS empId,org_id AS orgId,cno,
+		SUM(callInCount) AS callInCount,#致电次数
+		SUM(callInConnectCount) AS callInConnectCount,#致电接通次数
+		CONVERT(SEC_TO_TIME(SUM(TIME_TO_SEC(callInConnectDuration))),CHAR) AS callInConnectDuration,#致电接通时长
+		#致电通话时长/致电接通次数 平均致电通话时长（时:分:秒）
+		IFNULL(SEC_TO_TIME(FLOOR(SUM(TIME_TO_SEC(callInConnectDuration))/SUM(callInConnectCount))),'00:00:00') AS callInConnectDurationAvg,
+		#致电接通率 致电次数*100/致电接通次数
+		CONVERT(SUM(callInConnectCount) *100/SUM(callInCount) ,DECIMAL(18,2)) AS callInConnectRate,
+		#平均每日通话时长（时:分:秒) 致电通话时长/天数
+		CONVERT(SEC_TO_TIME(CONVERT(SUM(TIME_TO_SEC(callInConnectDuration)) / (TO_DAYS(#{params.normalDate1}) - TO_DAYS(#{params.normalDate})+1),DECIMAL(18,0))),CHAR) AS bridgeDurationDayAvg,
+		createTime
+		FROM cno_in_statistics
+		WHERE 1=1 
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate) 
+   			and @org.apache.commons.lang.StringUtils@isNotBlank(params.normalDate1)">
+ 			and (DATE_FORMAT(createTime,'%Y-%m-%d') between #{params.normalDate} and #{params.normalDate1})
+  		</if>
+  		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.orgId)">
+		and org_id IN (
+				SELECT
+					id
+				FROM
+					sys_organization
+				WHERE
+					path LIKE CONCAT((
+						SELECT
+							path
+						FROM
+							sys_organization
+						WHERE
+							id = #{params.orgId}
+					), '%')
+			)
+		</if>
+		
+		GROUP BY cno
+		
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				ORDER BY CONVERT(empName USING gbk) DESC
+			</otherwise>
+		</choose>
+  </select>
+</mapper>

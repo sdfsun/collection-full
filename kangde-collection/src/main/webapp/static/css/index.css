@@ -1,0 +1,17 @@
+﻿#table_query {
+	border-collapse: collapse;
+	cellspacing: 0;
+	cellpadding: 0;
+	border: 0;
+	border-spacing: 0px;
+	cellspacing: 0;
+	width: 100%;
+}
+
+table tr td label {
+	display: block;
+	height: 100%;
+	padding: 0px;
+	margin: 5px;
+	text-align: right;
+}

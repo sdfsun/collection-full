@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.EntrustMapper" >
+  
+  	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.EntrustModel" id="model" />
+  
+  	<!-- 所有查询字段 -->
+	<sql id="fields">
+	id, name, code, cooperate_date, address, service_hotline, abutment_person, 
+    abutment_email, abutment_phone, case_frequency, effec_repay_period, collec_nominal, 
+    collec_term, stay_require, back_require, report_period, settlement_period, repayment_method, 
+    discount_reduction, period_repayment_require, cancel_account, resource_retrieve_require, 
+    collec_submit_require, complaint_handle_require, tape_submit_require, data_destruc_require, 
+    letter_recovery_require, report_require, cus_special_instruc, case_type_id, product_name,state,
+    modify_time,contract_name,remark, create_emp_id, create_emp_name, create_time
+	</sql>
+  
+  	<!-- where条件 
+	<sql id="where">
+		where status =
+		'${@com.kangde.commons.CoreConst@STATUS_NORMAL}'
+	</sql>-->
+	
+  	<!-- 保存 -->
+	<insert id="save">
+    insert into entrust (id, name, code, 
+      cooperate_date, address, service_hotline, 
+      abutment_person, abutment_email, abutment_phone, 
+      case_frequency, effec_repay_period, collec_nominal, 
+      collec_term, stay_require, back_require, 
+      report_period, settlement_period, repayment_method, 
+      discount_reduction, period_repayment_require, 
+      cancel_account, resource_retrieve_require, 
+      collec_submit_require, complaint_handle_require, 
+      tape_submit_require, data_destruc_require, 
+      letter_recovery_require, report_require, cus_special_instruc, 
+      case_type_id, product_name,state,modify_time,contract_name,remark, 
+      create_emp_id, create_emp_name, create_time)
+    values (#{id}, #{name}, #{code}, 
+      #{cooperateDate}, #{address}, #{serviceHotline}, 
+      #{abutmentPerson}, #{abutmentEmail}, #{abutmentPhone}, 
+      #{caseFrequency}, #{effecRepayPeriod}, #{collecNominal}, 
+      #{collecTerm}, #{stayRequire}, #{backRequire}, 
+      #{reportPeriod}, #{settlementPeriod}, #{repaymentMethod}, 
+      #{discountReduction}, #{periodRepaymentRequire}, 
+      #{cancelAccount}, #{resourceRetrieveRequire}, 
+      #{collecSubmitRequire}, #{complaintHandleRequire}, 
+      #{tapeSubmitRequire}, #{dataDestrucRequire}, 
+      #{letterRecoveryRequire}, #{reportRequire}, #{cusSpecialInstruc}, 
+      #{caseTypeId}, #{productName}, #{state}, #{modifyTime}, #{contractName}, #{remark},
+      #{createEmpId},#{createEmpName},#{createTime})
+  </insert>
+  
+  <update id="update">
+   update entrust
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="contractName != null" >
+        contract_name = #{contractName,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="cooperateDate != null" >
+        cooperate_date = #{cooperateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceHotline != null" >
+        service_hotline = #{serviceHotline,jdbcType=VARCHAR},
+      </if>
+      <if test="abutmentPerson != null" >
+        abutment_person = #{abutmentPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="abutmentEmail != null" >
+        abutment_email = #{abutmentEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="abutmentPhone != null" >
+        abutment_phone = #{abutmentPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="caseFrequency != null" >
+        case_frequency = #{caseFrequency,jdbcType=CHAR},
+      </if>
+      <if test="effecRepayPeriod != null" >
+        effec_repay_period = #{effecRepayPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="collecNominal != null" >
+        collec_nominal = #{collecNominal,jdbcType=VARCHAR},
+      </if>
+      <if test="collecTerm != null" >
+        collec_term = #{collecTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="stayRequire != null" >
+        stay_require = #{stayRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="backRequire != null" >
+        back_require = #{backRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="reportPeriod != null" >
+        report_period = #{reportPeriod,jdbcType=CHAR},
+      </if>
+      <if test="settlementPeriod != null" >
+        settlement_period = #{settlementPeriod,jdbcType=CHAR},
+      </if>
+      <if test="repaymentMethod != null" >
+        repayment_method = #{repaymentMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="discountReduction != null" >
+        discount_reduction = #{discountReduction,jdbcType=VARCHAR},
+      </if>
+      <if test="periodRepaymentRequire != null" >
+        period_repayment_require = #{periodRepaymentRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelAccount != null" >
+        cancel_account = #{cancelAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceRetrieveRequire != null" >
+        resource_retrieve_require = #{resourceRetrieveRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="collecSubmitRequire != null" >
+        collec_submit_require = #{collecSubmitRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="complaintHandleRequire != null" >
+        complaint_handle_require = #{complaintHandleRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="tapeSubmitRequire != null" >
+        tape_submit_require = #{tapeSubmitRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDestrucRequire != null" >
+        data_destruc_require = #{dataDestrucRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="letterRecoveryRequire != null" >
+        letter_recovery_require = #{letterRecoveryRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="reportRequire != null" >
+        report_require = #{reportRequire,jdbcType=VARCHAR},
+      </if>
+      <if test="cusSpecialInstruc != null" >
+        cus_special_instruc = #{cusSpecialInstruc,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createEmpId != null" >
+        create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+      </if>
+      <if test="createEmpName != null" >
+        create_emp_name = #{createEmpName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="caseTypeId != null" >
+        case_type_id = #{caseTypeId,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="productName != null" >
+        product_name = #{productName,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 更新 -->
+	<update id="updateForStatus" >
+		update
+		entrust
+		set
+		state=#{entrust.state},
+		modify_time=#{entrust.modifyTime}
+		where 
+		id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+  
+  <!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		from entrust
+		where id = #{id}
+	</select>
+	
+   <!-- 查询所有员工信息及条件 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from
+		entrust
+		where 1=1
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and name like CONCAT('%','${params.name}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.createEmpName)">
+			and create_emp_name like CONCAT('%','${params.createEmpName}','%' )
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.createTime)
+			and @org.apache.commons.lang.StringUtils@isNotBlank(params.createTime1)">
+			and (DATE_FORMAT(create_time,'%Y-%m-%d') between #{params.createTime} and #{params.createTime1})
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by convert(name using gbk) asc
+			</otherwise>
+		</choose>
+	</select>
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from
+		entrust
+		where id = #{id}
+	</delete>
+	
+		<!-- 通过登录名称查询用户 -->
+	<select id="findByName" resultMap="model">
+		select 
+		<include refid="fields" />
+		from entrust
+		where name = #{name}
+	</select>
+	<select id="findByCode" resultMap="model">
+		select 
+		<include refid="fields" />
+		from entrust
+		where code = #{code}
+	</select>
+	<!-- <select id="findIdByName" resultType="String">
+	select id from entrust where name = #{name}
+	</select>-->
+	
+	<select id="findCodeById" resultType="String">
+	select code from entrust where id = #{id}
+	</select> 
+	
+	<select id="findAll" resultMap="model">
+		select 
+		<include refid="fields"/>
+		from entrust
+			where entrust.state=0
+		<!-- 排序 -->
+		order by convert(name using gbk) asc
+	</select>
+	<select id="findAll2" resultMap="model">
+		select 
+		<include refid="fields"/>
+		from entrust
+		<!-- 排序 -->
+		order by convert(name using gbk) asc
+	</select>
+	
+	<select id="findByIds" resultMap="model">
+		select 
+		<include refid="fields"/>
+		from entrust
+		where entrust.state=0 
+		and id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+		
+		<!-- 排序 -->
+	    order by convert(name using gbk) asc
+	</select>
+	<select id="findByIds2" resultMap="model">
+		select 
+		<include refid="fields"/>
+		from entrust
+		where id in 
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+		
+		<!-- 排序 -->
+	    order by convert(name using gbk) asc
+	</select>
+	
+</mapper>

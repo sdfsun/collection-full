@@ -1,0 +1,39 @@
+<%@ page language="java" pageEncoding="UTF-8"
+	contentType="text/html; charset=UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<script type="text/javascript">
+$.extend($.fn.validatebox.defaults.rules, {    
+    maxLength: {    
+        validator: function(value, param){    
+            return value.length <= param[0];    
+        },    
+        message: '输入文字数量不可多于500！'   
+    }    
+}); 
+</script>
+<div>
+	<form id="_form" class="dialog-form" method="post" novalidate>
+		<input type="hidden" name="id" />
+		<input type="hidden" name="state"/>
+		<!-- 用户版本控制字段 version -->
+		<input type="hidden" id="version" name="version" />
+		<!-- Restful 请求 -->
+        <c:if test="${!empty id }">
+        	<input type="hidden" name="_method" value="PUT" />
+        </c:if>
+		<div><br/>
+		
+		
+		
+			<label style="color:black;">撤案说明 :</label> 
+			<br/><br/>
+			<input id="wdcDesc" name="wdcDesc" class="easyui-textbox" data-options="required:true,missingMessage:'请输入备注说明.',validType:'maxLength[500]',multiline:true"
+			 style="width:400px;height:300px" value="${wdcDesc }">
+		</div>
+		
+		
+
+		
+
+	</form>
+</div>

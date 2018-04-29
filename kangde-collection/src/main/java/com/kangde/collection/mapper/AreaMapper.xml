@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.collection.mapper.AreaMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.collection.model.AreaModel" id="model" />
+	<sql id="fields">
+		id, name, status,org_id
+	</sql>
+	<!-- 通过城市名称查询 -->
+	<select id="findByName" resultMap="model">
+		select
+		<include refid="fields" />
+		from area
+		where name like CONCAT('${_parameter}','%' )
+	</select>
+
+	<select id="findAreas" resultMap="model">
+		select
+		<include refid="fields" />
+		from area
+		where org_id is null
+		<if test="_parameter !=null">
+			or id in
+			<foreach collection="list" open="(" close=")" separator=","
+				item="id">
+				#{id}
+			</foreach>
+		</if>
+	</select>
+
+	<select id="findByIds" resultMap="model">
+		select
+		<include refid="fields" />
+		from area
+		where id in
+		<foreach collection="list" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</select>
+
+	<select id="findByOrganizationId" resultMap="model">
+		select
+		<include refid="fields" />
+		from area
+		where org_id = #{_parameter}
+	</select>
+	
+		<select id="findAllArea" resultMap="model">
+		SELECT * FROM AREA 
+		WHERE STATUS=1
+		AND org_id!=''
+			
+		</select>
+
+	<update id="updateOrganization">
+		update area
+		set org_id = #{organizationId}
+		where id in
+		<foreach collection="areaIds" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</update>
+
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select
+		<include refid="fields" />
+		from area
+		where ${fieldName} ${expression} #{fieldValue}
+	</select>
+
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from area
+		where  status !=-1
+		<!-- 名称检索 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and name like CONCAT('%','${params.name}','%' )
+		</if>
+		
+	</select>
+	<insert id="save">
+		insert into
+		area
+		(id,name,status)
+		values
+		(#{id},#{name},#{status})
+	</insert>
+	<update id="update">
+		update
+		area
+		set
+		name=#{name},
+		org_id=#{orgId},
+		status=#{status}
+		where id = #{id}
+	</update>
+	<delete id="deleteById">
+		delete from
+		area
+		where id = #{id}
+	</delete>
+		<select id="findSize" resultMap="model">
+		select
+		*
+		from area
+		where id=#{id}
+		
+	</select>
+		<select id="findSize1" resultMap="model">
+		select
+		*
+		from area
+		where name=#{name}
+		
+	</select>
+
+</mapper>

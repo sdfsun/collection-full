@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.2.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.2.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache-4.2.xsd">
+	<!-- 读取属性文件 -->
+	<context:property-placeholder location="classpath:config.properties"/>
+	<!-- 扫描组件,排除controller -->
+	<context:component-scan base-package="com.kangde">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+	<!-- 初始化SpringUtil -->
+	<bean id="springUtil" class="com.kangde.commons.web.filter.SpringUtil"/>
+
+	<!-- 数据源配置 -->
+	<bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${druid.initialSize}" />
+		<property name="minIdle" value="${druid.minIdle}" />
+		<property name="maxActive" value="${druid.maxActive}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${druid.maxWait}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${druid.timeBetweenEvictionRunsMillis}" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${druid.minEvictableIdleTimeMillis}" />
+		<!-- 配置连接池的测试开关 -->
+		<property name="validationQuery" value="${druid.validationQuery}" />
+		<property name="testWhileIdle" value="${druid.testWhileIdle}" />
+		<property name="testOnBorrow" value="${druid.testOnBorrow}" />
+		<property name="testOnReturn" value="${druid.testOnReturn}" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="${druid.poolPreparedStatements}" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="${druid.maxPoolPreparedStatementPerConnectionSize}" />
+		<!--关闭长时间不使用的连接 -->
+		<property name="removeAbandoned" value="${druid.removeAbandoned}" />
+		<!-- 单位：秒 -->
+		<property name="removeAbandonedTimeout" value="${druid.removeAbandonedTimeout}" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="${druid.logAbandoned}" />
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="${druid.filters}" />
+	</bean>
+
+	<!-- MyBatis文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:/otherConfig/mybatis-config.xml" />
+		<!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
+		<property name="mapperLocations" value="classpath:com/kangde/**/mapper/**/*Mapper.xml" />
+	</bean>
+	
+	<!-- 为指定包下的Mapper接口,创建所以代理对象 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.kangde.**.mapper.**" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+
+	<!-- 事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- <aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy> -->
+	<!-- 开启注解驱动 -->
+	<tx:annotation-driven />
+	<!-- 配置事务扫描 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- 以下方法为只读事务 -->
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="tree*" read-only="true" />
+			<tx:method name="list*" read-only="true" />
+			<tx:method name="select*" read-only="true" />
+			<tx:method name="search*" read-only="true" />
+			<tx:method name="statistics*" read-only="true" />
+			<!-- 所有可写的方法都加入事务管理 -->
+			<tx:method name="*" propagation="REQUIRED" />
+			<!--   
+				事务传播行为类型  
+				REQUIRED  如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。这是最常见的选择。  
+				SUPPORTS   支持当前事务，如果当前没有事务，就以非事务方式执行。  
+				MANDATORY  使用当前的事务，如果当前没有事务，就抛出异常。  
+				REQUIRES_NEW  新建事务，如果当前存在事务，把当前事务挂起。  
+				NOT_SUPPORTED   以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。  
+				NEVER   以非事务方式执行，如果当前存在事务，则抛出异常。  
+				NESTED  如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与PROPAGATION_REQUIRED类似的操作。  
+			-->  
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 开启AOP代理 -->
+	<aop:config>
+		<!-- 创建自动代理,开启事物, 用于拦截平台中所有的业务类方法 -->
+		<aop:advisor pointcut="execution(* com.kangde..*Service.*(..))" advice-ref="txAdvice"/>
+		<!-- 创建自动代理,开启事物, 用于拦截平台中所有的定时处理器方法 -->
+		<aop:advisor pointcut="execution(* com.kangde..*Handler.*(..))" advice-ref="txAdvice"/>
+	</aop:config>
+	
+	<!-- 线程池配置 -->
+	<bean id="threadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="${taskExecutor.corePoolSize}"></property>
+		<property name="maxPoolSize" value="${taskExecutor.maxPoolSize}"></property>
+		<property name="queueCapacity" value="${taskExecutor.queueCapacity}"></property>
+		<property name="threadNamePrefix" value="${taskExecutor.threadNamePrefix}"></property>
+		<!-- 执行拒绝的策略，暂时不做配置 -->
+		<!--<property name="rejectedExecutionHandler">
+			<bean class="${taskExecutor.rejectedExecutionHandler}" />
+		</property>-->
+	</bean>
+	
+	<!-- Excel上下文  -->
+	<bean id="excelContext" class="com.kangde.commons.util.excel.ExcelContext">
+		<constructor-arg>
+			<value>otherConfig/excel-config.xml</value>
+		</constructor-arg>
+	</bean>
+	
+	<!-- 导入Ehcache -->
+	<!-- <import resource="otherConfig/ehcache-config.xml"/> -->
+	<!-- 导入Shiro -->
+	<import resource="otherConfig/shiro-config.xml"/>
+	<!-- 导入Redis -->
+	<import resource="otherConfig/redis-config.xml"/>
+	<!-- 导入定时任务调度配置 -->
+	<import resource="otherConfig/scheduler-config.xml"/>
+	
+</beans>

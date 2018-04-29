@@ -1,0 +1,348 @@
+[
+    {
+        "value": "",
+        "text": "默认"
+    },
+    {
+        "value": "eu-icon-source",
+        "text": "source"
+    },
+    {
+        "value": "eu-icon-csmgr",
+        "text": "csmgr"
+    },
+    {
+        "value": "eu-icon-opt",
+        "text": "opt"
+    },
+    {
+        "value": "eu-icon-manager",
+        "text": "manager"
+    },
+    {
+        "value": "eu-icon-sysconfig",
+        "text": "sysconfig"
+    },
+    {
+        "value": "eu-icon-visit",
+        "text": "visit"
+    },
+    {
+        "value": "eu-icon-batchmgr",
+        "text": "batchmgr"
+    },
+    {
+        "value": "eu-icon-repayment",
+        "text": "repayment"
+    },
+    {
+        "value": "eu-icon-phone",
+        "text": "phone"
+    },
+    {
+        "value": "eu-icon-repmanager",
+        "text": "repmanager"
+    },
+    {
+        "value": "eu-icon-caseaudit",
+        "text": "caseaudit"
+    },
+    {
+        "value": "eu-icon-casemanager",
+        "text": "casemanager"
+    },
+    {
+        "value": "eu-icon-allot",
+        "text": "allot"
+    },
+    {
+        "value": "eu-icon-imported",
+        "text": "imported"
+    },
+    {
+        "value": "eu-icon-csmanager",
+        "text": "csmanager"
+    },
+     {
+        "value": "eu-icon-xinzeng",
+        "text": "新增"
+    },
+     {
+        "value": "eu-icon-bianji",
+        "text": "编辑"
+    },
+    {
+        "value": "eu-icon-ziyuanguanli",
+        "text": "资源管理"
+    },
+      {
+        "value": "eu-icon-zuzhijigou",
+        "text": "组织机构"
+    },
+     {
+        "value": "eu-icon-jiaosepeizhi",
+        "text": "角色配置"
+    },
+      {
+        "value": "eu-icon-yuangongguanli",
+        "text": "员工管理"
+    },
+      {
+        "value": "eu-icon-zhiweiguanli",
+        "text": "职位管理"
+    },
+    {
+        "value": "eu-icon-zidianguanli",
+        "text": "字典管理"
+    },
+      {
+        "value": "eu-icon-cuishouquyu",
+        "text": "催收区域"
+    },
+    {
+        "value": "eu-icon-weituofang",
+        "text": "委托方管理"
+    },
+     {
+        "value": "eu-icon-waifangdiqu",
+        "text": "外方地区"
+    },
+    {
+        "value": "eu-icon-mobanpeizhi",
+        "text": "模板配置"
+    },
+     {
+        "value": "eu-icon-suoyouzidian",
+        "text": "所有字典项"
+    },
+     {
+        "value": "eu-icon-xitongzidian",
+        "text": "系统字典项"
+    },
+     {
+        "value": "eu-icon-shujuzidian",
+        "text": "数据字典项"
+    },
+     {
+        "value": "eu-icon-huankuanzidian",
+        "text": "还款字典项"
+    },
+     {
+        "value": "eu-icon-dingshiqizidian",
+        "text": "定时器字典项"
+    },
+     {
+        "value": "eu-icon-yuangongzidian",
+        "text": "员工字典项"
+    },
+     {
+        "value": "eu-icon-anjianmoban",
+        "text": "案件模板"
+    },
+     {
+        "value": "eu-icon-cuijimoban",
+        "text": "催记模板"
+    },
+     {
+        "value": "eu-icon-waifangmoban",
+        "text": "外访模板"
+    },
+     {
+        "value": "eu-icon-fenanguanli",
+        "text": "分案管理"
+    },
+      {
+        "value": "eu-icon-cuishouguanli",
+        "text": "风控管理"
+    },
+     {
+        "value": "eu-icon-waifangguanli",
+        "text": "外访管理"
+    },
+     {
+        "value": "eu-icon-xiecuiguanli",
+        "text": "协催管理"
+    },
+      {
+        "value": "eu-icon-daishenpiwaifang",
+        "text": "待审批外访"
+    },
+    {
+        "value": "eu-icon-daipaichengwaifang",
+        "text": "待排程外访"
+    },
+     {
+        "value": "eu-icon-wodeanjian",
+        "text": "我的案件"
+    },
+     {
+        "value": "eu-icon-bumenanjian",
+        "text": "部门案件"
+    },
+     {
+        "value": "eu-icon-yipaichengwaifang",
+        "text": "已排程外访"
+    },
+    {
+        "value": "eu-icon-yiwanchengwaifang",
+        "text": "已完成外访"
+    },
+    {
+        "value": "eu-icon-daichulixiecui",
+        "text": "待处理协催"
+    },
+     {
+        "value": "eu-icon-daishenpixiecui",
+        "text": "待审批协催"
+    },
+     {
+        "value": "eu-icon-xiecuijilu",
+        "text": "协催记录"
+    },
+     {
+        "value": "eu-icon-piciguanli",
+        "text": "批次管理"
+    },
+    {
+        "value": "eu-icon-anjianguanli",
+        "text": "案件管理"
+    },
+    {
+        "value": "eu-icon-liuanguanli",
+        "text": "留案管理"
+    },
+    {
+        "value": "eu-icon-huankuanguanli",
+        "text": "还款管理"
+    },
+     {
+        "value": "eu-icon-cuijiguanli",
+        "text": "催记管理"
+    },
+      {
+        "value": "eu-icon-xitongguanli",
+        "text": "系统管理"
+    },
+     {
+        "value": "eu-icon-anjianguanli1",
+        "text": "案件管理1"
+    },
+      {
+        "value": "eu-icon-rizhiguanli",
+        "text": "日志管理"
+    },
+      {
+        "value": "eu-icon-diaodurenwu",
+        "text": "调度任务"
+    },
+     {
+        "value": "eu-icon-diaodurizhi",
+        "text": "调度日志"
+    },
+    {
+        "value": "eu-icon-xitongrizhi",
+        "text": "系统日志"
+    },
+    {
+        "value": "eu-icon-xinhanguanli",
+        "text": "信函管理"
+    },
+      {
+        "value": "eu-icon-daichulixinhan",
+        "text": "待处理信函"
+    },
+    {
+        "value": "eu-icon-daishenpixinhan",
+        "text": "待审批信函"
+    },
+     {
+        "value": "eu-icon-xinhanjilu",
+        "text": "信函记录"
+    },
+      {
+        "value": "eu-icon-bangzhu",
+        "text": "用户手册"
+    },
+     {
+        "value": "eu-icon-kehutongji",
+        "text": "客户统计"
+    },
+    {
+        "value": "eu-icon-baobiaotongji",
+        "text": "报表统计"
+    },
+     {
+        "value": "eu-icon-tongji",
+        "text": "统计"
+    },
+    {
+        "value": "eu-icon-picitongji",
+        "text": "批次统计"
+    },
+     {
+        "value": "eu-icon-tongji1",
+        "text": "统计1"
+    },
+    {
+        "value": "eu-icon-fenggongsitongji",
+        "text": "分公司统计"
+    },
+    {
+        "value": "eu-icon-tongji2",
+        "text": "统计2"
+    },
+     {
+        "value": "eu-icon-tongji3",
+        "text": "统计3"
+    },
+      {
+        "value": "eu-icon-huancun",
+        "text": "缓存"
+    },
+      {
+        "value": "eu-icon-yingyeguanli",
+        "text": "营业管理"
+    },
+     {
+        "value": "eu-icon-chanpingguanli",
+        "text": "产品管理"
+    },
+    {
+        "value": "eu-icon-anyuandiguanli",
+        "text": "案源地管理"
+    },
+    {
+        "value": "eu-icon-lianxirenguanli",
+        "text": "联系人管理"
+    },
+     {
+        "value": "eu-icon-baifangjilu",
+        "text": "拜访管理"
+    },
+    {
+        "value": "eu-icon-helpme",
+        "text": "协催管理"
+    },
+     {
+        "value": "eu-icon-daichulihelpme",
+        "text": "待处理协催"
+    },
+     {
+        "value": "eu-icon-helpmejilu",
+        "text": "协催记录"
+    },
+     {
+        "value": "eu-icon-mubiaoyeji",
+        "text": "目标业绩"
+    },
+    {
+        "value": "eu-icon-yuangongtongji",
+        "text": "员工统计统计"
+    }
+    
+    
+    
+     
+     
+     
+]

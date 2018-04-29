@@ -1,0 +1,798 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.CaseMapper">
+
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.collection.model.CaseModel" id="model" />
+	
+
+	<resultMap type="com.kangde.collection.vo.CaseJointDebtVo"
+		id="caseJointDebtVo" />
+		
+	<resultMap id="modelCar" type="com.kangde.collection.dto.CaseCarDto"/>
+
+		
+		
+	<sql id="fields">
+		*
+	</sql>
+	
+	<!-- where条件 -->
+	<sql id="where">
+		where status = 1
+	</sql>
+	
+	<insert id="save">
+		insert into `case_info` (id,case_last_date,case_last_money, case_code, state,
+		collec_state_id, batch_id, case_date,
+		case_backdate, end_date, version, cus_no,
+		userId, account_no, case_app_no,
+		case_file_no, case_name, case_sex,
+		case_is_marriage, case_birthday, case_age,
+		area_id, area_name,bank_account,
+		case_house_id, case_card, case_num,
+		case_num_id, case_position, case_position_level,
+		account_name, lend_institution, principal,
+		surplus_principal, breach, case_money,
+		account_money, loan_contract, loan_money,
+		loan_rate, loan_startdate, loan_enddate,
+		contract_money, overdue_money, overdue_principal,
+		overdue_expense, overdue_age, overdue_penalty,
+		overdue_interest, overdue_days, overdue_date,
+		overdue_periods, once_overdue_periods, overdue_loan,
+		overdue_principal_balance, overdue_compound,
+		social_security_no, agent_rate, entrust_rate,
+		credit_id, stay_periods, month_repayment,
+		last_repayment, stay_principal, stay_expense,
+		stay_interest, bill, repayment_periods,
+		commodity, company_name, company_phone,
+		company_address, company_zipcode, mobile1,
+		mobile2, family_phone, family_address,
+		family_zipcode, domicile, mark_id,
+		user_name, is_verify, verify_date,
+		repayment_type, protocol_no, loan_area,
+		actual_loan_money, interest_money, penalty_reference,
+		compound_interest_reference, quota_no, quota_manager1,
+		quota_manager2, manager_phone, collateral_no,
+		collateral_id, collateral_name, collateral_address,
+		collateral_evalua, repay_date, total_construc,
+		regione, sub_center, sales_dep,
+		consult_fee, audit_fee, service_fee,
+		adviser_fee, fee_total, initial_repay,
+		due_periods, penalty_days, remain_history,
+		debit_bank_code, debit_bank_name, debit_account,
+		relief_policy, case_assigned_id, case_assign_id,
+		case_assign_name, case_assign_time, create_emp_id,
+		modify_emp_id, modify_time, create_time,
+		status, old_collec_record, remark1,
+		province_id,province_name,city_id,city_name,
+		remark2,org_id,org_name,color,start_card_date,stop_card_date,credit_limit,
+		social_card_no,policy_expire,case_department,collec_remark,email,currency,repayment_term,collec_type,late_fee,domicile_zipcode,bill_address,bill_zipcode,cus_introduc)
+		values (#{id},#{caseLastDate},#{caseLastMoney}, #{caseCode}, #{state},
+		#{collecStateId}, #{batchId}, #{caseDate},
+		#{caseBackdate},#{endDate}, #{version}, #{cusNo},
+		#{userId}, #{accountNo}, #{caseAppNo},
+		#{caseFileNo}, #{caseName}, #{caseSex},
+		#{caseIsMarriage}, #{caseBirthday}, #{caseAge},
+		#{areaId},#{areaName}, #{bankAccount},
+		#{caseHouseId}, #{caseCard}, #{caseNum},
+		#{caseNumId}, #{casePosition}, #{casePositionLevel},
+		#{accountName}, #{lendInstitution}, #{principal},
+		#{surplusPrincipal}, #{breach}, #{caseMoney},
+		#{accountMoney}, #{loanContract}, #{loanMoney},
+		#{loanRate}, #{loanStartdate}, #{loanEnddate},
+		#{contractMoney}, #{overdueMoney}, #{overduePrincipal},
+		#{overdueExpense}, #{overdueAge}, #{overduePenalty},
+		#{overdueInterest}, #{overdueDays}, #{overdueDate},
+		#{overduePeriods}, #{onceOverduePeriods}, #{overdueLoan},
+		#{overduePrincipalBalance}, #{overdueCompound},
+		#{socialSecurityNo}, #{agentRate}, #{entrustRate},
+		#{creditId}, #{stayPeriods}, #{monthRepayment},
+		#{lastRepayment}, #{stayPrincipal}, #{stayExpense},
+		#{stayInterest}, #{bill}, #{repaymentPeriods},
+		#{commodity}, #{companyName}, #{companyPhone},
+		#{companyAddress}, #{companyZipcode}, #{mobile1},
+		#{mobile2}, #{familyPhone}, #{familyAddress},
+		#{familyZipcode}, #{domicile}, #{markId},
+		#{userName}, #{isVerify}, #{verifyDate},
+		#{repaymentType}, #{protocolNo}, #{loanArea},
+		#{actualLoanMoney}, #{interestMoney}, #{penaltyReference},
+		#{compoundInterestReference}, #{quotaNo}, #{quotaManager1},
+		#{quotaManager2}, #{managerPhone}, #{collateralNo},
+		#{collateralId}, #{collateralName}, #{collateralAddress},
+		#{collateralEvalua}, #{repayDate}, #{totalConstruc},
+		#{regione}, #{subCenter}, #{salesDep},
+		#{consultFee}, #{auditFee}, #{serviceFee},
+		#{adviserFee}, #{feeTotal}, #{initialRepay},
+		#{duePeriods}, #{penaltyDays}, #{remainHistory},
+		#{debitBankCode}, #{debitBankName}, #{debitAccount},
+		#{reliefPolicy}, #{caseAssignedId}, #{caseAssignId},
+		#{caseAssignName}, #{caseAssignTime}, #{createEmpId},
+		#{modifyEmpId}, #{modifyTime}, #{createTime},
+		#{status}, #{oldCollecRecord}, #{remark1},
+		#{provinceId}, #{provinceName}, #{cityId},#{cityName},
+		#{remark2},#{orgId},#{orgName},#{color},#{startCardDate},#{stopCardDate},#{creditLimit},
+		#{socialCardNo},#{policyExpire},#{caseDepartment},#{collecRemark},#{email},#{currency},#{repaymentTerm},#{collecType},#{lateFee},
+		#{domicileZipcode},#{billAddress},#{billZipcode},#{cusIntroduc})
+	</insert>
+
+	<!-- 撤回案件的时候 同时要修改案件的状态 -->
+	<update id="updateStatusBack">
+		update case_info set
+		state = 5
+		where batch_id = #{batchId}
+	</update>
+	
+	<!-- 批量修改案件颜色 -->
+	<update id="updateForIds">
+		update case_info set
+		color=#{color}
+		where id in
+		<foreach collection="list" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</update>
+	<!-- 修改最后跟近日期 -->
+	<update id="updateLastPhoneForId">
+		update case_info set
+		last_phone_time=#{lastPhoneTime}
+		where id = #{id}
+	</update>
+	
+	<!-- 恢复案件的时候 同时要修改案件的状态 -->
+	<update id="updateStatusNomal">
+		update case_info set
+		state = 0
+		where batch_id = #{batchId}
+	</update>
+	
+	<!-- 批量修改案件的状态（逻辑删除） -->
+	<update id="softDelete">
+		update case_info
+		set 
+		status = -1
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	<!-- ID删除(物理删除) -->
+	<delete id="deleteByIds">
+		delete from
+		case_info
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!-- 查询 -->
+	<select id="getcaseIdByCaseFileNo" resultType="String">
+		select id from case_info where case_file_no=#{caseFileNo} and status!=-1
+	</select>
+	<!-- 查询 -->
+	<select id="getcaseIdByCaseCode" resultType="String">
+		select id from case_info where case_code=#{caseCode} and status!=-1
+	</select>
+	
+	<!-- 查询 -->
+	<select id="query" resultType="com.kangde.collection.dto.CaseViewDto">
+		${params.dynamicSql}
+	</select>
+	<!-- 查询 -->
+	<select id="queryCaseCollect" resultType="com.kangde.collection.dto.CaseCollectViewDto">
+		${params.dynamicSql}
+	</select>
+	
+	<!-- 统计SQL -->
+	<select id="statistics" resultType="java.util.HashMap">
+		${params.dynamicSql}
+	</select>
+
+	<select id="queryCaseJointDebts" resultMap="caseJointDebtVo">
+		SELECT batch.batch_code batchCode, case_info.id as caseId, case_info.case_code caseCode, case_info.case_date caseDate, case_info.case_num caseNum, batch.`name` as entrustName, case_info.case_money caseMoney, case_info.collec_state_id collecStateId, yyy.paid_num paidNum, employee_info.user_name userName from case_info 
+		LEFT JOIN (SELECT case_batch.id, case_batch.batch_code, entrust.`name` from case_batch LEFT JOIN entrust on case_batch.entrust_id=entrust.id) batch
+		on case_info.batch_id=batch.id
+		LEFT JOIN employee_info
+		on employee_info.id=case_info.case_assigned_id
+		left join (
+		SELECT sum(paid.paid_num) as paid_num, paid.case_id from (SELECT * from case_paid where state='2' and case_id in(
+		SELECT case_id from case_info where case_num in(SELECT case_num  from case_info where id=#{params.caseId})
+		)) paid group by paid.case_id)
+		yyy on yyy.case_id=case_info.id
+		where  case_info.case_num in(SELECT case_num  from case_info where id=#{params.caseId})
+		and case_info.id!=#{params.caseId} 
+		AND case_info.status!=-1
+	</select>
+	
+	<!-- 更新被分配人案件信息 -->
+	<update id="updateCaseAssignedInfo">
+		update case_info set 
+		case_assigned_id = #{caseAssignedId}, 
+		case_assign_id = #{caseAssignId}, 
+		modify_time = #{modifyTime}, 
+		modify_emp_id = #{modifyEmpId}, 
+		case_assign_time = #{caseAssignTime},
+		org_id = #{orgId},
+		org_name = #{orgName}
+		where id = #{caseId}
+	</update>
+	
+<update id="updateCaseInfo">
+	update case_info
+      <set >
+      <if test="caseDate != null" >
+        case_date = #{caseDate},
+      </if>
+      <if test="endDate != null" >
+        end_date = #{endDate},
+      </if>
+       <if test="endDate != null" >
+        case_backdate = #{endDate}
+      </if>
+      </set>
+    where batch_id = #{batchId}
+  </update>
+<update id="update">
+	update case_info
+    <set >
+      <if test="state != null" >
+        state = #{state},
+      </if>
+      <if test="collecStateId != null" >
+        collec_state_id = #{collecStateId},
+      </if>
+      <if test="batchId != null" >
+        batch_id = #{batchId},
+      </if>
+      <if test="caseDate != null" >
+        case_date = #{caseDate},
+      </if>
+      <if test="caseBackdate != null" >
+        case_backdate = #{caseBackdate},
+      </if>
+      <if test="endDate != null" >
+        end_date = #{endDate},
+      </if>
+      <if test="version != null" >
+        version = #{version},
+      </if>
+      <if test="cusNo != null" >
+        cus_no = #{cusNo},
+      </if>
+      <if test="userId != null" >
+        userId = #{userId},
+      </if>
+      <if test="accountNo != null" >
+        account_no = #{accountNo},
+      </if>
+      <if test="caseAppNo != null" >
+        case_app_no = #{caseAppNo},
+      </if>
+      <if test="caseFileNo != null" >
+        case_file_no = #{caseFileNo},
+      </if>
+      <if test="caseName != null" >
+        case_name = #{caseName},
+      </if>
+      <if test="caseSex != null" >
+        case_sex = #{caseSex},
+      </if>
+      <if test="caseIsMarriage != null" >
+        case_is_marriage = #{caseIsMarriage},
+      </if>
+      <if test="caseBirthday != null" >
+        case_birthday = #{caseBirthday},
+      </if>
+      <if test="caseAge != null" >
+        case_age = #{caseAge},
+      </if>
+      <if test="areaId != null" >
+        area_id = #{areaId},
+      </if>
+      <if test="areaName != null" >
+        area_name = #{areaName},
+      </if>
+      <if test="bankAccount != null" >
+        bank_account = #{bankAccount},
+      </if>
+      <if test="caseHouseId != null" >
+        case_house_id = #{caseHouseId},
+      </if>
+      <if test="caseCard != null" >
+        case_card = #{caseCard},
+      </if>
+      <if test="caseNum != null" >
+        case_num = #{caseNum},
+      </if>
+      <if test="caseNumId != null" >
+        case_num_id = #{caseNumId},
+      </if>
+      <if test="casePosition != null" >
+        case_position = #{casePosition},
+      </if>
+      <if test="casePositionLevel != null" >
+        case_position_level = #{casePositionLevel},
+      </if>
+      <if test="accountName != null" >
+        account_name = #{accountName},
+      </if>
+      <if test="lendInstitution != null" >
+        lend_institution = #{lendInstitution},
+      </if>
+      <if test="principal != null" >
+        principal = #{principal},
+      </if>
+      <if test="surplusPrincipal != null" >
+        surplus_principal = #{surplusPrincipal},
+      </if>
+      <if test="breach != null" >
+        breach = #{breach},
+      </if>
+      <if test="caseMoney != null" >
+        case_money = #{caseMoney},
+      </if>
+      <if test="accountMoney != null" >
+        account_money = #{accountMoney},
+      </if>
+      <if test="loanContract != null" >
+        loan_contract = #{loanContract},
+      </if>
+      <if test="loanMoney != null" >
+        loan_money = #{loanMoney},
+      </if>
+      <if test="loanRate != null" >
+        loan_rate = #{loanRate},
+      </if>
+      <if test="loanStartdate != null" >
+        loan_startdate = #{loanStartdate},
+      </if>
+      <if test="loanEnddate != null" >
+        loan_enddate = #{loanEnddate},
+      </if>
+      <if test="contractMoney != null" >
+        contract_money = #{contractMoney},
+      </if>
+      <if test="overdueMoney != null" >
+        overdue_money = #{overdueMoney},
+      </if>
+      <if test="overduePrincipal != null" >
+        overdue_principal = #{overduePrincipal},
+      </if>
+      <if test="overdueExpense != null" >
+        overdue_expense = #{overdueExpense},
+      </if>
+      <if test="overdueAge != null" >
+        overdue_age = #{overdueAge},
+      </if>
+      <if test="overduePenalty != null" >
+        overdue_penalty = #{overduePenalty},
+      </if>
+      <if test="overdueInterest != null" >
+        overdue_interest = #{overdueInterest},
+      </if>
+      <if test="overdueDays != null" >
+        overdue_days = #{overdueDays},
+      </if>
+      <if test="overdueDate != null" >
+        overdue_date = #{overdueDate},
+      </if>
+      <if test="overduePeriods != null" >
+        overdue_periods = #{overduePeriods},
+      </if>
+      <if test="onceOverduePeriods != null" >
+        once_overdue_periods = #{onceOverduePeriods},
+      </if>
+      <if test="overdueLoan != null" >
+        overdue_loan = #{overdueLoan},
+      </if>
+      <if test="overduePrincipalBalance != null" >
+        overdue_principal_balance = #{overduePrincipalBalance},
+      </if>
+      <if test="overdueCompound != null" >
+        overdue_compound = #{overdueCompound},
+      </if>
+      <if test="socialSecurityNo != null" >
+        social_security_no = #{socialSecurityNo},
+      </if>
+      <if test="agentRate != null" >
+        agent_rate = #{agentRate},
+      </if>
+      <if test="entrustRate != null" >
+        entrust_rate = #{entrustRate},
+      </if>
+      <if test="creditId != null" >
+        credit_id = #{creditId},
+      </if>
+      <if test="stayPeriods != null" >
+        stay_periods = #{stayPeriods},
+      </if>
+      <if test="monthRepayment != null" >
+        month_repayment = #{monthRepayment},
+      </if>
+      <if test="lastRepayment != null" >
+        last_repayment = #{lastRepayment},
+      </if>
+      <if test="stayPrincipal != null" >
+        stay_principal = #{stayPrincipal},
+      </if>
+      <if test="stayExpense != null" >
+        stay_expense = #{stayExpense},
+      </if>
+      <if test="stayInterest != null" >
+        stay_interest = #{stayInterest},
+      </if>
+      <if test="bill != null" >
+        bill = #{bill},
+      </if>
+      <if test="repaymentPeriods != null" >
+        repayment_periods = #{repaymentPeriods},
+      </if>
+      <if test="commodity != null" >
+        commodity = #{commodity},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName},
+      </if>
+      <if test="companyPhone != null" >
+        company_phone = #{companyPhone},
+      </if>
+      <if test="companyAddress != null" >
+        company_address = #{companyAddress},
+      </if>
+      <if test="companyZipcode != null" >
+        company_zipcode = #{companyZipcode},
+      </if>
+      <if test="mobile1 != null" >
+        mobile1 = #{mobile1},
+      </if>
+      <if test="mobile2 != null" >
+        mobile2 = #{mobile2},
+      </if>
+      <if test="familyPhone != null" >
+        family_phone = #{familyPhone},
+      </if>
+      <if test="familyAddress != null" >
+        family_address = #{familyAddress},
+      </if>
+      <if test="familyZipcode != null" >
+        family_zipcode = #{familyZipcode},
+      </if>
+      <if test="domicile != null" >
+        domicile = #{domicile},
+      </if>
+      <if test="markId != null" >
+        mark_id = #{markId},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName},
+      </if>
+      <if test="isVerify != null" >
+        is_verify = #{isVerify},
+      </if>
+      <if test="verifyDate != null" >
+        verify_date = #{verifyDate},
+      </if>
+      <if test="repaymentType != null" >
+        repayment_type = #{repaymentType},
+      </if>
+      <if test="protocolNo != null" >
+        protocol_no = #{protocolNo},
+      </if>
+      <if test="loanArea != null" >
+        loan_area = #{loanArea},
+      </if>
+      <if test="actualLoanMoney != null" >
+        actual_loan_money = #{actualLoanMoney},
+      </if>
+      <if test="interestMoney != null" >
+        interest_money = #{interestMoney},
+      </if>
+      <if test="penaltyReference != null" >
+        penalty_reference = #{penaltyReference},
+      </if>
+      <if test="compoundInterestReference != null" >
+        compound_interest_reference = #{compoundInterestReference},
+      </if>
+      <if test="quotaNo != null" >
+        quota_no = #{quotaNo},
+      </if>
+      <if test="quotaManager1 != null" >
+        quota_manager1 = #{quotaManager1},
+      </if>
+      <if test="quotaManager2 != null" >
+        quota_manager2 = #{quotaManager2},
+      </if>
+      <if test="managerPhone != null" >
+        manager_phone = #{managerPhone},
+      </if>
+      <if test="collateralNo != null" >
+        collateral_no = #{collateralNo},
+      </if>
+      <if test="collateralId != null" >
+        collateral_id = #{collateralId},
+      </if>
+      <if test="collateralName != null" >
+        collateral_name = #{collateralName},
+      </if>
+      <if test="collateralAddress != null" >
+        collateral_address = #{collateralAddress},
+      </if>
+      <if test="collateralEvalua != null" >
+        collateral_evalua = #{collateralEvalua},
+      </if>
+      <if test="repayDate != null" >
+        repay_date = #{repayDate},
+      </if>
+      <if test="totalConstruc != null" >
+        total_construc = #{totalConstruc},
+      </if>
+      <if test="regione != null" >
+        regione = #{regione},
+      </if>
+      <if test="subCenter != null" >
+        sub_center = #{subCenter},
+      </if>
+      <if test="salesDep != null" >
+        sales_dep = #{salesDep},
+      </if>
+      <if test="consultFee != null" >
+        consult_fee = #{consultFee},
+      </if>
+      <if test="auditFee != null" >
+        audit_fee = #{auditFee},
+      </if>
+      <if test="serviceFee != null" >
+        service_fee = #{serviceFee},
+      </if>
+      <if test="adviserFee != null" >
+        adviser_fee = #{adviserFee},
+      </if>
+      <if test="feeTotal != null" >
+        fee_total = #{feeTotal},
+      </if>
+      <if test="initialRepay != null" >
+        initial_repay = #{initialRepay},
+      </if>
+      <if test="duePeriods != null" >
+        due_periods = #{duePeriods},
+      </if>
+      <if test="penaltyDays != null" >
+        penalty_days = #{penaltyDays},
+      </if>
+      <if test="remainHistory != null" >
+        remain_history = #{remainHistory},
+      </if>
+      <if test="debitBankCode != null" >
+        debit_bank_code = #{debitBankCode},
+      </if>
+      <if test="debitBankName != null" >
+        debit_bank_name = #{debitBankName},
+      </if>
+      <if test="debitAccount != null" >
+        debit_account = #{debitAccount},
+      </if>
+      <if test="reliefPolicy != null" >
+        relief_policy = #{reliefPolicy},
+      </if>
+      <if test="caseAssignedId != null" >
+        case_assigned_id = #{caseAssignedId},
+      </if>
+      <if test="caseAssignId != null" >
+        case_assign_id = #{caseAssignId},
+      </if>
+      <if test="caseAssignName != null" >
+        case_assign_name = #{caseAssignName},
+      </if>
+      <if test="caseAssignTime != null" >
+        case_assign_time = #{caseAssignTime},
+      </if>
+      <if test="createEmpId != null" >
+        create_emp_id = #{createEmpId},
+      </if>
+      <if test="modifyEmpId != null" >
+        modify_emp_id = #{modifyEmpId},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId},
+      </if>
+      <if test="orgName != null" >
+        org_name = #{orgName},
+      </if>
+      <if test="nextFollowTime != null" >
+        next_follow_time = #{nextFollowTime},
+      </if>
+      <if test="nextFollowState != null" >
+        next_follow_state = #{nextFollowState},
+      </if>
+      <if test="isUpdate != null" >
+        is_update = #{isUpdate},
+      </if>
+      <if test="handle != null" >
+        handle = #{handle},
+      </if>
+      <if test="oldCollecRecord != null" >
+        old_collec_record = #{oldCollecRecord},
+      </if>
+      <if test="remark1 != null" >
+        remark1 = #{remark1},
+      </if>
+      <if test="remark2 != null" >
+        remark2 = #{remark2},
+      </if>
+      <if test="inDerate != null" >
+        in_derate = #{inDerate},
+      </if>
+      <if test="outDerate != null" >
+        out_derate = #{outDerate},
+      </if>
+      <if test="color != null" >
+        color = #{color},
+      </if>
+       <if test="caseLastDate != null" >
+        case_last_date = #{caseLastDate},
+      </if>
+       <if test="caseLastMoney != null" >
+        case_last_money = #{caseLastMoney},
+      </if>
+      <!-- province_id,province_name,city_id,city_name,名称Excel中提供，ID需要查库 -->
+    </set>
+    where id = #{id}
+  </update> 
+  
+  <!-- 更新案件状态 -->
+  <update id="changeState">
+		update case_info set 
+		modify_time = #{modifyTime}, 
+		modify_emp_id = #{modifyEmpId},
+		state = #{state}
+		where id in
+		<foreach collection="caseIds" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+  
+  <select id="findById" resultMap="model">
+ 	 select 
+ 	 <include refid="fields" />
+ 	 from case_info where id = #{id} and status!=-1
+  </select>
+    
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select 
+		<include refid="fields" />
+		from 
+		case_info
+		where ${fieldName} ${expression} #{fieldValue} 
+	</select>
+	<select id="findCaseByBatchId" resultMap="model">
+		SELECT case_info.* FROM case_info 
+		LEFT JOIN case_batch 
+		ON case_batch.id = case_info.`batch_id` 
+		WHERE case_batch.id = #{id} and case_batch.status!=-1 and case_info.status!=-1
+	</select>
+	
+	<select id="findPartByBatchId" resultMap="model">
+		select id
+		from 
+		case_info
+		where batch_id = #{batchId} and status!=-1
+	</select>
+	
+	<!-- 查找委案截止日期小于now的 -->
+	<select id="findIdWithEnddate" resultMap="model">
+		<![CDATA[
+			select id
+			from case_info 
+			where to_days(case_backdate) < to_days(#{now}) 
+			and state!='3' and status!=-1
+		]]>
+	</select>
+
+	<!-- 查询批次下所有案件 -->
+	<select id="findBatchCodes" resultMap="model">
+	select 
+    *
+	from case_info as ci
+	where ci.status!=-1 and ci.batch_id in
+		<foreach collection="batchIds" open="(" close=")" separator="," item="batchId">
+			#{batchId}
+		</foreach>
+	</select>		
+	
+	<select id="findCasesByIds" resultMap="model">
+		select * from case_info where id in
+		<foreach collection="array" open="(" close=")" separator="," item="caseId">
+			#{caseId}
+		</foreach>
+	</select>		
+	<select id="findReminderCaseCount" resultType="int">
+		SELECT count(*) FROM case_info AS cinfo
+		JOIN case_batch AS cbatch ON cinfo.batch_id = cbatch.id
+		LEFT JOIN employee_info AS caseAssigned ON cinfo.case_assigned_id = caseAssigned.id
+		LEFT JOIN entrust ON cbatch.entrust_id = entrust.id
+		WHERE cinfo. STATUS = 1 AND cinfo.state = 0
+		AND cinfo.state IN (0, 1, 4) AND cinfo.case_assigned_id = #{userId}
+		AND (cinfo.case_backdate BETWEEN #{backDateBegin} AND #{backDateEnd})
+	</select>		
+	<!-- 查询单个批次下所有案件 -->
+	<select id="findBatchId" resultMap="model">
+	select * from case_info as ci
+	where ci.batch_id = #{batchId} and ci.status!=-1
+		
+	</select>
+	
+	<select id="findcaseByVisitrecordIds" resultMap="model">
+	
+	SELECT case_info.* from visit_record left join case_info on visit_record.case_id=case_info.id
+	where visit_record.id in
+	<foreach item="item" index="index" collection="array" open="(" separator="," close=")">  
+	  #{item}  
+	</foreach>  
+ 
+	</select>
+	
+	
+	<!-- 查询批次下所有案件 -->
+	<select id="findBatchCar" resultMap="modelCar">
+	select 
+    *
+	from case_info as ci
+	LEFT JOIN case_car_loan ccl ON ci.`id`=ccl.`case_id`
+	where ci.status!=-1 and ci.batch_id in
+		<foreach collection="batchIds" open="(" close=")" separator="," item="batchId">
+			#{batchId}
+		</foreach>
+		ORDER BY ci.`case_code`
+	</select>	
+	
+	<select id="caseToFollow" resultMap="model">
+		SELECT * from case_info where case_info.state=0 
+		and case_info.case_assigned_id=#{userId}
+		and case_info.next_follow_time=#{now}
+	</select>		
+	
+	
+	<select id="divisionCaseCount" resultType="int">
+		SELECT count(*)	FROM case_info AS cinfo
+		JOIN case_batch AS cbatch ON cinfo.batch_id = cbatch.id
+		WHERE cbatch. STATUS !=- 1 and  cinfo. STATUS !=- 1
+		AND (
+			cinfo.org_id IN (
+				${queryOrgs}
+			)
+			<if test="@org.apache.commons.lang.StringUtils@isNotBlank(attachEntrustId)">
+			OR cb.entrust_id IN (${attachEntrustId})
+			</if>	
+			<if test="@org.apache.commons.lang.StringUtils@equals('admin',loginName)">
+			OR 1=1
+			</if>	
+			
+			)
+		AND cinfo.org_id IN (
+			SELECT
+				id
+			FROM
+				sys_organization
+			WHERE
+				path LIKE '${orgPath}%'
+		)
+		AND cinfo.state IN (0, 1, 4, 5)
+		and cinfo.case_assigned_id is NULL
+	</select>	
+	
+	
+	
+	
+</mapper>

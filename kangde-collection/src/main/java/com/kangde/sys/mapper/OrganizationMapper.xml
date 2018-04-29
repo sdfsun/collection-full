@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.sys.mapper.OrganizationMapper">
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.OrganizationModel" id="model"/>
+	
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		sys_organization.id, sys_organization.create_time, sys_organization.modify_time,
+		sys_organization.version, sys_organization.status, sys_organization.name, 
+		sys_organization.parent_id,
+		sys_organization.address,
+		sys_organization.phone, sys_organization.post_code,
+		sys_organization.fax, sys_organization.type, sys_organization.order_no,sys_organization.code,
+		sys_organization.principal_id,
+		sys_organization.path
+	</sql>
+	<!-- where条件 -->
+	<sql id="where">
+		where sys_organization.status =
+		'${@com.kangde.commons.CoreConst@STATUS_NORMAL}'
+	</sql>
+	<!-- 排序 -->
+	<sql id="sort">
+		order by order_no
+	</sql>
+	<!-- 保存 -->
+	<insert id="save">
+		insert into sys_organization (id, create_time,
+		modify_time,
+		version, status, name,
+		parent_id, address, phone,
+		post_code, fax, type,
+		order_no,code,principal_id,path)
+		values (#{id}, #{createTime},
+		#{modifyTime},
+		#{version}, #{status}, #{name},
+		#{parentId}, #{address},
+		#{phone},
+		#{postCode}, #{fax}, #{type},
+		#{orderNo},#{code},#{principalId},#{path})
+	</insert>
+	<!-- 更新 -->
+	<update id="update">
+		update sys_organization
+		set
+		name=#{name},
+		parent_id=#{parentId},
+		address=#{address},
+		phone=#{phone},
+		post_code=#{postCode},
+		fax=#{fax},
+		type=#{type},
+		order_no=#{orderNo},
+		code=#{code},
+		principal_id=#{principalId},
+		path=#{path},
+		modify_time = #{modifyTime},
+		version = version+1
+		where id = #{id}
+		and
+		version = #{version}
+	</update>
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from sys_organization
+		where id = #{id}
+	</delete>
+	<!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_organization
+		<include refid="where" />
+		and id = #{id}
+	</select>
+	<select id="findAll" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_organization
+		<include refid="where" />
+	</select>
+
+	<!-- 查询所有组织机构 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />,
+		group_concat(area.name separator ',') as area_names,
+		group_concat(area.id separator ',') as area_ids ,
+		emp.user_name as principal_name
+		from sys_organization
+		left join area on sys_organization.id=area.org_id 
+		left join employee_info as emp on emp.id = sys_organization.principal_id
+		<include refid="where" />
+		group by sys_organization.id
+		<include refid="sort" />
+	</select>
+
+	<!-- 查找最大排序号 -->
+	<select id="findMaxSort" resultType="int">
+		select max(order_no) from
+		sys_organization
+	</select>
+
+	<!-- 查询顶级组织机构 -->
+	<select id="findTops" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_organization
+		<include refid="where" />
+		and parent_id is null
+	</select>
+	<!-- 通过父节点查询子节点 -->
+	<select id="findByParentId" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_organization
+		<include refid="where" />
+		and parent_id = #{id}
+	</select>
+	<!-- 通过父节点查询节点 -->
+	<select id="findDescendantsByPath" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_organization
+		<include refid="where" />
+		and path like concat(#{path},'%')
+	</select>
+
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select 
+		<include refid="fields" />
+		from sys_organization
+		where ${fieldName} ${expression} #{fieldValue} 
+	</select>
+
+</mapper>

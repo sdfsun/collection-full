@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.StatisticsAssistMapper">
+	<!-- 返回值类型 -->
+	<!-- 解析字段 dto 里的表字段 -->
+
+	<resultMap id="modelAssist" type="com.kangde.collection.dto.StatisticsAssistDto">
+		<result column="id" property="id" />
+		<result column="sur_time" property="sur_time" />
+		<result column="apply_count" property="apply_count" />
+		<result column="hj" property="hj" />
+		<result column="shb" property="shb" />
+		<result column="dx" property="dx" />
+		<result column="average_case_apply_count" property="average_case_apply_count" />
+	</resultMap>
+	
+<!-- 外访统计 -->
+	<select id="queryAssist" resultMap="modelAssist">
+		<![CDATA[
+		SELECT
+	tj.id,
+	tj.sur_time,#协催时间
+	tj.apply_count,#协催总次数
+	tj.hj,#
+	tj.shb,#
+	tj.dx,#
+	tj.average_case_apply_count
+	
+FROM
+	(
+
+SELECT 
+		LEFT( ca.sur_time,10) AS sur_time,ca.state,ca.`apply_type`,ca.`id`,
+		
+		SUM(CASE WHEN (ca.`apply_type` = '4' OR ca.`apply_type` = '6' OR ca.`apply_type` = '12') THEN 1 ELSE 0 END) AS apply_count,
+		SUM(CASE WHEN ca.`apply_type` = '4' THEN 1 ELSE 0 END) AS hj,
+		SUM(CASE WHEN ca.`apply_type` = '6' THEN 1 ELSE 0 END) AS shb,
+		SUM(CASE WHEN ca.`apply_type` = '12' THEN 1 ELSE 0 END) AS dx,
+		ROUND(CONVERT((IFNULL(SUM(CASE WHEN (ca.`apply_type` = '4' OR ca.`apply_type` = '6' OR ca.`apply_type` = '12') THEN 1 ELSE 0 END),0) / IFNULL(COUNT(DISTINCT ca.case_id), 0)),DECIMAL(18,0))) 
+		AS average_case_apply_count
+		
+		FROM `case_apply` ca
+
+		GROUP BY LEFT( ca.sur_time,10)
+		ORDER BY ca.sur_time DESC
+) AS tj WHERE tj.state='1'
+		]]>
+		<!-- 姓名 -->
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.sur_time1)">
+		and sur_time BETWEEN '${params.sur_time}' AND'${params.sur_time1}'
+		</if>
+		<!-- 排序 -->
+		<choose>
+			<when test="_parameter.hasOrder()">
+				order by ${sort}
+				${order}
+			</when>
+			<otherwise>
+				order by sur_time desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<!-- 外访统计 -->
+	<select id="queryExport" resultMap="modelAssist">
+		<![CDATA[
+		SELECT
+	tj.id,
+	tj.sur_time,#协催时间
+	tj.apply_count,#协催总次数
+	tj.hj,#
+	tj.shb,#
+	tj.dx,#
+	tj.average_case_apply_count
+	
+FROM
+	(
+
+SELECT 
+		LEFT( ca.sur_time,10) AS sur_time,ca.state,ca.`apply_type`,ca.`id`,
+		
+		SUM(CASE WHEN (ca.`apply_type` = '4' OR ca.`apply_type` = '6' OR ca.`apply_type` = '12') THEN 1 ELSE 0 END) AS apply_count,
+		SUM(CASE WHEN ca.`apply_type` = '4' THEN 1 ELSE 0 END) AS hj,
+		SUM(CASE WHEN ca.`apply_type` = '6' THEN 1 ELSE 0 END) AS shb,
+		SUM(CASE WHEN ca.`apply_type` = '12' THEN 1 ELSE 0 END) AS dx,
+		CONVERT((IFNULL(SUM(CASE WHEN (ca.`apply_type` = '4' OR ca.`apply_type` = '6' OR ca.`apply_type` = '12') THEN 1 ELSE 0 END),0) / IFNULL(COUNT(DISTINCT ca.case_id), 0)),DECIMAL(18,0)) 
+		AS average_case_apply_count
+		
+		FROM `case_apply` ca
+
+		GROUP BY LEFT( ca.sur_time,10)
+		ORDER BY ca.sur_time DESC
+) AS tj WHERE tj.state='1'
+		]]>
+			AND tj.id IN
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+		order by sur_time desc
+		
+	</select>
+</mapper>

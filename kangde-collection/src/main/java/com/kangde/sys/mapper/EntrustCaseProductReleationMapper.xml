@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.EntrustCaseProductReleationMapper" >
+  <resultMap id="model" type="com.kangde.sys.model.EntrustCaseProductReleation" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="entrust_id" property="entrustId" jdbcType="VARCHAR" />
+    <result column="product_id" property="productId" jdbcType="VARCHAR" />
+    <result column="case_source_id" property="caseSourceId" jdbcType="VARCHAR" />
+    <result column="case_source_name" property="caseSourceName" jdbcType="VARCHAR" />
+    <result column="case_type_id" property="caseTypeId" jdbcType="VARCHAR" />
+    <result column="case_type_name" property="caseTypeName" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="handle_id" property="handleId" jdbcType="VARCHAR" />
+    <result column="handle_name" property="handleName" jdbcType="VARCHAR" />
+    <result column="entrust_name" property="entrustName" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+  <sql id="list" >
+    id, entrust_id,entrust_name, product_id, case_source_id, case_source_name, case_type_id, case_type_name, 
+    code, handle_id, handle_name
+  </sql>
+  
+  <select id="query" resultMap="model" >
+    select 
+    <include refid="list" />
+    from entrust_case_product_releation
+  </select>
+  
+  <select id="findById" resultMap="model" >
+    select 
+    <include refid="list" />
+    from entrust_case_product_releation
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findByProductId" resultMap="model" >
+    select 
+    <include refid="list" />
+    from entrust_case_product_releation
+    where product_id = #{productId,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="findByEntrustId" resultMap="model" >
+    select 
+    *
+    from entrust_case_product_releation
+    where entrust_id = #{id,jdbcType=VARCHAR}
+  </select>
+
+ 
+  <insert id="save">
+    insert into entrust_case_product_releation (id, entrust_id, product_id, 
+      case_source_id, case_source_name, case_type_id, entrust_name,
+      case_type_name, code, handle_id, 
+      handle_name)
+    values (#{id,jdbcType=VARCHAR}, #{entrustId,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, 
+      #{caseSourceId,jdbcType=VARCHAR}, #{caseSourceName,jdbcType=VARCHAR}, #{caseTypeId,jdbcType=VARCHAR}, 
+      #{entrustName,jdbcType=VARCHAR}, #{caseTypeName,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{handleId,jdbcType=VARCHAR}, 
+      #{handleName,jdbcType=VARCHAR})
+  </insert>
+  
+  
+  
+  <update id="update">
+    update entrust_case_product_releation
+    <set >
+      <if test="entrustId != null" >
+        entrust_id = #{entrustId,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null" >
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="caseSourceId != null" >
+        case_source_id = #{caseSourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="caseSourceName != null" >
+        case_source_name = #{caseSourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="caseTypeId != null" >
+        case_type_id = #{caseTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="entrustName != null" >
+        entrust_name = #{entrustName,jdbcType=VARCHAR},
+      </if>
+      <if test="caseTypeName != null" >
+        case_type_name = #{caseTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="handleId != null" >
+        handle_id = #{handleId,jdbcType=VARCHAR},
+      </if>
+      <if test="handleName != null" >
+        handle_name = #{handleName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+</mapper>

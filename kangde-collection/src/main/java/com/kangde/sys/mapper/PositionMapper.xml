@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.sys.mapper.PositionMapper">
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.PositionModel" id="model" />
+
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		`id`, `name`, `parent_id`, `order_no`, `description`, `path`,`type`, `create_time`,`modify_time`
+	</sql>
+	<!-- 排序 -->
+	<sql id="sort">
+		order by order_no
+	</sql>
+
+	<!-- 保存 -->
+	<insert id="save">
+		INSERT INTO `sys_position` 
+		(`id`, `name`, `parent_id`, `order_no`, `description`, `path`,
+		 `type`, `create_time`) 
+		 VALUES 
+		(#{id}, #{name}, #{parentId}, #{orderNo}, #{description}, #{path}, 
+		#{type}, #{createTime})
+	</insert>
+	
+	<!-- 更新 -->
+	<update id="update">
+		UPDATE `sys_position` SET 
+		`name`=#{name}, 
+		`parent_id`=#{parentId}, 
+		`order_no`=#{orderNo}, 
+		`description`=#{description}, 
+		`path`=#{path}, 
+		`type`=#{type}, 
+		`modify_time`=#{modifyTime} 
+		WHERE `id`=#{id}
+	</update>
+	
+	<!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_position
+		where id = #{id}
+	</select>
+	
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from sys_position
+		where id = #{id}
+	</delete>
+	
+	<!-- 查询所有职位 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_position
+		<include refid="sort" />
+	</select>
+	
+	<!-- 查找最大排序号 -->
+	<select id="findMaxSort" resultType="int">
+		select max(order_no) from
+		sys_position
+	</select>
+	
+	<!-- 查询顶级职位 -->
+	<select id="findTops" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_position
+		where parent_id is null
+	</select>
+	
+	<!-- 通过父节点查询子节点 -->
+	<select id="findByParentId" resultMap="model">
+		select
+		<include refid="fields" />
+		from sys_position
+		where parent_id = #{id}
+	</select>
+	
+	<!-- 通过字段查询 -->
+	<select id="findByField" resultMap="model">
+		select 
+		<include refid="fields" />
+		from sys_position
+		where ${fieldName} ${expression} #{fieldValue} 
+	</select>
+	
+</mapper>

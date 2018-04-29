@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kangde.collection.mapper.AddressMapper">
+	<resultMap id="BaseResultMap" type="com.kangde.collection.model.AddressModel">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="VARCHAR" />
+		<result column="age" property="age" jdbcType="INTEGER" />
+		<result column="area_id1" property="areaId1" jdbcType="VARCHAR" />
+		<result column="area_id2" property="areaId2" jdbcType="VARCHAR" />
+		<result column="area_id3" property="areaId3" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="case_id" property="caseId" jdbcType="VARCHAR" />
+		<result column="adr_cat" property="adrCat" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="check_app" property="checkApp" jdbcType="INTEGER" />
+		<result column="mail_app" property="mailApp" jdbcType="INTEGER" />
+		<result column="vis_app" property="visApp" jdbcType="INTEGER" />
+		<result column="relation" property="relation" jdbcType="VARCHAR" />
+		<result column="vis_count" property="visCount" jdbcType="INTEGER" />
+		<result column="mail_count" property="mailCount" jdbcType="INTEGER" />
+		<result column="isnew" property="isnew" jdbcType="INTEGER" />
+		<result column="create_emp_id" property="createEmpId" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<resultMap id="addressVo" type="com.kangde.collection.vo.AddressVo">
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, status, name, sex, age, area_id1, area_id2, area_id3,
+		address, case_id, adr_cat, remark, check_app,
+		mail_app,
+		vis_app,
+		relation, ifnull(vis_count, 0), ifnull(mail_count, 0), isnew,
+		create_emp_id, create_time
+	</sql>
+	<!-- 查询外访已经完成的地址, 在详情页面 保存外访催记时带入下拉框 -->
+	<select id="findFinishedVisitRecord" resultMap="BaseResultMap">
+		SELECT
+		address.
+		NAME,
+		address.area_id1,
+		address.area_id2,
+		address.area_id3,
+		address.relation,
+		address.adr_cat,
+		address. STATUS,
+		address.address,
+		address.remark,
+		visit_record.`approve_state`
+		FROM
+		address
+		INNER JOIN
+		visit_record ON visit_record.`address_id` = address.`id`
+		where 1=1
+		AND
+		visit_record.state=4
+		AND visit_record.case_id=
+		#{caseId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from address
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+
+	<select id="queryByCaseId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT
+		<include refid="Base_Column_List" />
+		from address where case_id=#{caseId,jdbcType=VARCHAR} order by
+		create_time desc
+	</select>
+	
+	<select id="findByCaseId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT
+		<include refid="Base_Column_List" />
+		from address where case_id=#{caseId,jdbcType=VARCHAR} order by
+		create_time desc
+	</select>
+	
+	<select id="AddressAll" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select * from address 
+		where relation ='本人'
+		AND source='0'
+		AND case_id=#{caseId}
+		
+	</select>
+
+
+	<select id="query" resultMap="BaseResultMap">
+		select
+		*
+		from address
+		where 1=1 and case_id =
+		#{params.caseId,jdbcType=VARCHAR}
+
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.name)">
+			and name='${params.name}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.relation)">
+			and relation='${params.relation}'
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(params.relation)">
+			and address='${params.address}'
+		</if>
+		order by create_time desc
+	</select>
+
+
+	<select id="queryDetail" resultMap="addressVo">
+		SELECT address.id, address.case_id as caseId,
+		address.adr_cat as adrCat,
+		address.area_id1 as areaId1,
+		address.area_id2 as areaId2,
+		address.area_id3 as areaId3,
+		address.remark as remark,source,create_time,
+		ifnull(address.vis_app, 0) as visApp,
+		ifnull(address.mail_app, 0) as mailApp,
+		address.`status`,address.`name`, address.relation,
+		concat(IFNULL(r1.name,''),IFNULL(r2.name,''),IFNULL(r3.name,''),IFNULL(address.address,''))
+		as fullAddress,IFNULL(address.address,'') as address,
+		r1.name as areaName1,
+		r2.name as areaName2,
+		r3.name as areaName3
+		from address
+		left join region r1
+		on r1.id=address.area_id1
+		left join region r2
+		on
+		r2.id=address.area_id2
+		left join region r3
+		on r3.id=address.area_id3
+		where 1=1 and address.case_id= #{params.caseId,jdbcType=VARCHAR}
+		order
+		by address.create_time desc
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from address
+		where
+		id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="save" parameterType="com.kangde.collection.model.AddressModel">
+		insert into address (id,
+		status, name,
+		sex, age, area_id1, area_id2, area_id3,address,
+		case_id,
+		adr_cat, remark,
+		check_app, mail_app, vis_app,
+		relation, mail_count,
+		isnew, create_emp_id, create_time,source
+		)
+		values (#{id,jdbcType=VARCHAR},
+		#{status,jdbcType=INTEGER},
+		#{name,jdbcType=VARCHAR},
+		#{sex,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER},
+		#{areaId1,jdbcType=VARCHAR},
+		#{areaId2,jdbcType=VARCHAR},
+		#{areaId3,jdbcType=VARCHAR},
+		#{address,jdbcType=VARCHAR},
+		#{caseId,jdbcType=VARCHAR}, #{adrCat,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{checkApp,jdbcType=INTEGER},
+		#{mailApp,jdbcType=INTEGER}, #{visApp,jdbcType=INTEGER},
+		#{relation,jdbcType=VARCHAR}, #{mailCount,jdbcType=INTEGER},
+		#{isnew,jdbcType=INTEGER},
+		#{createEmpId,jdbcType=VARCHAR},#{createTime},
+		#{source,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<insert id="saveAddress" parameterType="com.kangde.collection.model.AddressModel">
+		insert into address (id,
+		status, name,
+		sex, age, area_id1, area_id2, area_id3,address,
+		case_id,
+		adr_cat, remark,
+		check_app, mail_app, vis_app,
+		relation, mail_count,
+		isnew, create_emp_id, create_time
+		)
+		values (#{id,jdbcType=VARCHAR},
+		#{status,jdbcType=INTEGER},
+		#{name,jdbcType=VARCHAR},
+		#{sex,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER},
+		#{areaId1,jdbcType=VARCHAR},
+		#{areaId2,jdbcType=VARCHAR},
+		#{areaId3,jdbcType=VARCHAR},
+		#{address,jdbcType=VARCHAR},
+		#{caseId,jdbcType=VARCHAR}, #{adrCat,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{checkApp,jdbcType=INTEGER},
+		#{mailApp,jdbcType=INTEGER}, #{visApp,jdbcType=INTEGER},
+		#{relation,jdbcType=VARCHAR}, #{mailCount,jdbcType=INTEGER},
+		#{isnew,jdbcType=INTEGER},
+		#{createEmpId,jdbcType=VARCHAR},#{createTime}
+		)
+	</insert>
+	
+
+	<update id="updateById" parameterType="com.kangde.collection.model.AddressModel">
+		update address
+		<set>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="age != null">
+				age = #{age,jdbcType=INTEGER},
+			</if>
+			<if test="areaId1 != null">
+				area_id1 = #{areaId1,jdbcType=VARCHAR},
+			</if>
+			<if test="areaId2 != null">
+				area_id2 = #{areaId2,jdbcType=VARCHAR},
+			</if>
+			<if test="areaId3 != null">
+				area_id3 = #{areaId3,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="caseId != null">
+				case_id = #{caseId,jdbcType=VARCHAR},
+			</if>
+			<if test="adrCat != null">
+				adr_cat = #{adrCat,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="checkApp != null">
+				check_app = #{checkApp,jdbcType=INTEGER},
+			</if>
+			<if test="mailApp != null">
+				mail_app = #{mailApp,jdbcType=INTEGER},
+			</if>
+			<if test="visApp != null">
+				vis_app = #{visApp,jdbcType=INTEGER},
+			</if>
+			<if test="relation != null">
+				relation = #{relation,jdbcType=VARCHAR},
+			</if>
+			<if test="visCount != null">
+				vis_count = #{visCount,jdbcType=INTEGER},
+			</if>
+			<if test="mailCount != null">
+				mail_count = #{mailCount,jdbcType=INTEGER},
+			</if>
+			<if test="isnew != null">
+				isnew = #{isnew,jdbcType=INTEGER},
+			</if>
+			<if test="createEmpId != null">
+				create_emp_id = #{createEmpId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateApplyToVisitStatusByPrimaryKey" parameterType="com.kangde.collection.model.AddressModel">
+		update address set vis_app=#{visApp,jdbcType=INTEGER},
+		vis_count=#{visCount,jdbcType=INTEGER} where id=
+		#{id,jdbcType=VARCHAR}
+	</update>
+	<!-- 更新状态 -->
+	<update id="updateVisApp">
+		update
+		address
+		set
+		vis_app=1
+		where id = #{id}
+	</update>
+
+	<update id="resetAddressVisApp">
+		update
+		address
+		set
+		vis_app=0
+		where id in
+		<foreach collection="list" open="(" close=")" separator=","
+			item="id">
+			#{id}
+		</foreach>
+	</update>
+
+
+<update id="updateForAddress">
+	update address
+		set  
+		address=#{1}
+		where id =#{0}
+	</update>
+
+
+</mapper>

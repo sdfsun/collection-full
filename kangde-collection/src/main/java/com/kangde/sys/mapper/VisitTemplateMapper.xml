@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kangde.sys.mapper.VisitTemplateMapper">
+	<!-- 返回类型 -->
+	<resultMap type="com.kangde.sys.model.VisitTemplateModel" id="model" />
+	<!-- id,name,content,state,create_emp_id,create_time,modify_emp_id,modify_time -->
+	<!-- 所有查询字段 -->
+	<sql id="fields">
+		id,name,state,create_emp_id,create_time,modify_emp_id,modify_time,type
+	</sql>
+
+	<!-- 保存 -->
+	<insert id="save">
+		insert into visit_template (id, name,
+		state,
+		create_emp_id, create_time,
+		content,type
+		)
+		values
+		(#{id}, #{name},
+		#{state},
+		#{createEmpId}, #{createTime},
+		#{content},
+		#{type}
+		)
+	</insert>
+
+	<!-- 更新 -->
+	<update id="update">
+		update visit_template
+		set 
+		name = #{name},
+		modify_emp_id = #{modifyEmpId},
+		modify_time = #{modifyTime},
+		content=#{content},
+		type=#{type}
+		where id = #{id}
+	</update>
+
+	<!-- ID批量删除 -->
+	<delete id="deleteByIds">
+		delete from visit_template
+		where id in
+		<foreach collection="list" item="id" open="(" close=")"
+			separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!-- ID删除 -->
+	<delete id="deleteById">
+		delete from visit_template
+		where id = #{id}
+	</delete>
+
+	<!-- ID查询 -->
+	<select id="findById" resultMap="model">
+		select
+		<include refid="fields" />,content
+		from visit_template
+		where id = #{id}
+	</select>
+	
+		<!-- Name查询 -->
+	<select id="findByName" resultMap="model">
+		select
+		name
+		from visit_template
+		where name=#{name}
+	</select>
+
+	<!-- 查询 -->
+	<select id="query" resultMap="model">
+		select
+		<include refid="fields" />
+		from visit_template
+		where 1=1
+	</select>
+	
+	<!-- 查询全部-->
+	<select id="findAll" resultMap="model">
+		select
+		<include refid="fields" />
+		from visit_template
+		where 1=1
+	</select>
+	
+	<!-- 根据模板类型-->
+	<select id="findByType" resultMap="model">
+		select
+		<include refid="fields" />
+		from visit_template
+		where state = 1
+		<if test="@org.apache.commons.lang.StringUtils@isNotBlank(_parameter)">
+			and type =#{_parameter}
+		</if>
+	</select>
+	
+		<!-- 外访启用模板 -->
+	<update id="updateForStatus">
+		update
+		visit_template
+		set
+		state=1
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+	
+	<!-- 外访禁用模板 -->
+	<update id="updateForStop">
+		update
+		visit_template
+		set
+		state=0
+		where id in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</update>
+</mapper>
